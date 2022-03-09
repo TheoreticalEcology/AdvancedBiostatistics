@@ -1,0 +1,8 @@
+.RData
+.RDS
+_bookdown_files/_main_cache/html/**
+_bookdown_files/_main_cache
+_main_cache
+*.zip
+.Rhistory
+

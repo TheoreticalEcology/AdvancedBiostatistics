@@ -1,0 +1,92 @@
+--- 
+title: "Machine Learning and AI in TensorFlow and R"
+author: "Florian Hartig"
+date: "`r Sys.Date()`"
+site: bookdown::bookdown_site
+output: 
+  bookdown::gitbook:
+    highlight: kate
+documentclass: book
+bibliography: ["packages.bib", "literature.bib"]
+biblio-style: "apalike"
+link-citations: yes
+github-repo: rstudio/bookdown-demo
+description: "Advanced Biostatistics with R"
+---
+
+# Prerequisites {#prerequisites}
+
+```{=html}
+<!-- Put this here (right after the first markdown headline) and only here for each document! -->
+<script src="./scripts/multipleChoice.js"></script>
+```
+
+```{r chunk_chapter1_0, include=FALSE}
+# Automatically create a bib database for R packages.
+knitr::write_bib(c(.packages(), 'bookdown', 'knitr', 'rmarkdown'),
+                 'packages.bib')
+
+knitr::opts_chunk$set(cache = TRUE)
+``` 
+
+
+## R System
+
+Make sure you have a recent version of R (>=3.6, ideally >=4.0) and RStudio on your computers. 
+
+
+## EcoData
+
+We may sometimes use data sets from the EcoData package. To install the package, run:
+
+```{r chunk_chapter1_1, eval=FALSE}
+devtools::install_github(repo = "florianhartig/EcoData", subdir = "EcoData",
+                         dependencies = TRUE, build_vignettes = TRUE)
+```
+
+
+## Further Used Libraries
+
+We will make huge use of different libraries. So take a coffee or two (that will take a while...) and install the following libraries.
+Please do this in the given order unless you know what you're doing, because there are some dependencies between the packages.
+
+```{r chunk_chapter1_2, code=xfun::read_utf8('dependencies.R'), eval=FALSE}
+```
+
+
+## Linux/UNIX systems have to fulfill some durther dependencies
+
+**Debian based systems**
+
+For Debian based systems, we need:
+
+```{}
+build-essential
+gfortran
+libmagick++-dev
+r-base-dev
+```
+
+If you are new to installing packages on Debian / Ubuntu, etc., type the following:
+
+```{}
+sudo apt update && sudo apt install -y --install-recommends build-essential gfortran libmagick++-dev r-base-dev
+```
+
+
+**Authors**:
+
+Maximilian Pichler: [\@_Max_Pichler](https://twitter.com/_Max_Pichler)
+
+Florian Hartig: [\@florianhartig](https://twitter.com/florianhartig)
+
+
+**Contributors**:
+
+Johannes Oberpriller, Matthias Meier
+
+
+
+```{=html}
+<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>
+```

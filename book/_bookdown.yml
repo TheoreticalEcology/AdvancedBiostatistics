@@ -1,0 +1,2 @@
+rmd_files: ["./index.Rmd", "./02_R-reminder.Rmd", "./03-recap.Rmd", "./04-heteroskedasticity.Rmd", "./05-GLMMs.Rmd", "./06-correlation.Rmd", "./07-causal_inference.Rmd"]
+output_dir: "../docs"
