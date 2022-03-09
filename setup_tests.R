@@ -13,7 +13,7 @@ rmds = c("book/index.Rmd",
          "book/04-heteroskedasticity.Rmd",
          "book/05-GLMMs.Rmd",
          "book/06-correlation.Rmd",
-         "book/07-causal_inference.Rmd",
+         "book/07-causal_inference.Rmd"
 )[c(1,2,3,4,5,6,7)]
 
 # 2. Create tests
