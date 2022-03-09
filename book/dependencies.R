@@ -1,4 +1,5 @@
-install.packages("")
+install.packages("knitr")
+install.packages("stringr")
 
 
 
