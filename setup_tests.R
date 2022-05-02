@@ -6,6 +6,8 @@ source("tests/utils.R")
 # For successful debugging, please name all chunks. 
 # Chunk names+arguments will be used as names for tests.
 
+install.packages("knitr")
+
 # 1. Specify Rmds to test:
 rmds = c("book/index.Rmd",
          "book/02_R-reminder.Rmd",
