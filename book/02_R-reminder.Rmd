@@ -309,7 +309,7 @@ apply(iris[,1:4], 2, mean)
 
 Taking the mean of a character sequence is not possible, so the result is NA (**N**ot **A**vailable, missing value(s)).
 
-But you can skip missing values with the option "na.rm = TRUE" of the "mean" function. To use it with the "apply" function, pass the argument(s) after.
+But you can skip missing values with the option `na.rm = TRUE`{.R} of the `mean`{.R} function. To use it with the `apply`{.R} function, pass the argument(s) after.
 
 ```{r chunk_chapter2_task_7, eval=TRUE}
 apply(iris[,1:4], 2, mean, na.rm = T)

@@ -5,12 +5,10 @@ on:
     branches:
       - main
       - master
-      - Changes_from_Matthias 
   pull_request:
     branches:
       - main
       - master
-      - Changes_from_Matthias 
   schedule:
     - cron: '0 0 * * 1'
 

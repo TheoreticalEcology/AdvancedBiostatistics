@@ -46,7 +46,7 @@ What we want to do now is fitting regression models through the data with the lm
 For fitting a line through this data, we have 3 options:
 
 1. Fit a horizontal line (intercept only).
-2. Fit only the slope, but assume the line goes through the origin (0,0).
+2. Fit only the slope, but assume the line goes through the origin (0, 0).
 3. Fit slope and intercept.
 
 Option 3 is the most common case, but we will discuss all 3 options here. 
@@ -57,7 +57,7 @@ Option 3 is the most common case, but we will discuss all 3 options here.
 The following code fits an intercept only model, meaning that we assume the line is perfectly flat, and we only adjust it's height (the intercept).
 
 ```{r chunk_chapter3_chunk4, echo=TRUE, eval=TRUE, results='hide'}
-fit <- lm(Ozone ~ 1, data = airquality)
+fit = lm(Ozone ~ 1, data = airquality)
 ```
 
 We can visualize the result via
@@ -81,7 +81,7 @@ We will talk more about this summary later, but for the moment, let's look only 
 
 This tells us that
 
-* We estimate the mean Ozone (our line) to be at 42.12 +/- 3.1 units.
+* We estimate the mean Ozone (our line) to be at $42.12 \pm 3.1$ units.
 * The value is significantly different from zero (the t-test always tests ${H}_{0}$: "The estimate is zero"). 
 
 By the way, the value for the intercept is identical to `mean(airquality$Ozone, na.rm = T)`. This is no accident, as the mean is the maximum likelihood estimation for the mean of the normal distribution.
@@ -89,14 +89,14 @@ By the way, the value for the intercept is identical to `mean(airquality$Ozone, 
 
 **Slope Only Model**
 
-Although rarely sensible, you can also fit a model with just a slope. This only makes sense if you are sure that the line must go through the origin (0,0) for physical or biological reasons.
+Although rarely sensible, you can also fit a model with just a slope. This only makes sense if you are sure that the line must go through the origin (0, 0) for physical or biological reasons.
 
 ```{r chunk_chapter3_chunk7, echo=TRUE, eval=TRUE, results='hide'}
-fit <- lm(Ozone ~ 0 + Wind, data = airquality)
+fit = lm(Ozone ~ 0 + Wind, data = airquality)
 summary(fit)
 ```
 
-In the results, you can see that we estimate a positive slope, in contradiction to our visual assessment that the data seems negatively correlated. this is because we are forcing the line to go through the origin (0.0).
+In the results, you can see that we estimate a positive slope, in contradiction to our visual assessment that the data seems negatively correlated. this is because we are forcing the line to go through the origin (0, 0).
 
 ```{=html}
 <img src="./images/chap_3__coefficients_2.png" alt="coefficients">
@@ -110,10 +110,10 @@ abline(fit)
 
 **Slope and Intercept**
 
-The most common case will be a model with slope and intercept which is probably corresponds most with our visual assessment. This time, I show the full regression table, so that we can also discuss the other outputs.
+The most common case will be a model with slope and intercept which is probably corresponds most with our visual assessment. This time, we show the full regression table, so that we can also discuss the other outputs.
 
 ```{r chunk_chapter3_chunk9, echo=TRUE, eval=TRUE}
-fit <- lm(Ozone ~ Wind, data = airquality)
+fit = lm(Ozone ~ Wind, data = airquality)
 plot(Ozone ~ Wind, data = airquality)
 abline(fit)
 summary(fit)
@@ -192,7 +192,7 @@ Fit simple (univariate) linear regression models for the other two numeric varia
 ```
 
 ```{r chunk_chapter3_task_0, message=FALSE, warning=FALSE}
-fit <- lm(Ozone ~ Temp, data = airquality)
+fit = lm(Ozone ~ Temp, data = airquality)
 summary(fit)
 plot(Ozone ~ Temp, data = airquality)
 abline(fit)
@@ -205,7 +205,7 @@ Temperature seems to have a positive effect of Ozone and this effect is signific
 ```
 
 ```{r chunk_chapter3_task_1, message=FALSE, warning=FALSE}
-fit <- lm(Ozone ~ Solar.R, data = airquality)
+fit = lm(Ozone ~ Solar.R, data = airquality)
 summary(fit)
 plot(Ozone ~ Solar.R, data = airquality)
 abline(fit)
@@ -222,26 +222,185 @@ Solar.R seems to have a positive effect of Ozone and this effect is significant.
 
 ### Centering of Predictors
 
+In the last model
+
+```{r chunk_chapter3_chunk10, echo=TRUE, eval=FALSE}
+fit = lm(Ozone ~ Wind, data = airquality)
+summary(fit)
+```
+
+we saw an intercept of 96 for the wind parameter:
+
+```{=html}
+<img src="./images/chap_3__coefficients_3.png" alt="coefficients">
+```
+
+Per definition, the intercept is the predicted value for $y$ (Ozone) at $x$ (Wind) = 0. It's fine to report this, as long as we are interested in this value. However, there are certain situations where the value at predictor = 0 is not particularly interesting. Let's look at the regression for Temp, for example: 
+
+```{r chunk_chapter3_chunk11, echo=TRUE, eval=FALSE}
+fit = lm(Ozone ~ Temp, data = airquality)
+summary(fit)
+```
+
+```{=html}
+<img src="./images/chap_3__coefficients_4.png" alt="coefficients">
+```
+
+Here, the intercept is -146, which doesn't make much sense for an Ozone concentration, which should be positive. We can see the reason wehn we plot the results: 
+
+```{r chunk_chapter3_chunk12, echo=TRUE, eval=TRUE}
+plot(Ozone ~ Temp, data = airquality, xlim = c(-10, 110), ylim = c(-200, 170))
+abline(fit)
+abline(h = 0, lty = 2)
+abline(v = 0, lty = 2)
+```
+
+That shows us that the value 0 is far outside of the set of our observed values for Temp, which is measured in Fahrenheit. Thus, we are extrapolating the Ozone far beyond the observed data. What we can do to avoid this is to simply re-define the x-Axis, by subtracting the mean: 
+
+```{r chunk_chapter3_chunk13, echo=TRUE, eval=TRUE}
+airquality$cTemp = airquality$Temp - mean(airquality$Temp)
+```
+
+Fitting this 
+
+```{r chunk_chapter3_chunk14, echo=TRUE, eval=FALSE}
+fit = lm(Ozone ~ cTemp, data = airquality)
+summary(fit)
+```
+
+```{=html}
+<img src="./images/chap_3__coefficients_5.png" alt="coefficients">
+```
+
+produces a more interpretable value for the intercept. We can see this also visual if we plot the results, i.e. the Ozone concentration at the mean observed temperature. 
+
+```{r chunk_chapter3_chunk15, echo=TRUE, eval=TRUE}
+plot(Ozone ~ cTemp, data = airquality)
+abline(fit)
+abline(v = 0, lty = 2)
+```
+
+Note that the intercept of the centered variable will typically be very similar to the grand mean  
+`fit(Ozone ~ 1, data = airquality)')`{.R}.
+
+```{r chunk_chapter3_chunk16, echo=TRUE, eval=TRUE}
+mean(airquality$Temp)
+mean(airquality$cTemp)
+coef(fit)
+```
+
+```{=html}
+  <hr/>
+  <strong><span style="color: #0011AA; font-size:25px;">Task</span></strong><br/>
+```
+
+Define new variables through linear transformations, meaning that you either subtract / add something to the variable, or divide the variable by a certain value. Understand how this changes the regression's estimates.
+
+```{=html}
+  <details>
+    <summary>
+      <strong><span style="color: #0011AA; font-size:25px;">Solution</span></strong>
+    </summary>
+    <p>
+```
+
+```{r chunk_chapter3_task_2, message=FALSE, warning=FALSE}
+
+```
+
+```{=html}
+    </p>
+  </details>
+  <br/>
+```
+
+```{=html}
+  <hr/>
+  <strong><span style="color: #0011AA; font-size:25px;">Pro Task</span></strong><br/>
+```
+
+Why do the confidence intervals (std. error) in the two models (centered and uncentered) differ? Do we fit different models? To get an idea, look at the standard effect plots, then run
+
+```{r chunk_chapter3_task_4, message=FALSE, warning=FALSE, eval=FALSE}
+preList = list(cTemp = seq(-10, 110, 1))
+plot(Effect("cTemp", fit,  xlevels = preList))
+```
+
+(mind the library "effects") and compare `vcov(fit)`{.R} (calculates variance-covariance matrix) for both models. 
+
+```{=html}
+  <details>
+    <summary>
+      <strong><span style="color: #0011AA; font-size:25px;">Solution</span></strong>
+    </summary>
+    <p>
+```
+
+```{r chunk_chapter3_task_5, message=FALSE, warning=FALSE}
+library(effects)
+
+fit1 = lm(Ozone ~ Temp, data = airquality)
+summary(fit1)
+
+fit2 = lm(Ozone ~ cTemp, data = airquality)
+summary(fit2)
+
+vcov(fit1)
+vcov(fit2)
+
+plot(Ozone ~ Temp, data = airquality, xlim = c(-50, 110), ylim = c(-100, 170))
+abline(fit1)
+
+plot(Ozone ~ cTemp, data = airquality, xlim = c(-50, 110), ylim = c(-100, 170))
+abline(fit2)
+
+preList = list(Temp = seq(-10, 110, 1))
+plot(effect("Temp", fit1,  xlevels = preList))
+
+preList = list(cTemp = seq(-10, 110, 1))
+plot(effect("cTemp", fit2,  xlevels = preList))
+```
+
+```{=html}
+    </p>
+  </details>
+  <br/><hr/>
+```
+
 
 ### Residual Checks
+
+
 
 
 ### Categorical Predictors
 
 
+
+
 ### Exercise: Global Plant Trait Analysis
+
+
 
 
 ## Multiple Regression
 
 
+
+
 ### Getting Started
+
+
 
 
 ### Simulating the Effect of Collinearity
 
 
+
+
 ### Scaling Variables
+
+
 
 
 ### ANOVA for Multiple Regression
@@ -250,22 +409,36 @@ Solar.R seems to have a positive effect of Ozone and this effect is significant.
 ### Interactions
 
 
+
+
 ### Exercise: Global Plant Trait Analysis
+
+
 
 
 ## Model Choice and Causal Inference
 
 
+
+
 ### The Bias-Variance Tradeoff
+
+
 
 
 ### Causal inference
 
 
+
+
 ### Model selection methods
 
 
+
+
 ### Problems of step-wise model selection
+
+
 
 
 ### Exercise: global plant traits #3
