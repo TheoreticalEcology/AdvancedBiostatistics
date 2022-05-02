@@ -6,7 +6,7 @@
 ```
 
 
-## Simple linear regression
+## Simple Linear Regression
 
 ```{=html}
 <img src="./images/regression.jpg" alt="regression">
@@ -41,7 +41,7 @@ to get the (Pearson) correlation, which is negative: -0.6015465.
 What we want to do now is fitting regression models through the data with the lm() function of R. The function name lm is short for "linear model". However, remember from the basic course: This model is not called linear because we necessarily fit a linear function. It's called linear because we express the response (in our case Wind) as a polynomial of the predictor(s). That means, the predictors have linear coefficients but they might themselves be for example quadratic or sinus terms. So $y = \operatorname{f}(x) + \mathcal{N}(0, \sigma)$, where $\operatorname{f}$ is a polynomial, e.g. ${a}_{0} + {a}_{1} \cdot x + {a}_{2} \cdot {x}^{2}$, and $\mathcal{N}(0, \sigma)$ means that we assume the data scattering as a normal (Gaussian) distribution with unknown standard deviation $\sigma$ around $\operatorname{f}(x)$. The model is called linear because when estimate the unknown parameters (we call them "*effects*") of the polynomial. We will see that they are all affecting the predictions linearly, and can thus be solved as a system of linear equations. 
 
 
-### Fitting and interpreting the regression
+### Fitting and Interpreting the Regression
 
 For fitting a line through this data, we have 3 options:
 
@@ -52,7 +52,7 @@ For fitting a line through this data, we have 3 options:
 Option 3 is the most common case, but we will discuss all 3 options here. 
 
 
-**Intercept only model**
+**Intercept Only Model**
 
 The following code fits an intercept only model, meaning that we assume the line is perfectly flat, and we only adjust it's height (the intercept).
 
@@ -60,7 +60,7 @@ The following code fits an intercept only model, meaning that we assume the line
 fit <- lm(Ozone ~ 1, data = airquality)
 ```
 
-We can visualise the result via
+We can visualize the result via
 
 ```{r chunk_chapter3_chunk5, echo=TRUE, eval=TRUE}
 plot(Ozone ~ Wind, data = airquality)
@@ -87,7 +87,7 @@ This tells us that
 By the way, the value for the intercept is identical to `mean(airquality$Ozone, na.rm = T)`. This is no accident, as the mean is the maximum likelihood estimation for the mean of the normal distribution.
 
 
-**Slope only model**
+**Slope Only Model**
 
 Although rarely sensible, you can also fit a model with just a slope. This only makes sense if you are sure that the line must go through the origin (0,0) for physical or biological reasons.
 
@@ -108,7 +108,7 @@ abline(fit)
 ```
 
 
-**Slope and intercept**
+**Slope and Intercept**
 
 The most common case will be a model with slope and intercept which is probably corresponds most with our visual assessment. This time, I show the full regression table, so that we can also discuss the other outputs.
 
@@ -219,6 +219,56 @@ Solar.R seems to have a positive effect of Ozone and this effect is significant.
   <br/><hr/>
 ```
 
+
+### Centering of Predictors
+
+
+### Residual Checks
+
+
+### Categorical Predictors
+
+
+### Exercise: Global Plant Trait Analysis
+
+
+## Multiple Regression
+
+
+### Getting Started
+
+
+### Simulating the Effect of Collinearity
+
+
+### Scaling Variables
+
+
+### ANOVA for Multiple Regression
+
+
+### Interactions
+
+
+### Exercise: Global Plant Trait Analysis
+
+
+## Model Choice and Causal Inference
+
+
+### The Bias-Variance Tradeoff
+
+
+### Causal inference
+
+
+### Model selection methods
+
+
+### Problems of step-wise model selection
+
+
+### Exercise: global plant traits #3
 
 
 
