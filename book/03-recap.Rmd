@@ -47,7 +47,7 @@ cor(airquality$Ozone, airquality$Wind, use = "complete.obs")
 
 to get the (Pearson) correlation, which is negative: -0.6015465.
 
-What we want to do now is fitting regression models through the data with the lm() function of R. The function name lm is short for "linear model". However, remember from the basic course: This model is not called linear because we necessarily fit a linear function. It's called linear because we express the response (in our case Wind) as a polynomial of the predictor(s). That means, the predictors have linear coefficients but they might themselves be for example quadratic or sinus terms. So $y = \operatorname{f}(x) + \mathcal{N}(0, \sigma)$, where $\operatorname{f}$ is a polynomial, e.g. ${a}_{0} + {a}_{1} \cdot x + {a}_{2} \cdot {x}^{2}$, and $\mathcal{N}(0, \sigma)$ means that we assume the data scattering as a normal (Gaussian) distribution with unknown standard deviation $\sigma$ around $\operatorname{f}(x)$. The model is called linear because when estimate the unknown parameters (we call them "*effects*") of the polynomial. We will see that they are all affecting the predictions linearly, and can thus be solved as a system of linear equations.
+What we want to do now is fitting regression models through the data with the lm() function of R. The function name lm is short for "linear model". However, remember from the basic course: This model is not called linear because we necessarily fit a linear function. It's called linear because we express the response (in our case Wind) as a polynomial of the predictor(s). That means, the predictors have linear coefficients but they might themselves be for example quadratic or sinus terms. So $y = \operatorname{f}(x) + \mathcal{N}(0, \sigma)$, where $\operatorname{f}$ is a polynomial, e.g. ${a}_{0} + {a}_{1} \cdot x + {a}_{2} \cdot {x}^{2}$, and $\mathcal{N}(0, \sigma)$ means that we assume the data scattering as a normal (Gaussian) distribution with unknown standard deviation $\sigma$ around $\operatorname{f}(x)$. The model is called linear because when estimating the unknown parameters (we call them "*effects*") of the polynomial, we will see that they are all affecting the predictions linearly, and can thus be solved as a system of linear equations.
 
 
 ### Fitting and Interpreting the Regression
@@ -97,7 +97,11 @@ By the way, the value for the intercept is identical to `mean(airquality$Ozone, 
 Although rarely sensible, you can also fit a model with just a slope. This only makes sense if you are sure that the line must go through the origin (0, 0) for physical or biological reasons.
 
 ```{r chunk_chapter3_chunk7, echo=TRUE, eval=TRUE, results='hide'}
-fit = lm(Ozone ~ 0 + Wind, data = airquality)
+fit = lm(Ozone ~ Wind + 0, data = airquality)
+summary(fit)
+
+# Alternative for removing the linear term:
+fit = lm(Ozone ~ Wind - 1, data = airquality)
 summary(fit)
 ```
 
@@ -123,7 +127,7 @@ summary(fit)
 
 -   "*Call*" repeats the regression formula.
 -   "*Residuals*" gives you an indication about how far the observed data scatters around the fitted regression line / function.
--   The *regression table* (starting with "Coefficients") provides the estimated parameters, one row for each fitted parameter. The first column is the estimate, the second (standard error) is the 0.63 confidence interval (for 0.95 confidence interval multiply with 1.96), and the forth column is the p-value for a two-sided test with ${H}_{0}$: "Estimate is zero". The t-value is used for calculation of the p-value and can usually be ignored.
+-   The *regression table* (starting with "Coefficients") provides the estimated parameters, one row for each fitted parameter. The first column is the estimate, the second (standard error) is the 0.63 confidence interval (for 0.95 confidence interval multiply with 1.96), and the fourth column is the p-value for a two-sided test with ${H}_{0}$: "Estimate is zero". The t-value is used for calculation of the p-value and can usually be ignored.
 -   The last section of the summary provides information about the *model fit*.
     -   Residual error = standard deviation of the residuals,
     -   114 df = degrees of freedom = observed - fitted parameters.
@@ -231,7 +235,7 @@ fit = lm(Ozone ~ Wind, data = airquality)
 summary(fit)
 ```
 
-we saw an intercept of 96 for the wind parameter:
+we saw an intercept of 96 for the Wind parameter:
 
 <img src="./images/chap_3__coefficients_3.png" alt="coefficients"/>
 
@@ -494,6 +498,106 @@ Looking at $\displaystyle {\sigma} \sqrt{\frac{1}{n} + \frac{{\left( \tilde{x} -
 
 ### Residual Checks
 
+Now we fitted a model. But does it even fit to the data? Let's take the slope only model `lm(Ozone ~ Wind - 1, data = airquality)`{.R}, where we assumed that the regression line should go through (0, 0). Maybe we have good reasons to think that this should be the case biologically, but our data seem to suggest a different behavior. So, the question is: do the model assumptions `lm(Ozone ~ Wind - 1)`{.R} even fit to our data? 
+
+With a bit of experience, you can already see with a simple prediction plot overlaid with the data that this is not the case. It seems the model systematically underpredicts Ozone for low Wind, and overpredicts for high Wind.
+
+```{r chunk_chapter3_chunk17, echo=FALSE, eval=TRUE}
+plot(Ozone ~ cTemp, data = airquality)
+abline(fit)
+```
+
+We can see this a bit nicer if we use the effects package, which we will use from now on for doing result plots for regression models.
+
+```{r chunk_chapter3_chunk18, echo=FALSE, eval=TRUE}
+library(effects)
+plot(allEffects(fit, partial.residuals = T))
+```
+
+Here, the blue line is the fitted model (with confidence interval in light blue), purple circles are the data, and the purple line is a nonparametric fit to the data. What we see highlighted here is that the data seems to follow a completely different curve than the fitted model.
+
+The conclusion here would be: The model we are fitting does not fit to the data, we should not interpret its outputs, but rather say that we reject it, it's the wrong model, we have to search for a more appropriate description of the data. 
+
+Let's look at the same plot for the following model:
+
+```{r chunk_chapter3_chunk19, echo=FALSE, eval=TRUE}
+fit = lm(Ozone ~ Wind + Temp, data = airquality)
+plot(allEffects(fit, partial.residuals = T))
+```
+
+This looks already better, but there seems to be still a bit of a pattern regarding the scatter of the observed data around the regression line. We can get the difference between model and observations via `residuals(fit)`{.R}, and we could plot them against the model predictions (which can be obtained via the predict function) via
+
+```{r chunk_chapter3_chunk20, echo=FALSE, eval=TRUE}
+plot(residuals(fit) ~ predict(fit))
+abline(h = 0)
+```
+
+Remember: The model assumes that the data scatters with a homogenous normal distribution around the regression predictions (which is the 0 line here). What seems to happen, however, is that the scatter increases towards higher predictions, and there also seems to be a tendency towards underprediction at the high and low end.
+
+To better analyse these residuals (and potential problems), R offers a function for residual plots. It produces 4 plots. I think it's most convenient plotting them all into one figure, via
+
+```{r chunk_chapter3_chunk21, echo=FALSE, eval=FALSE}
+par(mfrow = c(2, 2))
+```
+
+which produces a figure with 2 x 2 = 4 panels.
+
+```{r chunk_chapter3_chunk22, echo=FALSE, eval=TRUE}
+par(mfrow = c(2, 2))
+plot(fit)
+```
+
+*Interpretation*:
+
+* Residuals vs Fitted: Shows misfits and wrong functional form. Scattering should be uniformly distributed.
+* Normal Q-Q: Checks if residuals follow an overall normal distribution. Bullets should lie on the line in the middle of the plot and may scatter a little bit at the ends.
+* Scale - Location: Checks for heteroskedasticity. Does the variance change with predictions/changing values? Scattering should be uniformly distributed.
+* Residuals vs Leverage: How much impact do outliers have on the regression? Data points with high leverage should not have high residuals and vice versa. Bad points lie in the upper right or in the lower right corner. This is measured via the Cook's distance. Distances higher than 0.5 indicate candidates for relevant outliers or strange effects.
+
+*Important*: Residuals are always getting better for more complex models. They should therefore NOT solely be used for model selection. Select your model structure in a different way, residual checks are just for doing a final check to see if the fitted model makes sense.
+
+*Generally*: If you want to do model selection, control for model complexity. The more complex the model, the higher the cast related to the increase of accuracy.
+
+```{=html}
+  <hr/>
+  <strong><span style="color: #0011AA; font-size:25px;">Task</span></strong><br/>
+```
+
+Modify the formula to get (as far as possible) and acceptable fit to the data. Consider the following options:
+
+```{r chunk_chapter3_task_10, message=FALSE, warning=FALSE}
+fit = lm(Ozone ~ Wind, data = airquality) # Intercept + slope.
+fit = lm(Ozone ~ 1, data = airquality) # Only intercept.
+fit = lm(Ozone ~ Wind - 1 , data = airquality) # Only slope.
+fit = lm(Ozone ~ log(Wind), data = airquality) # Predictor variables can be transformed.
+fit = lm(Ozone^0.5 ~ Wind, data = airquality) # Output variables can also be transformed.
+fit = lm(Ozone ~ Wind + I(Wind^2), data = airquality) # Mathematical functions with I() command.
+
+library(MASS)
+fit = lm(Ozone ~ Wind, data = airquality)
+# Calculate optimal transformation for Ozone^lambda to achieve residuals as normally distributed as possible.
+boxcox(fit)
+```
+
+```{=html}
+  <details>
+    <summary>
+      <strong><span style="color: #0011AA; font-size:25px;">Solution</span></strong>
+    </summary>
+    <p>
+```
+
+```{r chunk_chapter3_task_11, message=FALSE, warning=FALSE}
+
+```
+
+
+
+```{=html}
+    </p>
+  </details>
+  <br/><hr/>
+```
 
 
 ### Categorical Predictors
