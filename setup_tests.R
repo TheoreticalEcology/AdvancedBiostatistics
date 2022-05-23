@@ -1,12 +1,12 @@
 source("tests/utils.R")
 
+install.packages("knitr")
+
 #### INFO #####
 # All chunks will be tested within a testthat::test_that environment.
 # To skip chunks, use purl=FALSE in chunk options.
 # For successful debugging, please name all chunks. 
 # Chunk names+arguments will be used as names for tests.
-
-install.packages("knitr")
 
 # 1. Specify Rmds to test:
 rmds = c("book/index.Rmd",

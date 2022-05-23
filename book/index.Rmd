@@ -14,6 +14,7 @@ github-repo: rstudio/bookdown-demo
 description: "Advanced Biostatistics with R"
 ---
 
+
 # Prerequisites {#prerequisites}
 
 ```{=html}
@@ -54,7 +55,7 @@ Please do this in the given order unless you know what you're doing, because the
 ```
 
 
-## Linux/UNIX systems have to fulfill some durther dependencies
+## Linux/UNIX Systems Have to Fulfill Some Further Dependencies
 
 **Debian based systems**
 
@@ -65,12 +66,13 @@ build-essential
 gfortran
 libmagick++-dev
 r-base-dev
+cmake
 ```
 
 If you are new to installing packages on Debian / Ubuntu, etc., type the following:
 
 ```{}
-sudo apt update && sudo apt install -y --install-recommends build-essential gfortran libmagick++-dev r-base-dev
+sudo apt update && sudo apt install -y --install-recommends build-essential gfortran libmagick++-dev r-base-dev cmake
 ```
 
 

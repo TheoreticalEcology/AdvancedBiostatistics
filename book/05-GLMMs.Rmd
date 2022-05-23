@@ -1,7 +1,73 @@
+--- 
+site: bookdown::bookdown_site
+output: 
+  bookdown::gitbook:
+    highlight: kate
+documentclass: book
+---
+
+
 # GLMMs {#GLMMs}
 
 ```{=html}
 <!-- Put this here (right after the first markdown headline) and only here for each document! -->
 <script src="./scripts/multipleChoice.js"></script>
 ```
+
+
+## Basics
+
+
+
+### A Binomial Example
+
+
+
+### A Poisson Example
+
+
+
+### Example - Elk Data
+
+
+
+## Dispersion Problems in GLMs
+
+
+
+### Heteroskedasticity in GLMMs
+
+
+
+### Zero-inflation
+
+
+
+### P-hacking Link Collection
+
+
+
+## Case Studies
+
+
+
+### Owls
+
+
+
+### Hurricanes
+
+
+
+### Researchers Degrees of Freedom — Skin Color and Red Ccards
+
+
+
+### Marmots
+
+
+
+## Thoughts About the Analysis Pipeline
+
+
 
