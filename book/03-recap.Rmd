@@ -491,19 +491,21 @@ Looking at $\displaystyle {\sigma} \sqrt{\frac{1}{n} + \frac{{\left( \tilde{x} -
 ### Residual Checks
 
 Now we fitted a model. But does it even fit to the data? Let's take the slope only model  
-`lm(Ozone ~ Wind - 1, data = airquality)`{.R}, where we assumed that the regression line should go through (0, 0). Maybe we have good reasons to think that this should be the case biologically, but our data seem to suggest a different behavior. So, the question is: do the model assumptions `lm(Ozone ~ Wind - 1)`{.R} even fit to our data? 
+`lm(Ozone ~ Wind - 1, data = airquality)`{.R}, where we assumed that the regression line should go through (0, 0). Maybe we have good reasons to think that this should be the case biologically, but our data seem to suggest a different behavior.  
+So, the question is: do the model assumptions `lm(Ozone ~ Wind - 1)`{.R} even fit to our data? 
 
 With a bit of experience, you can already see with a simple prediction plot overlaid with the data that this is not the case. It seems the model systematically underpredicts Ozone for low Wind, and overpredicts for high Wind.
 
-```{r chunk_chapter3_chunk18, echo=FALSE, eval=TRUE}
+```{r chunk_chapter3_chunk18, echo=TRUE, eval=TRUE}
 plot(Ozone ~ cTemp, data = airquality)
 abline(fit)
 ```
 
 We can see this a bit nicer if we use the effects package, which we will use from now on for doing result plots for regression models.
 
-```{r chunk_chapter3_chunk19, echo=FALSE, eval=TRUE}
+```{r chunk_chapter3_chunk19, echo=TRUE, eval=TRUE}
 library(effects)
+
 plot(allEffects(fit, partial.residuals = T))
 ```
 
@@ -513,14 +515,14 @@ The conclusion here would be: The model we are fitting does not fit to the data,
 
 Let's look at the same plot for the following model:
 
-```{r chunk_chapter3_chunk20, echo=FALSE, eval=TRUE}
+```{r chunk_chapter3_chunk20, echo=TRUE, eval=TRUE}
 fit = lm(Ozone ~ Wind + Temp, data = airquality)
 plot(allEffects(fit, partial.residuals = T))
 ```
 
 This looks already better, but there seems to be still a bit of a pattern regarding the scattering of the observed data around the regression line. We can get the difference between model and observations via `residuals(fit)`{.R}, and we could plot them against the model predictions (which can be obtained via the predict function) via
 
-```{r chunk_chapter3_chunk21, echo=FALSE, eval=TRUE}
+```{r chunk_chapter3_chunk21, echo=TRUE, eval=TRUE}
 plot(residuals(fit) ~ predict(fit))
 abline(h = 0)
 ```
@@ -529,13 +531,13 @@ Remember: The model assumes that the data scatters with a homogenous normal dist
 
 To better analyse these residuals (and potential problems), R offers a function for residual plots. It produces 4 plots. I think it's most convenient plotting them all into one figure, via
 
-```{r chunk_chapter3_chunk22, echo=FALSE, eval=FALSE}
+```{r chunk_chapter3_chunk22, echo=TRUE, eval=FALSE}
 par(mfrow = c(2, 2))
 ```
 
 which produces a figure with 2 x 2 = 4 panels.
 
-```{r chunk_chapter3_chunk23, echo=FALSE, eval=TRUE}
+```{r chunk_chapter3_chunk23, echo=TRUE, eval=TRUE}
 par(mfrow = c(2, 2))
 plot(fit)
 ```
@@ -568,7 +570,7 @@ fit = lm(Ozone ~ Wind + I(Wind^2), data = airquality) # Mathematical functions w
 
 library(MASS)
 fit = lm(Ozone ~ Wind, data = airquality)
-# Calculate optimal transformation for Ozone^lambda to achieve residuals as normally distributed as possible.
+# Calculates optimal transformation for Ozone^lambda to achieve residuals as normally distributed as possible.
 boxcox(fit)
 ```
 
@@ -677,16 +679,228 @@ Yet outliers at the border are perfectly fitted.
 
 ### Categorical Predictors
 
-The lm() function can handle both numerical and categorical variables. To understand what happens if the predictor is categorical, we'll use another data set here, PlantGrowth (type `?PlantGrowth`{.R} or F1 help if you want details). We visualize the data via 
+The lm() function can handle both numerical and categorical variables. To understand what happens if the predictor is categorical, we'll use another data set here, PlantGrowth (type `?PlantGrowth`{.R} or F1 help if you want details). We visualize the data via:
 
-```{r chunk_chapter3_chunk24, echo=FALSE, eval=TRUE}
+```{r chunk_chapter3_chunk24, echo=TRUE, eval=TRUE}
 boxplot(weight ~ group, data = PlantGrowth)
 ```
+
+***A basic lm()***
+
+Let's fit an lm() now with the categorical explanatory variable group. They syntax is the same as before:
+
+```{r chunk_chapter3_chunk25, echo=TRUE, eval=TRUE}
+fit = lm(weight ~ group, data = PlantGrowth)
+summary(fit)
+```
+
+But the interpretation of the results often leads to confusion. Let's look at the results of `summary(fit)`{.R}.
+
+Where did the group ctrl go? The answer is there is a short, and longer answer to this. Let's first give the short one: ctrl is the intercept, and the other predictors depict the difference between ctrl and the respective levels. So, we could say that ctrl is a kind of "reference", encoded by the intercept, and we test for a difference of the other levels against this reference. 
+
+***Re-ordering the levels***
+
+If you want to change which factor level is the reference, you can use:
+
+```{r chunk_chapter3_chunk26, echo=TRUE, eval=TRUE}
+PlantGrowth$group2 = relevel(PlantGrowth$group, "trt1")
+```
+
+Now, we plot
+
+```{r chunk_chapter3_chunk27, echo=TRUE, eval=TRUE}
+boxplot(weight ~ group2, data = PlantGrowth)
+```
+
+We see that trt1 is the first level (you can also see this if checking `levels()`{.R} or `str()`{.R} for the factor). Let's fit the model:
+
+```{r chunk_chapter3_chunk28, echo=TRUE, eval=TRUE}
+fit = lm(weight ~ group2, data = PlantGrowth)
+summary(fit)
+```
+
+And this is the result:
+
+```{r chunk_chapter3_chunk29, echo=FALSE, eval=TRUE}
+summary(fit)
+```
+
+Weird, now suddenly we have a significant difference between the groups. Wasn't the group difference not significant before? What's the difference? 
+
+The answer is that we are still fitting the totally same model, and if you would do a `plot(allEffects(fit))`{.R} for the first and second model, it would look the same. However, as the p-values in the regression table always compare against the reference, we now do a comparison (ctr1 vs ctr2) that we didn't do before, and this comparison is significant.
+So, if the ordering influences what levels are compared (technically, we call this **contrasts**, see below), how can we deal with the problem that the order influences which factors are compared. There are three answers for this:
+
+First, in many cases, the scientific question / experimental design determines which factor level should be first. In this case, the original reference was ctrl. This clearly stands for control. So, we have a special treatment here (control), and we are probably interested in the contrast between control and the treatments, but not between the different treatments. In this case, we are probably fine.
+
+***ANOVA (Analysis of Variance)***
+
+Second, there is a another test that is commonly performed in this case, the ***ANOVA***. We can run this via
+
+```{r chunk_chapter3_chunk30, echo=TRUE, eval=TRUE}
+anov = aov(fit) 
+summary(anov)
+```
+
+And the result is
+
+```{r chunk_chapter3_chunk31, echo=FALSE, eval=TRUE}
+summary(anov)
+```
+
+To interpret this, recall that in a nutshell, the ANOVA starts with a base model (in this case intercept only) and adds the variable group. It then measures:
+
+* How much the model improves in terms of ${R}^{2}$ (this is in the column Sum Sq).
+* If this increase of model fit is significant.
+
+In this case, we can conclude that the variable group (3 levels) significantly improves model fit, i.e. the group seems to have an overall effect, even though the individual contrasts in the original model where not significant.
+
+***Post-Hoc Tests***
+
+Third, if there is no clear reference level, and the ANOVA confirms that the factor has an effect, we may want to compute p-values for all possible combinations of factor levels. This is done via the so-called post-hoc tests:
+
+```{r chunk_chapter3_chunk32, echo=TRUE, eval=FALSE}
+TukeyHSD(anov)
+```
+
+The result is:
+
+```{r chunk_chapter3_chunk33, echo=FALSE, eval=TRUE}
+summary(anov)
+```
+
+This highlights, as before, a significant difference between trt1 and trt2. It is common to visualize the results of the post-hoc tests with the so-called **Compact Letter Display** (cld). This doesn't work with the base TukeyHSD function, so we will use the multcomp pacakge: 
+
+```{r chunk_chapter3_chunk34, echo=TRUE, eval=TRUE, fig.show='hide', message=FALSE, warning=FALSE}
+library(multcomp)
+
+fit = lm(weight ~ group, data = PlantGrowth)
+tuk = glht(fit, linfct = mcp(group = "Tukey"))
+summary(tuk)          # Standard display.
+tuk.cld = cld(tuk)    # Letter-based display.
+plot(tuk.cld)
+```
+
+The cld gives a new letter for each group of factor levels that are statistically undistinguishable. You can see the output via `tuk.cld`{.R}, here I only show the plot:
+
+```{r chunk_chapter3_chunk35, echo=FALSE, eval=TRUE}
+plot(tuk.cld)
+```
+
+```{=html}
+  <hr/>
+  <strong><span style="color: #0011AA; font-size:25px;">Task: Categorical analysis for the airquality data set</span></strong><br/>
+```
+
+The airquality data set contains a categorical predictor "month", which, however, is wrongly coded as a numeric value. We can correct this by doing
+
+```{r chunk_chapter3_task_17, echo=TRUE, eval=TRUE}
+airquality$fMonth = factor(airquality$Month)
+```
+
+Execute this code and fit a regression for fMonth!
+
+```{=html}
+  <details>
+    <summary>
+      <strong><span style="color: #0011AA; font-size:25px;">Solution</span></strong>
+    </summary>
+    <p>
+```
+
+```{r chunk_chapter3_task_18, message=FALSE, warning=FALSE}
+
+```
+
+```{=html}
+    </p>
+  </details>
+  <br/><hr/>
+```
+
+***Advanced topic: Changing the contrasts***
+
+Before, I said that there is a long and short answer to the interpretation of the regression coefficients. Now here is the long answer: Iif you have a categorical predictor with > 2 levels, there are several ways to set up the model to fit those levels. Maybe the easiest idea would be to fit a mean per level. You can actually tell R to do this via
+
+```{r chunk_chapter3_chunk36, echo=TRUE, eval=TRUE}
+fit = lm(weight ~ 0 + group, data = PlantGrowth)
+```
+
+If we look at the output, we see that now we simply get the mean of each group (level):
+
+```{r chunk_chapter3_chunk37, echo=FALSE, eval=TRUE}
+summary(fit)
+```
+
+Why does R not do that by default? Because now, we see the comparison of each group against zero in the p-values. In some cases, this can be interesting, but in most cases where we have a control and treatment and are interested in the difference between treatment and control, this is not informative. Therefore, R uses the so-called treatment contrasts, which is what we had before.
+
+There are actually a number of further options for specifying contrasts. You can tell R by hand how the levels should be compared or use some of the pre-defined contrasts. Here is an example:
+
+```{r chunk_chapter3_chunk38, echo=TRUE, eval=TRUE}
+PlantGrowth$group3 = PlantGrowth$group
+contrasts(PlantGrowth$group3) = contr.helmert 
+fit = lm(weight ~ group3, data = PlantGrowth)
+summary(fit)
+```
+
+What we are using here is **Helmert contrasts**, which contrast the second level with the first, the third with the average of the first two, and so on. Which contrasts make most sense depends on the question. For more details, see here:  
+<a href="https://besjournals.onlinelibrary.wiley.com/doi/epdf/10.1111/j.2041-210X.2010.00012.x" target="_blank" rel="noopener">https://besjournals.onlinelibrary.wiley.com/doi/epdf/10.1111/j.2041-210X.2010.00012.x</a>.
 
 
 ### Exercise: Global Plant Trait Analysis
 
+Look at the analysis of plant height data <a href="http://environmentalcomputing.net/linear-regression/" target="_blank" rel="noopener">here</a>. In this example, the authors perform a simple linear regression to answer the question whether height of plant species from around the world depends on temperature at the location of occurrence. Note that "loght" = log(height).
 
+```{r chunk_chapter3_chunk39, echo=TRUE, eval=TRUE}
+Plant_height = read.csv(file ="https://www.dropbox.com/s/zgf1j59mho66z74/Plant_height.csv?dl=1")
+model = lm(loght ~ temp, data = Plant_height)
+```
+
+The model suggests a significant global trend of plant height increasing with temperature:
+
+```{r chunk_chapter3_chunk40, echo=FALSE, eval=TRUE}
+summary(model)
+```
+
+```{=html}
+  <hr/>
+  <strong><span style="color: #0011AA; font-size:25px;">Tasks</span></strong><br/>
+```
+
+1. Perform residual checks and modify the model if you think it is necessary. Does the effect still hold?
+2. A concern regarding this analysis is that species are not fully independent. E.g., the plant family of Ericaceae, comprising many tiny dwarf shrubs, could have evolved in colder regions by chance. Is the signal still there if we look at families, rather than species? For that, try fitting the regression for the mean per family. Hint: you could use the `aggregate()`{.R} function to get means per family.
+3. The data set also includes a categorical variable "growthform". Test if growthform has an effect on the plant height.
+
+```{=html}
+  <details>
+    <summary>
+      <strong><span style="color: #0011AA; font-size:25px;">Solution</span></strong>
+    </summary>
+    <p>
+```
+
+***1.***
+
+```{r chunk_chapter3_task_19, message=FALSE, warning=FALSE}
+
+```
+
+***2.***
+
+```{r chunk_chapter3_task_20, message=FALSE, warning=FALSE}
+
+```
+
+***3.***
+
+```{r chunk_chapter3_task_21, message=FALSE, warning=FALSE}
+
+```
+
+```{=html}
+    </p>
+  </details>
+  <br/><hr/>
+```
 
 
 ## Multiple Regression

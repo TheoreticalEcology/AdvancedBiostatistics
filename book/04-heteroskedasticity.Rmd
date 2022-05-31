@@ -21,7 +21,7 @@ In this chapter, we check lm() and change the functional for our variance terms 
 
 The following data set contains information about life satisfaction in Germany, based on the socio-economic panel. 
 
-```{r chunk_chapter4_chunk2, echo=FALSE, eval=FALSE}
+```{r chunk_chapter4_chunk1, echo=TRUE, eval=FALSE}
 satisf = read.csv(file = "https://www.dropbox.com/s/sggy9b9xb0rekkx/soep_satisfcation.csv?dl=1")
 ```
 
@@ -45,7 +45,7 @@ Then, we have to check if the model fits all right. Yesterday, we already discus
 * Scale - Location = Variance homogeneity.
 * Residuals vs Leverage = Should we worry about certain outliers?
 
-```{r chunk_chapter4_chunk2, echo=FALSE, eval=TRUE}
+```{r chunk_chapter4_chunk2, echo=TRUE, eval=TRUE}
 fit = lm(Ozone ~ Temp , data = airquality)
 par(mfrow = c(2, 2))
 plot(fit)
@@ -65,7 +65,7 @@ What do we do if we have the wrong functional form in the Scale - Location plot?
 
 The easiest strategy is to add complexity to the polynomial, e.g. quadratic terms, interactions etc.
 
-```{r chunk_chapter4_chunk3, echo=FALSE, eval=FALSE}
+```{r chunk_chapter4_chunk3, echo=TRUE, eval=FALSE}
 fit = lm(Ozone ~ Wind * Temp + I(Wind^2) + I(Temp^2), data = airquality)
 ```
 
@@ -75,7 +75,7 @@ and see if the residuals are getting better. To avoid doing this totally randoml
 
 Another options are GAMs = Generalized Additive Models. The idea is to fit a smooth function to data, to automatically find the "right" functional form. The smoothness of the function is automatically optimized.
 
-```{r chunk_chapter4_chunk4, echo=FALSE, eval=TRUE}
+```{r chunk_chapter4_chunk4, echo=TRUE, eval=TRUE, message=FALSE}
 library(mgcv)
 
 fit = gam(Ozone ~ s(Wind) + s(Temp) + s(Solar.R) , data = airquality)
@@ -87,14 +87,14 @@ AIC(fit)
 
 Comparison to normal lm():
 
-```{r chunk_chapter4_chunk5, echo=FALSE, eval=TRUE}
+```{r chunk_chapter4_chunk5, echo=TRUE, eval=TRUE}
 fit = lm(Ozone ~ Wind + Temp + Solar.R , data = airquality)
 AIC(fit)
 ```
 
 Spline interaction is called a **tensor spline**:
 
-```{r chunk_chapter4_chunk6, echo=FALSE, eval=TRUE}
+```{r chunk_chapter4_chunk6, echo=TRUE, eval=TRUE}
 fit = gam(Ozone ~ te(Wind, Temp) + s(Solar.R) , data = airquality)
 summary(fit)
 
@@ -104,7 +104,7 @@ AIC(fit)
 
 GAMs are particularly useful for confounders. If you have confounders, you usually don't care that the fitted relationship is a bit hard to interpret, you just want the confounder effect to be removed. So, if you want to fit the causal relationship between Ozone ~ Wind, account for the other variables, a good strategy might be:
 
-```{r chunk_chapter4_chunk7, echo=FALSE, eval=TRUE}
+```{r chunk_chapter4_chunk7, echo=TRUE, eval=TRUE}
 fit = gam(Ozone ~ Wind + s(Temp) + s(Solar.R) , data = airquality)
 summary(fit)
 ```
@@ -116,7 +116,7 @@ In this way, you still get a nicely interpretable linear effect for Wind, but yo
 
 After we have fixed the functional form, we want to look at the distribution of the residuals. We said yesterday that you can try to get them more normal by applying an appropriate transformation, e.g. the logarithm or square root. Without transformation, we often find that data shows heteroskedasticity, i.e. the residual variance changes with some predictor or the mean estimate (see also Scale - Location plot). Maybe your experimental data looks like this:
 
-```{r chunk_chapter4_chunk8, echo=FALSE, eval=TRUE}
+```{r chunk_chapter4_chunk8, echo=TRUE, eval=TRUE}
 set.seed(125)
 
 data = data.frame(treatment = factor(rep(c("A", "B", "C"), each = 15)))
@@ -127,7 +127,7 @@ boxplot(observation ~ treatment, data = data)
 
 Especially p-values and confidence intervals of lm() and ANOVA can react quite strongly to such differences in residual variation. So, running a standard lm() / ANOVA on this data is not a good idea - in this case, we see that all regression effects are not significant, as is the ANOVA, suggesting that there is no difference between groups.
 
-```{r chunk_chapter4_chunk9, echo=FALSE, eval=TRUE}
+```{r chunk_chapter4_chunk9, echo=TRUE, eval=TRUE}
 fit = lm(observation ~ treatment, data = data)
 #summary(fit)
 summary(aov(fit))
@@ -139,7 +139,7 @@ So, what can we do?
 
 **Option 2**: Model the variance - Modelling the variance to fit a model where the variance is not fixed. The basic option in R is `nlme::gls`{.R}. GLS = Generalized Least Squares. In this function, you can specify a dependency of the residual variance on a predictor or the response. See options via `?varFunc`{.R}. In our case, we will use the varIdent option, which allows to specify a different variance per treatment.
 
-```{r chunk_chapter4_chunk10, echo=FALSE, eval=TRUE}
+```{r chunk_chapter4_chunk10, echo=TRUE, eval=TRUE}
 library(nlme)
 
 fit = gls(observation ~ treatment, data = data, weights = varIdent(form = ~ 1 | treatment))
@@ -148,13 +148,13 @@ summary(fit)
 
 If you check the ANOVA, also the ANOVA is significant!
 
-```{r chunk_chapter4_chunk11, echo=FALSE, eval=TRUE}
+```{r chunk_chapter4_chunk11, echo=TRUE, eval=TRUE}
 anova(fit)
 ```
 
 The second option for modeling variances is to use the glmmTMB package, which we will use quite frequently this week. Here, you can specify an extra regression formula for the dispersion (= residual variance). If we fit this:
 
-```{r chunk_chapter4_chunk12, echo=FALSE, eval=TRUE}
+```{r chunk_chapter4_chunk12, echo=TRUE, eval=TRUE}
 library(glmmTMB)
 
 fit = glmmTMB(observation ~ treatment, data = data, dispformula = ~ treatment)
@@ -162,7 +162,7 @@ fit = glmmTMB(observation ~ treatment, data = data, dispformula = ~ treatment)
 
 We get 2 regression tables as outputs - one for the effects, and one for the dispersion (= residual variance). We see, as expected, that the dispersion is higher in groups B and C compared to A. An advantage over gls is that we get confidence intervals and p-values for these differences on top!
 
-```{r chunk_chapter4_chunk10, echo=FALSE, eval=TRUE}
+```{r chunk_chapter4_chunk13, echo=TRUE, eval=TRUE}
 summary(fit)
 ```
 
@@ -171,13 +171,13 @@ summary(fit)
 
 Take this plot of Ozone ~ Solar.R using the airquality data - clearly there is heteroskedasticity in the relationship
 
-```{r chunk_chapter4_chunk11, echo=FALSE, eval=TRUE}
+```{r chunk_chapter4_chunk14, echo=TRUE, eval=TRUE}
 plot(Ozone ~ Solar.R, data = airquality)
 ```
 
 We can also see this if we fit the regression model:
 
-```{r chunk_chapter4_chunk12, echo=FALSE, eval=FALSE}
+```{r chunk_chapter4_chunk15, echo=TRUE, eval=FALSE}
 m1 = lm(Ozone ~ Solar.R, data = airquality)
 par(mfrow = c(2, 2))
 plot(m1)
