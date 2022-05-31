@@ -21,7 +21,9 @@ In this chapter, we check lm() and change the functional for our variance terms 
 
 
 
+
 ## General Modelling Strategy for lm() + Correction of Residuals
+
 
 
 
@@ -29,7 +31,9 @@ In this chapter, we check lm() and change the functional for our variance terms 
 
 
 
+
 ### Modelling Variance Terms
+
 
 
 
@@ -37,7 +41,9 @@ In this chapter, we check lm() and change the functional for our variance terms 
 
 
 
+
 ### Non-normality and Outliers
+
 
 
 
@@ -45,7 +51,9 @@ In this chapter, we check lm() and change the functional for our variance terms 
 
 
 
+
 ### Fitting Random Effects Models
+
 
 
 
@@ -53,11 +61,14 @@ In this chapter, we check lm() and change the functional for our variance terms 
 
 
 
+
 ### Problems With Mixed Models
 
 
 
+
 ### Case Study 2 - Honeybee Data
+
 
 
 

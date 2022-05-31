@@ -19,7 +19,9 @@ documentclass: book
 
 
 
+
 ## Thoughts About the Modelling Pipeline
+
 
 
 
@@ -27,7 +29,9 @@ documentclass: book
 
 
 
+
 ## Cross-validation
+
 
 
 
@@ -35,7 +39,9 @@ documentclass: book
 
 
 
+
 ## Structural Equation Mdels (SEMs)
+
 
 
 

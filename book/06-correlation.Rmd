@@ -21,7 +21,9 @@ This chapter explains how to model correlation structures in the residuals.
 
 
 
+
 ## Temporal and Spatial Correlation Structures
+
 
 
 
@@ -29,11 +31,14 @@ This chapter explains how to model correlation structures in the residuals.
 
 
 
+
 ## Exercices
 
 
 
+
 ## Intro Bayes
+
 
 
 

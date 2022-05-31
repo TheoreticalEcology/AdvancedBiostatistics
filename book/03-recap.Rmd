@@ -19,8 +19,6 @@ This chapter is a reminder about the basic regression model functions in R.
 
 ## Simple Linear Regression
 
-<img src="./images/regression.jpg" alt="regression"/>
-
 To fit our first regression, we will used the data set airquality, which is built-in in R. If you don't know the data set, have a look at the description via
 
 ```{r chunk_chapter3_chunk0, echo=TRUE, eval=FALSE}
@@ -525,7 +523,7 @@ fit = lm(Ozone ~ Wind + Temp, data = airquality)
 plot(allEffects(fit, partial.residuals = T))
 ```
 
-This looks already better, but there seems to be still a bit of a pattern regarding the scatter of the observed data around the regression line. We can get the difference between model and observations via `residuals(fit)`{.R}, and we could plot them against the model predictions (which can be obtained via the predict function) via
+This looks already better, but there seems to be still a bit of a pattern regarding the scattering of the observed data around the regression line. We can get the difference between model and observations via `residuals(fit)`{.R}, and we could plot them against the model predictions (which can be obtained via the predict function) via
 
 ```{r chunk_chapter3_chunk20, echo=FALSE, eval=TRUE}
 plot(residuals(fit) ~ predict(fit))
@@ -579,6 +577,8 @@ fit = lm(Ozone ~ Wind, data = airquality)
 boxcox(fit)
 ```
 
+Annotation: In the picture above, you can see, that the 95% confidence interval of the best $\lambda$ lies approximately in $[0.15, 0.5]$.
+
 ```{=html}
   <details>
     <summary>
@@ -588,10 +588,90 @@ boxcox(fit)
 ```
 
 ```{r chunk_chapter3_task_11, message=FALSE, warning=FALSE}
-
+fit = lm(Ozone ~ Wind + I(Wind^2), data = airquality)
+plot(allEffects(fit, partial.residuals = T), selection = 1) # Plot only 1 picture.
+boxcox(fit)
+plot(fit)
 ```
 
+Tolerable fit but still slightly poor diagnosis plots.
 
+```{=html}
+  <hr/>
+```
+
+```{r chunk_chapter3_task_12, message=FALSE, warning=FALSE}
+fit = lm(Ozone^0.35 ~ Wind + I(Wind^2), data = airquality)
+plot(allEffects(fit, partial.residuals = T), selection = 1)
+boxcox(fit)
+par(mfrow = c(2, 2))
+plot(fit)
+```
+
+Slightly better fit, especially in the middle of the data. Better diagnosis plots. No perfect result, but definitely OK. Mind the few data points at the borders, especially to the right. This might explain the discrepancy between the decent fit amid the data and the worse fit at higher values.
+
+Note that now (Ozone^0.35), 1 is in the 95% confidence interval, actually near the middle of the interval. Ozone doesn't need to be transformed more, at least according to the Box-Cox transformation.
+
+***I consider this as the best fit in this solution.***
+
+```{=html}
+  <hr/>
+```
+
+```{r chunk_chapter3_task_13, message=FALSE, warning=FALSE}
+fit = lm(Ozone^0.35 ~ Wind + I(Wind^2) + I(Wind^3), data = airquality)
+plot(allEffects(fit, partial.residuals = T), selection = 1)
+boxcox(fit)
+par(mfrow = c(2, 2))
+plot(fit)
+```
+
+Slightly better fit to the data, but the diagnosis plots are beginning to get worse.
+
+```{=html}
+  <hr/>
+```
+
+```{r chunk_chapter3_task_14, message=FALSE, warning=FALSE}
+fit = lm(Ozone^0.35 ~ Wind + I(Wind^2) + I(Wind^3) + I(Wind^4), data = airquality)
+plot(allEffects(fit, partial.residuals = T), selection = 1)
+boxcox(fit)
+par(mfrow = c(2, 2))
+plot(fit)
+```
+
+Even better fit and good diagnosis plots, bit already high model complexity and worsening leverage.
+
+```{=html}
+  <hr/>
+```
+
+```{r chunk_chapter3_task_15, message=FALSE, warning=FALSE}
+fit = lm(Ozone^0.35 ~ Wind + I(Wind^2) + I(Wind^3) + I(Wind^4) +
+           I(Wind^5), data = airquality)
+plot(allEffects(fit, partial.residuals = T), selection = 1)
+boxcox(fit)
+par(mfrow = c(2, 2))
+plot(fit)
+```
+
+As you can see, the higher the complexity of the model, the better it fits the particular data points but the less it can predict the data resp. it does not learn the underlying structure any more, but simply adopts as best as possible to the available data. This is a case of *overfitting*!
+Note the overshooting of the regression line which is a common property of higher grade polynomials.
+
+```{=html}
+  <hr/>
+```
+
+```{r chunk_chapter3_task_16, message=FALSE, warning=FALSE}
+fit = lm(Ozone^0.35 ~ Wind + I(Wind^2) + I(Wind^3) + I(Wind^4) + I(Wind^5) +
+           I(Wind^6) + I(Wind^7) + I(Wind^8), data = airquality)
+plot(allEffects(fit, partial.residuals = T), selection = 1)
+boxcox(fit)
+par(mfrow = c(2, 2))
+plot(fit)
+```
+
+Yet outliers at the border are perfectly fitted.
 
 ```{=html}
     </p>
@@ -602,9 +682,15 @@ boxcox(fit)
 
 ### Categorical Predictors
 
+The lm() function can handle both numerical and categorical variables. To understand what happens if the predictor is categorical, we'll use another data set here, PlantGrowth (type ?PlantGrowth or F1 help if you want details). We visualize the data via 
+
+```{r chunk_chapter3_chunk23, echo=FALSE, eval=TRUE}
+boxplot(weight ~ group, data = PlantGrowth)
+```
 
 
 ### Exercise: Global Plant Trait Analysis
+
 
 
 
@@ -612,7 +698,9 @@ boxcox(fit)
 
 
 
+
 ### Getting Started
+
 
 
 
@@ -620,7 +708,9 @@ boxcox(fit)
 
 
 
+
 ### Scaling Variables
+
 
 
 
@@ -628,7 +718,9 @@ boxcox(fit)
 
 
 
+
 ### Interactions
+
 
 
 
@@ -636,7 +728,9 @@ boxcox(fit)
 
 
 
+
 ## Model Choice and Causal Inference
+
 
 
 
@@ -644,7 +738,9 @@ boxcox(fit)
 
 
 
+
 ### Causal Inference
+
 
 
 
@@ -652,11 +748,14 @@ boxcox(fit)
 
 
 
+
 ### Problems of Step-wise Model Selection
 
 
 
+
 ### Exercise: Global Plant Trait Analysis #3
+
 
 
 
