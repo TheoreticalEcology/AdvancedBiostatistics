@@ -1,5 +1,7 @@
 source("tests/utils.R")
 
+install.packages("knitr")
+
 #### INFO #####
 # All chunks will be tested within a testthat::test_that environment.
 # To skip chunks, use purl=FALSE in chunk options.

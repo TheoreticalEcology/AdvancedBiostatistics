@@ -1,6 +1,63 @@
-# Heteroskedasticity and grouped data (random effects) {#heteroskedasticity}
+--- 
+site: bookdown::bookdown_site
+output: 
+  bookdown::gitbook:
+    highlight: kate
+documentclass: book
+---
+
+
+# Heteroskedasticity and Grouped Data (Random Effects) {#heteroskedasticity}
 
 ```{=html}
 <!-- Put this here (right after the first markdown headline) and only here for each document! -->
 <script src="./scripts/multipleChoice.js"></script>
 ```
+
+In this chapter, we check lm() and change the functional for our variance terms to improve the model.
+
+
+## Warm-up Exercise
+
+
+
+## General Modelling Strategy for lm() + Correction of Residuals
+
+
+
+### Wrong Functional Form
+
+
+
+### Modelling Variance Terms
+
+
+
+### Exercise
+
+
+
+### Non-normality and Outliers
+
+
+
+## Random and Mixed Effects - Motivation
+
+
+
+### Fitting Random Effects Models
+
+
+
+### Case Study 1: College Student Performance Over Time
+
+
+
+### Problems With Mixed Models
+
+
+
+### Case Study 2 - Honeybee Data
+
+
+

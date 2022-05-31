@@ -1,7 +1,39 @@
+--- 
+site: bookdown::bookdown_site
+output: 
+  bookdown::gitbook:
+    highlight: kate
+documentclass: book
+---
+
+
 # Correlation structures {#correlation}
 
 ```{=html}
 <!-- Put this here (right after the first markdown headline) and only here for each document! -->
 <script src="./scripts/multipleChoice.js"></script>
 ```
+
+This chapter explains how to model correlation structures in the residuals.
+
+
+## General Idea
+
+
+
+## Temporal and Spatial Correlation Structures
+
+
+
+## Phylogenetic Structures (PGLS)
+
+
+
+## Exercices
+
+
+
+## Intro Bayes
+
+
 
