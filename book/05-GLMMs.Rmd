@@ -19,7 +19,9 @@ documentclass: book
 
 
 
+
 ### A Binomial Example
+
 
 
 
@@ -27,7 +29,9 @@ documentclass: book
 
 
 
+
 ### Example - Elk Data
+
 
 
 
@@ -35,7 +39,9 @@ documentclass: book
 
 
 
+
 ### Heteroskedasticity in GLMMs
+
 
 
 
@@ -43,7 +49,9 @@ documentclass: book
 
 
 
+
 ### P-hacking Link Collection
+
 
 
 
@@ -51,7 +59,9 @@ documentclass: book
 
 
 
+
 ### Owls
+
 
 
 
@@ -59,7 +69,9 @@ documentclass: book
 
 
 
+
 ### Researchers Degrees of Freedom — Skin Color and Red Ccards
+
 
 
 
@@ -67,7 +79,9 @@ documentclass: book
 
 
 
+
 ## Thoughts About the Analysis Pipeline
+
 
 
 

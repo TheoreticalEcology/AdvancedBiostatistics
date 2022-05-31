@@ -1,6 +1,6 @@
 --- 
 site: bookdown::bookdown_site
-output: 
+output:
   bookdown::gitbook:
     highlight: kate
 documentclass: book
@@ -21,15 +21,16 @@ In this chapter, we check lm() and change the functional for our variance terms 
 
 
 
+
 ## General Modelling Strategy for lm() + Correction of Residuals
 
-With all the discussion about causality, model selection etc., we can re-visit the question of how to build an appropriate lm. My basic modelling strategy for an causal lm() analysis is the following: 
+With all the discussion about causality, model selection etc., we can re-visit the question of how to build an appropriate lm. My basic modelling strategy for an causal lm() analysis is the following:
 
 First, think about the problem and your question an decide on a base structure. Ideally, you do this by:
 
 Writing down your scientific questions (e.g. Ozone ~ Wind)
-Then add confounders if needed. 
-Remember to make a difference between variables controlled for confounding, and other confounders (which are typically not controlled for confounding). We may have to use some model selection, but in fact with a good analysis plan this is rarely necessary for a causal analysis. 
+Then add confounders if needed.
+Remember to make a difference between variables controlled for confounding, and other confounders (which are typically not controlled for confounding). We may have to use some model selection, but in fact with a good analysis plan this is rarely necessary for a causal analysis.
 
 Then, we have to check if the model fits all right. Yesterday, we already discussed about residual checks, and we discussed that the 4 standard residual plots check for 4 different problems:
 
@@ -52,11 +53,12 @@ Then about the distribution, variance and outliers
 Today's topic will mostly be about plot 3, the variance modelling. Before we come to that, however, a few more hints about how to deal with plots 1 and 2 (see the following sections).
 
 
+
 ### Wrong Functional Form
 
 What do we do if we have the wrong functional form in the scale - location plot? Here a few strategies that you might want to consider:
 
-The easiest strategy is to add complexity to the polynomial, e.g. quadratic terms, interactions etc. 
+The easiest strategy is to add complexity to the polynomial, e.g. quadratic terms, interactions etc.
 
 ```{r, eval=F}
 fit <- lm(Ozone ~ Wind * Temp + I(Wind^2) + I(Temp^2), data = airquality)
@@ -92,7 +94,7 @@ plot(fit, pages = 1, residuals = T)
 AIC(fit)
 ```
 
-GAMs are particularly useful for confounders. If you have confounders, you usually don't care that the fitted relationship is a bit hard to interpret, you just want the confounder effect removed. So, if you want to fit the causal relationship between Ozone ~ Wind, account for the other variables, a good strategy might be 
+GAMs are particularly useful for confounders. If you have confounders, you usually don't care that the fitted relationship is a bit hard to interpret, you just want the confounder effect removed. So, if you want to fit the causal relationship between Ozone ~ Wind, account for the other variables, a good strategy might be
 
 
 ```{r, eval=F}
@@ -100,7 +102,8 @@ fit <- gam(Ozone ~ Wind + s(Temp) + s(Solar.R) , data = airquality)
 summary(fit)
 ```
 
-In this way, you still get a nicely interpretable linear effect for Wind, but you don't have to worry about the functional form of the other predictors. 
+In this way, you still get a nicely interpretable linear effect for Wind, but you don't have to worry about the functional form of the other predictors.
+
 
 ### Modelling Variance Terms
 
@@ -127,7 +130,7 @@ So, what can we do?
 
 **Option 2** - model the variance
 
-Modelling the variance fit a model where the variance is not fixed. The basic option in R is nlme::gls. GLS = generalised least squares. In this function, you can specify a dependency of the residual variance on a predictor or the response. See options via ?varFunc. In our case, we will use the varIdent option, which allows to specify a different variance per treatment. 
+Modelling the variance fit a model where the variance is not fixed. The basic option in R is nlme::gls. GLS = generalised least squares. In this function, you can specify a dependency of the residual variance on a predictor or the response. See options via ?varFunc. In our case, we will use the varIdent option, which allows to specify a different variance per treatment.
 
 ```{r, eval=T}
 library(nlme)
@@ -155,6 +158,7 @@ summary(fit)
 ```
 
 
+
 ### Exercise
 
 Take this plot of Ozone ~ Solar.R using the airquality data - clearly there is heteroskedasticity in the relationship
@@ -178,7 +182,9 @@ We could of course consider other predictors, but let's say we want to fit this 
 3. Use glmmTMB to model the heteroskedasticity
 
 
+
 ### Non-normality and Outliers
+
 
 
 
@@ -186,11 +192,14 @@ We could of course consider other predictors, but let's say we want to fit this 
 
 
 
+
 ### Fitting Random Effects Models
 
 
 
+
 ### Case Study 1: College Student Performance Over Time
+
 
 
 
