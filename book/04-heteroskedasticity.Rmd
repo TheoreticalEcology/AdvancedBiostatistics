@@ -23,18 +23,159 @@ In this chapter, we check lm() and change the functional for our variance terms 
 
 ## General Modelling Strategy for lm() + Correction of Residuals
 
+With all the discussion about causality, model selection etc., we can re-visit the question of how to build an appropriate lm. My basic modelling strategy for an causal lm() analysis is the following: 
+
+First, think about the problem and your question an decide on a base structure. Ideally, you do this by:
+
+Writing down your scientific questions (e.g. Ozone ~ Wind)
+Then add confounders if needed. 
+Remember to make a difference between variables controlled for confounding, and other confounders (which are typically not controlled for confounding). We may have to use some model selection, but in fact with a good analysis plan this is rarely necessary for a causal analysis. 
+
+Then, we have to check if the model fits all right. Yesterday, we already discussed about residual checks, and we discussed that the 4 standard residual plots check for 4 different problems:
+
+Residual ~ fitted = functional relationship
+QQ = Normality of residuals
+Scale-location = Variance homogeneity
+Residual ~ Leverage = Should we worry about certain outliers?
+
+
+```{r, echo=F}
+fit <- lm(Ozone ~ Temp , data = airquality)
+par(mfrow = c(2,2))
+plot(fit)
+```
+
+It is usually recommended to solve the problems of the plots in that order, i.e.:
+
+First worry about the functional relationship
+Then about the distribution, variance and outliers
+Today's topic will mostly be about plot 3, the variance modelling. Before we come to that, however, a few more hints about how to deal with plots 1 and 2 (see the following sections).
 
 
 ### Wrong Functional Form
 
+What do we do if we have the wrong functional form in the scale - location plot? Here a few strategies that you might want to consider:
 
+The easiest strategy is to add complexity to the polynomial, e.g. quadratic terms, interactions etc. 
+
+```{r, eval=F}
+fit <- lm(Ozone ~ Wind * Temp + I(Wind^2) + I(Temp^2), data = airquality)
+```
+
+and see if the residuals are getting better. To avoid doing this totally randomly, it may be useful to plot residuals against individual predictors by hand!
+
+GAMs
+
+Another options are GAMs = generalized additive models - idea is to fit a smooth function to data, to automatically find the "right" functional form. The smoothness of the function is automatically optimized
+
+```{r, eval=F}
+library(mgcv)
+fit <- gam(Ozone ~ s(Wind) + s(Temp) + s(Solar.R) , data = airquality)
+summary(fit)
+plot(fit, pages = 1, residuals = T)
+AIC(fit)
+```
+
+Comparison to normal lm()
+
+```{r, eval=F}
+fit <- lm(Ozone ~ Wind + Temp + Solar.R , data = airquality)
+AIC(fit)
+```
+
+Spline interaction is called a tensor spline
+
+```{r, eval=F}
+fit <- gam(Ozone ~ te(Wind, Temp) + s(Solar.R) , data = airquality)
+summary(fit)
+plot(fit, pages = 1, residuals = T)
+AIC(fit)
+```
+
+GAMs are particularly useful for confounders. If you have confounders, you usually don't care that the fitted relationship is a bit hard to interpret, you just want the confounder effect removed. So, if you want to fit the causal relationship between Ozone ~ Wind, account for the other variables, a good strategy might be 
+
+
+```{r, eval=F}
+fit <- gam(Ozone ~ Wind + s(Temp) + s(Solar.R) , data = airquality)
+summary(fit)
+```
+
+In this way, you still get a nicely interpretable linear effect for Wind, but you don't have to worry about the functional form of the other predictors. 
 
 ### Modelling Variance Terms
 
+After we have fixed the functional form, we want to look at the distribution or the residuals. We said yesterday that you can try to get them more normal by applying an appropriate transformation, e.g. log or sqrt. With our without transformation, we often find that data shows heteroskedasticity, i.e. the residual variance changes with some predictor or the mean estimate (see also scale-location plot). Maybe your experimental data looks like this:
+
+```{r, eval=T}
+set.seed(125)
+data = data.frame(treatment = factor(rep(c("A", "B", "C"), each = 15)))
+data$observation = c(7,2,4)[as.numeric(data$treatment)] + rnorm(length(data$treatment), sd = as.numeric(data$treatment)^2)
+boxplot(observation ~ treatment, data = data)
+```
+
+Especially p-values and CIs of lm and ANOVA can react quite strongly to such differences in residual variation. So, running a standard lm / ANOVA on this data is not a good idea - in this case, we see that all regression effects are n.s., as is the ANOVA, suggesting that there is no difference between groups.
+
+```{r, eval=T}
+fit = lm(observation ~ treatment, data = data)
+#summary(fit)
+summary(aov(fit))
+```
+
+So, what can we do?
+
+**Option 1** - find a transformation of the response  - If heteroskedasticity correlates with the mean value, one can typically decrease it by some sqrt or log transformation, but often difficult, because this may also conflict with keeping the distribution normal.
+
+**Option 2** - model the variance
+
+Modelling the variance fit a model where the variance is not fixed. The basic option in R is nlme::gls. GLS = generalised least squares. In this function, you can specify a dependency of the residual variance on a predictor or the response. See options via ?varFunc. In our case, we will use the varIdent option, which allows to specify a different variance per treatment. 
+
+```{r, eval=T}
+library(nlme)
+fit = gls(observation ~ treatment, data = data, weights = varIdent(form = ~ 1 | treatment))
+summary(fit)
+```
+
+If you check the ANOVA, also the ANOVA is significant!
+
+```{r, eval=T}
+anova(fit)
+```
+
+The second option to model variances is to use the glmmTMB package, which we will use quite frequently this week. Here, you can specify an extra regression formula for the dispersion (= residual variance). If we fit this:
+
+```{r, eval=T}
+library(glmmTMB)
+fit<-glmmTMB(observation ~ treatment, data = data, dispformula = ~ treatment)
+```
+
+We get 2 regression tables as outputs - one for the effects, and one for the dispersion (= residual variance). We see, as expected, that the dispersion is higher in Group B, C, compared to A. An advantage over gls is that we get CIs and p-values for these differences on top!
+
+```{r, eval=T}
+summary(fit)
+```
 
 
 ### Exercise
 
+Take this plot of Ozone ~ Solar.R using the airquality data - clearly there is heteroskedasticity in the relationship
+
+```{r, eval=T}
+plot(Ozone ~ Solar.R, data = airquality)
+```
+
+We can also see this if we fit the regression model
+
+```{r, eval=F}
+m1 = lm(Ozone ~ Solar.R, data = airquality)
+par(mfrow = c(2,2))
+plot(m1)
+```
+
+We could of course consider other predictors, but let's say we want to fit this model specifically
+
+1. Try to get the variance stable with a transformation
+2. Use the gls function with the untransformed response to make the variance dependend on Solar.R. Hint: read in corClasses and decide how to model this
+3. Use glmmTMB to model the heteroskedasticity
 
 
 ### Non-normality and Outliers
@@ -58,6 +199,3 @@ In this chapter, we check lm() and change the functional for our variance terms 
 
 
 ### Case Study 2 - Honeybee Data
-
-
-
