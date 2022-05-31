@@ -1,3 +1,4 @@
+install.packages("car")
 install.packages("effects")
 install.packages("glmmTMB")
 install.packages("knitr")

@@ -214,4 +214,10 @@ We could of course consider other predictors, but let's say we want to fit this 
 
 
 
+
 ### Case Study 2 - Honeybee Data
+
+
+
+
+

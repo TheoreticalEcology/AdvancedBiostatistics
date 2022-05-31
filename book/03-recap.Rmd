@@ -765,7 +765,7 @@ TukeyHSD(anov)
 The result is:
 
 ```{r chunk_chapter3_chunk33, echo=FALSE, eval=TRUE}
-summary(anov)
+TukeyHSD(anov)
 ```
 
 This highlights, as before, a significant difference between trt1 and trt2. It is common to visualize the results of the post-hoc tests with the so-called **Compact Letter Display** (cld). This doesn't work with the base TukeyHSD function, so we will use the multcomp pacakge: 
@@ -905,27 +905,356 @@ summary(model)
 
 ## Multiple Regression
 
+Multiple (linear) regression means that we consider more than 1 predictor in the same model. The syntax is very easy: Just add your predictors (numerical or categorical) to your regression formula, as in 
 
+```{r chunk_chapter3_chunk41, echo=TRUE, eval=TRUE}
+fit = lm(Ozone ~ Wind + Temp, data = airquality)
+```
+
+The estimates for the regression will appear as before in the regression table:
+
+```{r chunk_chapter3_chunk42, echo=FALSE, eval=TRUE}
+summary(fit)
+```
+
+And we can visualize the results as before via:
+
+```{r chunk_chapter3_chunk43, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE}
+library(effects)
+
+plot(allEffects(fit, partial.residuals = T))
+```
+
+However, there are a few complications when adding multiple predictors, which we will cover in this chapter.
 
 
 ### Getting Started
 
+To get started with the multiple regression, let's just use a bunch of predictor variables in the airquality data set. I created a new variable fMonth to have month as a factor (categorical):
 
+```{r chunk_chapter3_chunk44, echo=TRUE, eval=TRUE}
+airquality$fMonth = factor(airquality$Month)
+fit = lm(Ozone ~ Temp + Wind + Solar.R + fMonth, data = airquality)
+```
+
+The resulting regression table looks already a bit intimidating:
+
+```{r chunk_chapter3_chunk45, echo=FALSE, eval=TRUE}
+summary(fit)
+```
+
+But luckily we have the effect plots to make sense of this: 
+
+```{r chunk_chapter3_chunk46, echo=TRUE, eval=TRUE}
+plot(allEffects(fit))
+```
+
+***Multiple regression != A lot of univariate regressions***
+
+A common misunderstanding is that the above regression simply amounts to 4 independent univariate regressions. Let's look at the model
+
+```{r chunk_chapter3_chunk47, echo=TRUE, eval=TRUE}
+fit = lm(Ozone ~ Wind , data = airquality)
+summary(fit)
+```
+
+The estimated effect is - 5.55, while in the multiple regression, we had -3.1. What's going on?
+
+The reason is that Wind and Temp are correlated (the technical term is **collinear**). You can see this by running 
+
+```{r chunk_chapter3_chunk48, echo=TRUE, eval=TRUE}
+plot(Wind ~ Temp, data = airquality)
+```
+
+This means that if we take Temp out of the model, Wind will absorb a part of the effect of Temp, or, to put it differently: If we include Temp in the model, the model will fit the effect of Wind **after** removing the effect that can be explained by Temp, and vice versa.
+
+```{=html}
+  <hr/>
+  <strong><span style="color: #0011AA; font-size:25px;">Task</span></strong><br/>
+```
+
+Try out different combinations of predictors and observe how the estimates change. Try to find the predictor combination for which the effect of Wind on Temp is maximal.
+
+```{=html}
+  <details>
+    <summary>
+      <strong><span style="color: #0011AA; font-size:25px;">Solution</span></strong>
+    </summary>
+    <p>
+```
+
+```{r chunk_chapter3_task_22, message=FALSE, warning=FALSE}
+
+```
+
+```{=html}
+    </p>
+  </details>
+  <br/><hr/>
+```
+
+So, which effect is the correct one, the univariate or the multivariate model? We will speak about the rules when to put variables in and out of the regression later, in the chapter on model choice. For the moment, however, note that if two variables correlate, including or removing one will change the estimate for the other. Remember: If there is collinearity, including one variable changes the effect size for other variables!
 
 
 ### Simulating the Effect of Collinearity
 
+We can understand this problem in more detail if we simulate some data. Let's create 2 positively collinear predictors:
 
+```{r chunk_chapter3_chunk49, echo=TRUE, eval=TRUE}
+x1 = runif(100, -5, 5)
+x2 = x1 + 0.2*runif(100, -5, 5)
+```
+
+We can check whether this has worked, through visual inspection as well as by calculating the correlation coefficient:
+
+```{r chunk_chapter3_chunk50, echo=TRUE, eval=TRUE}
+plot(x1, x2)
+cor(x1, x2)
+```
+
+The first case I want to look at, is when effect1 and effect2 have equal sign. Let's create such a situation, by simulating a normal response $y$, where the intercept is 0, and both predictors have effect = 1:
+
+```{r chunk_chapter3_chunk51, echo=TRUE, eval=TRUE}
+y = 0 + 1*x1 + 1*x2 + rnorm(100)
+```
+
+In this case, univariate models have too high effect sizes, because in conjunction, 1) positive correlation between predictors and 2) equal effect direction can lead to predictors absorbing each other's effect if one is taken out:
+
+```{r chunk_chapter3_chunk52, echo=TRUE, eval=TRUE}
+coef(lm(y ~ x1))
+coef(lm(y ~ x2))
+```
+
+You can also see this visually:
+
+```{r chunk_chapter3_chunk53, echo=TRUE, eval=TRUE}
+par(mfrow = c(1, 2))
+plot(x1, y, main = "x1 effect", ylim = c(-12, 12))
+abline(lm(y ~ x1))
+
+# Draw a line with intercept 0 and slope 1,
+# just like we simulated the true dependency of y on x1:
+abline(0, 1, col = "red")
+
+legend("topleft", c("fitted", "true"), lwd = 1, col = c("black", "red"))
+plot(x2, y, main = "x2 effect", ylim = c(-12, 12))
+abline(lm(y ~ x2))
+abline(0, 1, col = "red")
+legend("topleft", c("fitted", "true"), lwd = 1, col = c("black", "red"))
+```
+
+The multivariate model, on the other hand, is fine:
+
+```{r chunk_chapter3_chunk54, echo=TRUE, eval=TRUE}
+coef(lm(y~x1 + x2))
+plot(effects::allEffects(lm(y ~ x1 + x2)), ylim = c(-12, 12))
+```
+
+```{=html}
+  <hr/>
+  <strong><span style="color: #0011AA; font-size:25px;">Task</span></strong><br/>
+```
+
+Check what happens if the 2 effects have opposite sign.
+
+```{=html}
+  <details>
+    <summary>
+      <strong><span style="color: #0011AA; font-size:25px;">Solution</span></strong>
+    </summary>
+    <p>
+```
+
+```{r chunk_chapter3_task_24, message=FALSE, warning=FALSE}
+x1 = runif(100, -5, 5)
+x2 = -x1 + 0.2*runif(100, -5, 5)
+y = 0 + 1*x1 + 1*x2 + rnorm(100)
+
+cor(x1, x2)
+
+coef(lm(y ~ x1))
+coef(lm(y ~ x2))
+
+par(mfrow = c(1, 2))
+plot(x1, y, main = "x1 effect", ylim = c(-12, 12))
+abline(lm(y ~ x1))
+abline(0, 1, col = "red")
+legend("topleft", c("fitted", "true"), lwd = 1, col = c("black", "red"))
+plot(x2, y, main = "x2 effect", ylim = c(-12, 12))
+abline(lm(y ~ x2))
+abline(0, 1, col = "red")
+legend("topleft", c("fitted", "true"), lwd = 1, col = c("black", "red"))
+
+coef(lm(y~x1 + x2))
+plot(effects::allEffects(lm(y ~ x1 + x2)), ylim = c(-12, 12))
+```
+
+Both effects cancel out.
+
+```{=html}
+    </p>
+  </details>
+  <br/><hr/>
+```
 
 
 ### Scaling Variables
 
+Before, we had already computed the regression table for a regression with 4 predictors: 
 
+```{r chunk_chapter3_chunk55, echo=TRUE, eval=TRUE}
+airquality$fMonth = factor(airquality$Month)
+fit = lm(Ozone ~ Temp + Wind + Solar.R + fMonth, data = airquality)
+summary(fit)
+```
+
+So, which of the predictors is the strongest (= most effect on the response)? Superficially, it looks as if Month has the highest values. But that does mean that Month is the most important?
+
+No, and the reason is that we have to remember the effect on the response $y = \text{regression estimate} * \text{predictor}$, i.e if we have a predictor with a large range (difference between min/max values), it may have a strong effect even though the estimate is small. So, we cannot compare the effect sizes directly. 
+
+A small trick that is therefore often applied is to divide all numeric predictors by their standard deviation to bring them all on the same range, which will then be roughly between -2, 2. You can do this by hand, or use the `scale()`{.R} function in R:
+
+```{r chunk_chapter3_chunk56, echo=TRUE, eval=TRUE}
+airquality$sTemp = scale(airquality$Temp, center = F)  
+airquality$sTemp = airquality$Temp / sd(airquality$Temp) # Identical.
+```
+
+We do the same for the other numeric variables and run the regression:
+
+```{r chunk_chapter3_chunk57, echo=TRUE, eval=TRUE}
+airquality$sWind = scale(airquality$Wind, center = F)  
+airquality$sSolar.R = scale(airquality$Solar.R, center = F) 
+fit = lm(Ozone ~ sTemp + sWind + sSolar.R + fMonth, data = airquality)
+summary(fit)
+```
+
+We can compare the effect sizes directly, which suggests that Temp is actually the most important predictor.
+
+Note: In the code above, I used `scale(..., center = F)`{.R}. By default, the scale function will scale and center. As discussed before, centering is nearly always useful as it improves the interpretability of the intercept, so we should have actually better run the defaults: 
+
+```{r chunk_chapter3_chunk58, echo=TRUE, eval=TRUE}
+airquality$sTemp = scale(airquality$Temp)  
+airquality$sWind = scale(airquality$Wind)  
+airquality$sSolar.R = scale(airquality$Solar.R) 
+fit = lm(Ozone ~ sTemp + sWind + sSolar.R + fMonth, data = airquality)
+```
+
+Which results in the following regression table:
+
+```{r chunk_chapter3_chunk59, echo=FALSE, eval=TRUE}
+summary(fit)
+```
+
+Note that all estimates are identical, except for the intercept, which is now the estimate for the mean value of all numeric predictors (and with standard contrasts for the reference value of the categorical predictors). 
+
+```{=html}
+  <hr/>
+  <strong><span style="color: #0011AA; font-size:25px;">Tasks</span></strong><br/>
+```
+
+1. Compare centered / uncentered models visually, using the effects package. Are any of the predictions different, i.e. would you conclude something different using the different options?
+2. Discuss: If we get a different data set with a smaller sd() for e.g. Wind, the effect estimate would change. You can check this by just dividing the scaled variable by 0.5. Is this a problem? 
+3. Discuss: Under which circumstances should you center / scale, and how should you discuss the estimated coefficients in a paper?
+
+```{=html}
+  <details>
+    <summary>
+      <strong><span style="color: #0011AA; font-size:25px;">Solution</span></strong>
+    </summary>
+    <p>
+```
+
+
+***1.***
+
+```{r chunk_chapter3_task_25, message=FALSE, warning=FALSE}
+
+```
+
+***2.***
+
+```{r chunk_chapter3_task_26, message=FALSE, warning=FALSE}
+
+```
+
+***3.***
+
+```{r chunk_chapter3_task_27, message=FALSE, warning=FALSE}
+
+```
+
+
+```{=html}
+    </p>
+  </details>
+  <br/><hr/>
+```
 
 
 ### ANOVA for Multiple Regression
 
+Another option to see which variable is more important is variance partitioning, aka ANOVA. 
 
+In an ANOVA, we add variable by variable to the model, and see how much the fit to the data (expressed by residual sum of squares) improves. We can do this via
+
+```{r chunk_chapter3_chunk60, echo=FALSE, eval=TRUE}
+fit = lm(Ozone ~ Wind + Temp, data = airquality)
+summary(aov(fit))
+```
+
+So, why has Wind the larger effect, again? Didn't we just say that Temp has a larger effect? Is there something wrong with our ANOVA?
+
+The problem with the aov function is that it performs a so-called type I ANOVA. The type I ANOVA adds variables in the order in which they are in the model formula. If I specify another formula, the result is different:
+
+```{r chunk_chapter3_chunk61, echo=FALSE, eval=TRUE}
+fit = lm(Ozone ~ Temp + Wind, data = airquality)
+summary(aov(fit))
+```
+
+The difference is due to the collinearity of the variables. Because Temp and Wind are collinear, the variable that is added first to the model will absorb variation from the other, and thus seems to explain more of the response. 
+
+There are other types of ANOVA that avoid this problem. The so-called type II ANOVA shows for each variable only the part that is uniquely attributable to the respective variable
+
+```{r chunk_chapter3_chunk62, echo=FALSE, eval=TRUE}
+car::Anova(fit, type = "II")
+```
+
+There is also type III, which is as type II, but avoids a similar problem for interactions (see next subchapter). This is probably the most conservative setting:
+
+```{r chunk_chapter3_chunk63, echo=FALSE, eval=TRUE}
+car::Anova(fit, type = "III")
+```
+
+Here is an overview of the situation, from Smith, Carrie E., and Robert Cribbie. "Factorial ANOVA with unbalanced data: A fresh look at the types of sums of squares." Journal of Data Science 12.3 (2014): 385-403, for 2 predictors (Gender and AthStat, and their interaction). Case a) corresponds to the case where we have no collinearity between either of those variables. b-d are the three possible types of ANOVA for variables with collinearity. The "overlap" between the circles depicts the shared part, i.e. the variability that can be expressed by either variable (due to collinearity). Note that the shares in Type II, III do not add up to 1, as there is a kind of "dark variation" that we cannot securely add to either variable. 
+
+```{r chunk_chapter3_64, echo=FALSE, out.width="150%", out.height="150%"}
+knitr::include_graphics(c("images/ANOVA.png"))
+```
+
+```{=html}
+  <hr/>
+  <strong><span style="color: #0011AA; font-size:25px;">Task</span></strong><br/>
+```
+
+Try out the difference between type I, II, III ANOVA for the airquality data set, either for the simple Wind + Temp model, or for more complicated models. If you want to see the effects Type III Anova, you need to add an interaction (see next section). 
+
+```{=html}
+  <details>
+    <summary>
+      <strong><span style="color: #0011AA; font-size:25px;">Solution</span></strong>
+    </summary>
+    <p>
+```
+
+```{r chunk_chapter3_task_28, message=FALSE, warning=FALSE}
+
+```
+
+```{=html}
+    </p>
+  </details>
+  <br/><hr/>
+```
 
 
 ### Interactions
