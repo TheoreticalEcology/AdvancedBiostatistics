@@ -846,7 +846,7 @@ What we are using here is **Helmert contrasts**, which contrast the second level
 <a href="https://besjournals.onlinelibrary.wiley.com/doi/epdf/10.1111/j.2041-210X.2010.00012.x" target="_blank" rel="noopener">https://besjournals.onlinelibrary.wiley.com/doi/epdf/10.1111/j.2041-210X.2010.00012.x</a>.
 
 
-### Exercise: Global Plant Trait Analysis
+### Exercise: Global Plant Trait Analysis {#plantTrait1}
 
 Look at the analysis of plant height data <a href="http://environmentalcomputing.net/linear-regression/" target="_blank" rel="noopener">here</a>. In this example, the authors perform a simple linear regression to answer the question whether height of plant species from around the world depends on temperature at the location of occurrence. Note that "loght" = log(height).
 
@@ -1197,7 +1197,7 @@ Another option to see which variable is more important is variance partitioning,
 
 In an ANOVA, we add variable by variable to the model, and see how much the fit to the data (expressed by residual sum of squares) improves. We can do this via
 
-```{r chunk_chapter3_chunk60, echo=FALSE, eval=TRUE}
+```{r chunk_chapter3_chunk60, echo=TRUE, eval=TRUE}
 fit = lm(Ozone ~ Wind + Temp, data = airquality)
 summary(aov(fit))
 ```
@@ -1206,7 +1206,7 @@ So, why has Wind the larger effect, again? Didn't we just say that Temp has a la
 
 The problem with the aov function is that it performs a so-called type I ANOVA. The type I ANOVA adds variables in the order in which they are in the model formula. If I specify another formula, the result is different:
 
-```{r chunk_chapter3_chunk61, echo=FALSE, eval=TRUE}
+```{r chunk_chapter3_chunk61, echo=TRUE, eval=TRUE}
 fit = lm(Ozone ~ Temp + Wind, data = airquality)
 summary(aov(fit))
 ```
@@ -1215,13 +1215,13 @@ The difference is due to the collinearity of the variables. Because Temp and Win
 
 There are other types of ANOVA that avoid this problem. The so-called type II ANOVA shows for each variable only the part that is uniquely attributable to the respective variable
 
-```{r chunk_chapter3_chunk62, echo=FALSE, eval=TRUE}
+```{r chunk_chapter3_chunk62, echo=TRUE, eval=TRUE}
 car::Anova(fit, type = "II")
 ```
 
 There is also type III, which is as type II, but avoids a similar problem for interactions (see next subchapter). This is probably the most conservative setting:
 
-```{r chunk_chapter3_chunk63, echo=FALSE, eval=TRUE}
+```{r chunk_chapter3_chunk63, echo=TRUE, eval=TRUE}
 car::Anova(fit, type = "III")
 ```
 
@@ -1259,12 +1259,137 @@ Try out the difference between type I, II, III ANOVA for the airquality data set
 
 ### Interactions
 
+When we have multiple variables, we can have the situation that the value of one variable influences the effect of the other(s). Technically, this is called in **interaction**. In situations where the causal direction is known, this is also called a **moderator**. An example: Imagine we observe that the effect of aspirin differs depending on the weight of the subject. Technically, we have an interaction between aspirin and weight. Physiologically, we know the causal direction is weight -> effect of aspirin, so we can say weight is a moderator for the effect of aspirin. 
+
+```{r chunk_chapter3_chunk65, echo=TRUE, eval=TRUE}
+fit = lm(Ozone ~ Temp * Wind, data = airquality)
+plot(allEffects(fit))
+```
+
+We will have a look at the summary later, but for the moment, let's just look at the output visually. In the effect plots, we see the effect of Temperature on Ozone for different values of Wind. We also see that the slope changes. For low Wind, we have a strong effect of Temperature. For high Wind, the effect is basically gone.
+
+Let's look at the interaction syntax in more detail. The "*" operator in an lm is a shorthand for main effects + interactions. You can write equivalently:
+
+```{r chunk_chapter3_chunk66, echo=TRUE, eval=FALSE}
+fit = lm(Ozone ~ Wind + Temp + Wind:Temp, data = airquality)
+```
+
+What is fit here is literally a third predictor that is specified as Wind * Temp (normal multiplication). The above syntax would allow you to also have interactions without main effects, e.g.:
+
+```{r chunk_chapter3_chunk67, echo=TRUE, eval=FALSE}
+fit = lm(Ozone ~ Wind + Wind:Temp, data = airquality)
+```
+
+Although this is generally **never** advisable, as the main effect influences the interaction, unless you are sure that the main effect must be zero.
+
+There is another important syntax in R:
+
+```{r chunk_chapter3_chunk68, echo=TRUE, eval=TRUE}
+fit = lm(Ozone ~ (Wind + Temp + Solar.R)^2 , data = airquality)
+summary(fit)
+plot(allEffects(fit))
+```
+
+This creates all main effect and second order (aka two-way) interactions between variables. You can also use ^3 to create all possible 2-way and 3-way interactions between the variables in the parentheses. By the way: the ()^2 syntax for interactions is the reason why we have to write I(x^2) if we want to write a quadratic effect in an lm.
+
+***Categorical variables***
+
+When you include an interaction with a categorical variable, that means a separate effect will be fit for each level of the categorical variable, as in 
+
+```{r chunk_chapter3_chunk69, echo=TRUE, eval=TRUE}
+fit = lm(Ozone ~ Wind * fMonth, data = airquality)
+summary(fit)
+```
+
+The interpretation is like for a single categorical predictor, i.e. we see the effect of Wind as the effect for the first Month 5, and the Wind:fMonth6 effect, for example, tests for a difference in the Wind effect between month 5 (reference) and month 6. As before, you could change this behavior by changing contrasts. 
+
+***Interactions and centering***
+
+A super important topic when working with numeric interactions is centering.
+
+```{=html}
+  <hr/>
+  <strong><span style="color: #0011AA; font-size:25px;">Task</span></strong><br/>
+```
+
+Compare the estimates for Wind / Temp for the following models
+
+* Ozone ~ Wind
+* Ozone ~ Temp
+* Ozone ~ Wind + Temp
+* Ozone ~ Wind * Temp
+
+How do you explain the differences in the estimates for the main effects of Wind and Temp? What do you think corresponds most closely to the "true" effect of Wind and Temp? Maybe you know the answer already. If not, consider the following simulation, where we create data with known effect sizes:
+
+```{r chunk_chapter3_chunk70, echo=TRUE, eval=TRUE}
+# Create predictor variables.
+x1 = runif(100, -1, 1)
+x2 = runif(100, -1, 1)
+
+# Create response for lm, all effects are 1.
+y = x1 + x2 + x1*x2 + rnorm(100, sd = 0.3)
+
+# Fit model, but shift the mean of the predictor.
+fit = lm(y ~ x1 * I(x2 + 5))
+summary(fit)
+
+plot(allEffects(fit))
+```
+
+Play around with the shift in x2, and observe how the effects change. Try how the estimates change when centering the variables via the `scale() `{.R} command. If you understand what's going on, you will realize that you should **always center** your variables, whenever you use any interactions.  
+Excellent explanations of the issues also in the attached paper <a href="https://besjournals.onlinelibrary.wiley.com/doi/epdf/10.1111/j.2041-210X.2010.00012.x" target="_blank" rel="noopener">https://besjournals.onlinelibrary.wiley.com/doi/epdf/10.1111/j.2041-210X.2010.00012.x</a>.
+
+```{=html}
+  <details>
+    <summary>
+      <strong><span style="color: #0011AA; font-size:25px;">Solution</span></strong>
+    </summary>
+    <p>
+```
+
+```{r chunk_chapter3_task_29, message=FALSE, warning=FALSE}
+
+```
+
+```{=html}
+    </p>
+  </details>
+  <br/><hr/>
+```
 
 
+### Exercise: Global Plant Trait Analysis #2 {#plantTrait2}
 
-### Exercise: Global Plant Trait Analysis #2
+```{=html}
+  <hr/>
+  <strong><span style="color: #0011AA; font-size:25px;">Task</span></strong><br/>
+```
 
+Revisit exercise \@ref(plantTrait1), and test
 
+1. If temp or NPP (net primary productivity) is a more important predictor.
+2. If growth forms (variable growthform) differ in their temperature effects.
+3. If the effect of temp remains significant if we include latitude and an interaction of latitude with temp. If not, why? Plot temp ~ lat. 
+
+Ask me to comment on case 3!
+
+```{=html}
+  <details>
+    <summary>
+      <strong><span style="color: #0011AA; font-size:25px;">Solution</span></strong>
+    </summary>
+    <p>
+```
+
+```{r chunk_chapter3_task_30, message=FALSE, warning=FALSE}
+
+```
+
+```{=html}
+    </p>
+  </details>
+  <br/><hr/>
+```
 
 
 ## Model Choice and Causal Inference
@@ -1294,6 +1419,31 @@ Try out the difference between type I, II, III ANOVA for the airquality data set
 
 ### Exercise: Global Plant Trait Analysis #3
 
+```{=html}
+  <hr/>
+  <strong><span style="color: #0011AA; font-size:25px;">Task</span></strong><br/>
+```
 
+Revisit exercises \@ref(plantTrait1) / \@ref(plantTrait2), and discuss / analyze:
 
+* Which would be the appropriate model, if we want to get a predictive model for plant height, based on the variables in the data set?
+* Which would be the appropriate model, if we want to fit the **causal** effect of temp on height? Consider all variables in the data set!
+
+```{=html}
+  <details>
+    <summary>
+      <strong><span style="color: #0011AA; font-size:25px;">Solution</span></strong>
+    </summary>
+    <p>
+```
+
+```{r chunk_chapter3_task_31, message=FALSE, warning=FALSE}
+
+```
+
+```{=html}
+    </p>
+  </details>
+  <br/><hr/>
+```
 
