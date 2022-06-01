@@ -1,12 +1,16 @@
 install.packages("car")
+install.packages("devtools")
 install.packages("effects")
 install.packages("glmmTMB")
+install.packages("quantreg")
 install.packages("knitr")
 install.packages("MASS")
 install.packages("mgcv")
+install.packages("mlmRev")
 install.packages("multcomp")
 install.packages("MuMIn")
 install.packages("nlme")
+install.packages("robustbase")
 install.packages("stringr")
 
 

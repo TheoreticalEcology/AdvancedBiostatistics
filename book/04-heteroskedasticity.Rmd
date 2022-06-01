@@ -239,22 +239,258 @@ We could of course consider other predictors, but let's say we want to fit this 
 
 ### Non-normality and Outliers
 
+What can we do if, after accounting for the functional relationship, response transformation and variance modelling, residual diagnostic 2 shows non-normality, in particular strong outliers? Here simulated example data with strong outliers/deviations from normality:
 
+```{r chunk_chapter4_chunk16, echo=TRUE, eval=TRUE}
+set.seed(123)
+
+n = 100
+concentration = runif(n, -1, 1)
+growth = 2 * concentration + rnorm(n, sd = 0.5) +
+  rbinom(n, 1, 0.05) * rnorm(n, mean = 6*concentration, sd = 6)
+plot(growth ~ concentration)
+```
+
+Fitting the model, we see that the distribution is to wide:
+
+```{r chunk_chapter4_chunk17, echo=TRUE, eval=TRUE}
+fit = lm(growth ~ concentration)
+par(mfrow = c(2,2))
+plot(fit)
+```
+
+What can we do to deal with such distributional problems and outliers?
+
+* **Removing** - Bad option, hard to defend, reviewers don't like this - if at all, better show robustness with and without outlier, but result is sometimes not robust.
+* **Change the distribution** - Fit a model with a different distribution, i.e. GLM or other -> we will do this on Wednesday.
+* **Robust regressions**.
+* **Quantile regression** - A special type of regression that does not assume a particular residual distribution.
+
+***Change distribution***
+
+If we want to change the distribution, we have to go to a GLM, see Wednesday.
+
+***Robust regression***
+
+Robust methods generally refer to methods that are robust to violation of assumptions, e.g. outliers. More specifically, standard robust regressions typically downweight datap oints that have a too high influence on the fit. See <a href="https://cran.r-project.org/web/views/Robust.html" target="_blank" rel="noopener">https://cran.r-project.org/web/views/Robust.html</a> for a list of robust packages in R.
+
+```{r chunk_chapter4_chunk18, echo=TRUE, eval=TRUE}
+# This is the classic method.
+library(MASS)
+
+fit = rlm(growth ~ concentration) 
+summary(fit)
+# No p-values and not sure if we can trust the confidence intervals.
+# Would need to boostrap by hand!
+
+# This is another option that gives us p-values directly.
+library(robustbase)
+
+fit = lmrob(growth ~ concentration) 
+summary(fit)
+```
+
+***Quantile regression***
+
+Quantile regressions don't fit a line with an error spreading around it, but try to fit a quantile (e.g. the 0.5 quantile, the median) regardless of the distribution. Thus, they work even if the usual assumptions don't hold.
+
+```{r chunk_chapter4_chunk19, echo=TRUE, eval=TRUE}
+library(quantreg)
+
+fit = rq(growth ~ concentration,.5) 
+summary(fit)
+summary(fit, se = "boot")
+```
+
+Alternative and very useful "quantreg" package: 
+<a href="https://cran.r-project.org/web/packages/lqmm/index.html" target="_blank" rel="noopener">https://cran.r-project.org/web/packages/lqmm/index.html</a>
+
+***Summary***
+
+Actions on **real outliers**:
+
+* Robust regression.
+* Remove
+
+Actions on **different distributions**:
+
+* Transform.
+* Change distribution or quantile regression.
 
 
 ## Random and Mixed Effects - Motivation
 
+Random effects are a very common addition to regression models that can be used for any type of grouping (categorical) variable. Lets look at the Month in airquality:
 
+```{r chunk_chapter4_chunk20, echo=TRUE, eval=TRUE}
+airquality$fMonth = as.factor(airquality$Month)
+```
+
+Let's say further that we are only interested in calculating the mean of Ozone:
+
+```{r chunk_chapter4_chunk21, echo=TRUE, eval=TRUE}
+fit = lm(Ozone ~ 1, data = airquality)
+```
+
+Problem: If we fit residuals, we see that they are correlated in Month, so we somehow have to account for Month:
+
+```{r chunk_chapter4_chunk22, echo=TRUE, eval=TRUE}
+plot(residuals(fit) ~ airquality$fMonth[as.numeric(row.names(model.frame(fit)))])
+```
+
+A fixed effect model for fMonth would be
+
+```{r chunk_chapter4_chunk23, echo=TRUE, eval=TRUE}
+fit = lm(Ozone ~ fMonth, data = airquality)
+summary(fit)
+```
+
+However, using a fixed effect costs a lot of degrees of freedom, and maybe we are not really interested in Month, we just want to correct the correlation in the residuals.
+
+Solution: **Mixed / random effect models**. In a mixed model, we assume (differently to a fixed effect model) that the effect of Month is coming from a normal distribution. In a way, you could say that there are two types of errors:
+
+* The random effect, which is a normal "error" per group (in this case Month).
+
+* And the residual error, which comes on top of the random effect.
+
+Because of this hierarchical structure, these models are also called "multi-level models" or "hierarchical models".
+Nomenclature:
+
+* No random effect = Fixed effect model.
+* Only random effects + intercept = Random effect model.
+* Random effects + fixed effects = Mixed model.
+
+Because grouping naturally occurs in any type of experimental data (batches, blocks, etc.), mixed effect models are the de-facto default for most experimental data! Mind, that grouping even occurs for example, when 2 different persons gather information.
 
 
 ### Fitting Random Effects Models
 
+To speak about random effects, we will use an example data set containing exam scores of 4,059 students from 65 schools in Inner London. This data set is located in the R package "mlmRev".
 
+* Response:   "normexam" (Normalized exam score).
+* Predictor 1: "standLRT" (Standardised LR test score; Reading test taken when they were 11 years old).
+* Predictor 2: "sex" of the student (F/M).
+
+If we analyze this with a simple lm, we get the following response:
+
+```{r chunk_chapter4_chunk24, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE}
+library(mlmRev)
+library(effects)
+
+mod0 = lm(normexam ~ standLRT + sex , data = Exam)
+plot(allEffects(mod0))
+```
+
+***Random intercept model***
+
+A random intercept model assumes that each school gets their own intercept. It's pretty much identical to the fixed effect model `lm(normexam ~ standLRT + sex + school)`{.R}, except that instead of giving each school a separate independent intercept, we assume that the school effects come from a common normal distribution. 
+
+```{r chunk_chapter4_chunk25, echo=TRUE, eval=TRUE}
+mod1 = lmer(normexam ~ standLRT + sex +  (1 | school), data = Exam)
+summary(mod1)
+```
+
+If we look at the outputs, we see that the effects of school are not explicitly mentioned, i.e. we fit an average over the schools. This is also because we treat the random effects as error rather than as estimates. 
+
+However, the school mean effects are estimated, and we can make them visible, e.g. via:
+
+```{r chunk_chapter4_chunk26, echo=TRUE, eval=TRUE}
+with(Exam, {
+  par(mfrow = c(1, 2))
+  randcoef = ranef(mod1)$school[,1]
+  fixedcoef = fixef(mod1)
+  plot(standLRT, normexam)
+    for(i in 1:65){
+      abline(a = fixedcoef[1] + randcoef[i], b = fixedcoef[2], col = i)
+    }
+})
+```
+
+***Random slope model***
+
+A random slope model assumes that each school also gets their own slope for a given parameter (per default we will always estimate slope and intercept, but you could overwrite this, not recommended!). Let's do this for standLRT (you could of course do both as well). 
+
+```{r chunk_chapter4_chunk27, echo=TRUE, eval=TRUE}
+mod2 = lmer(normexam ~ standLRT + sex +  (standLRT | school), data = Exam)
+summary(mod2)
+```
+
+Fitting a random slope on standLRT is pretty much identical to fit the fixed effect model  
+`lm(normexam ~ standLRT*school + sex)`{.R}, except that school is a random effect, and therefore parameter estimates for the interaction sex:school are not independent. The results is similar to the random intercept model, except that we have an additional variance term.
+
+Here a visualization of the results 
+
+```{r chunk_chapter4_chunk28, echo=TRUE, eval=TRUE}
+with(Exam, {
+  randcoefI = ranef(mod2)$school[,1]
+  randcoefS = ranef(mod2)$school[,2]
+  fixedcoef = fixef(mod2)
+  plot(standLRT, normexam)
+    for(i in 1:65){
+      abline(a = fixedcoef[1] + randcoefI[i] , b = fixedcoef[2] + randcoefS[i], col = i)
+    }
+})
+```
+
+***Syntax cheat sheet:***
+
+* Random intercept: `(1 | group).
+* ONLY random slope for a given fixed effect: `(0 + fixedEffect | group)`{.R}.
+* Random slope + intercept + correlation (default): `(fixedEffect | group)`{.R}.
+* Random slope + intercept without correlation: `(fixedEffect || group)`{.R}, identical to  
+`(1 | group) + (0 + fixedEffect | group)`{.R}.
+* Nested random effects:  `(1 | group / subgroup)`{.R}. If groups are labeled A, B, C, ... and subgroups 1, 2, 3, ..., this will create labels A1, A2 ,B1, B2, so that you effectively group in subgroups. Useful for the many experimental people that do not label subgroups uniquely, but otherwise no statistical difference to a normal random effect.
+* Crossed random effects: You can add random effects independently, as in  
+`(1 | group1) + (1 | group2)`{.R}. 
 
 
 ### Case Study 1: College Student Performance Over Time
 
+***Background and data structure***
 
+The GPA (college grade point average) data is a longitudinal data set, where 200 college students and their GPA have been followed 6 consecutive semesters. Look at the GPA (<a href="https://elearning.uni-regensburg.de/pluginfile.php/2365103/mod_book/chapter/72387/gpa.RData" target="_blank" rel="noopener">download</a>) data set, retrieved from <a href="https://m-clark.github.io/mixed-models-with-R/" target="_blank" rel="noopener">https://m-clark.github.io/mixed-models-with-R/</a>.
+
+```{r chunk_chapter4_chunk29, echo=TRUE, eval=FALSE, purl=FALSE}
+# Loading data in RData format will attach objects, here "gpa", in the same environment.
+load("gpa.RData")
+str(gpa)
+```
+
+In this data set, there are GPA measures on 6 consecutive **occasions**, with a **job** status variable (how many hours worked) for the same 6 occasions. There are two student-level explanatory variables: The **sex** (1 = male, 2 = female) and the high school **gpa**. There is also a dichotomous student-level outcome variable, which indicates whether a student has been **admitted** to the university of their choice. Since not every student applies to a university, this variable has many missing values. Each **student** and each **year** of observation have an id.
+
+```{=html}
+  <hr/>
+  <strong><span style="color: #0011AA; font-size:25px;">Task</span></strong><br/>
+```
+
+Analyze if GPA improves over time (**occasion**)!
+
+Hint: The amount and trend of GPA from one student are not independent. Do a standard linear regression and a mixed effects regression, including random intercept and slope for the grouping variable **student**. Compare the confidence intervals (Hint: `?confint`{.R}) and the coefficients (`?coef`{.R}) of the standard linear model and the mixed effects model. Look at the random effects estimates of the mixed effects model (hint: `?ranef`{.R}).
+
+Advanced / optional:
+
+* Look at a visualziation of the random slopes at:  
+<a href="https://m-clark.github.io/mixed-models-with-R/random_slopes.html#visualization-of-effects" target="_blank" rel="noopener">https://m-clark.github.io/mixed-models-with-R/random_slopes.html#visualization-of-effects</a>.
+* Execute and understand the generative simulation of random slopes at:  
+<a href="https://m-clark.github.io/mixed-models-with-R/random_slopes.html#exercises-for-random-slopes" target="_blank" rel="noopener">https://m-clark.github.io/mixed-models-with-R/random_slopes.html#exercises-for-random-slopes</a>.
+
+```{=html}
+  <details>
+    <summary>
+      <strong><span style="color: #0011AA; font-size:25px;">Solution</span></strong>
+    </summary>
+    <p>
+```
+
+```{r chunk_chapter4_task_2, message=FALSE, warning=FALSE}
+
+```
+
+```{=html}
+    </p>
+  </details>
+  <br/><hr/>
+```
 
 
 ### Problems With Mixed Models
@@ -262,7 +498,21 @@ We could of course consider other predictors, but let's say we want to fit this 
 
 
 
+
+
+
+
+
+
+
 ### Case Study 2 - Honeybee Data
+
+
+
+
+
+
+
 
 
 

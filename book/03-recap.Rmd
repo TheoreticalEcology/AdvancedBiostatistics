@@ -551,7 +551,7 @@ plot(fit)
 
 **Important**: Residuals are always getting better for more complex models. They should therefore NOT solely be used for model selection. Select your model structure in a different way, residual checks are just for doing a final check to see if the fitted model makes sense.
 
-**Generally**: If you want to do model selection, control for model complexity. The more complex the model, the higher the cast related to the increase of accuracy.
+**Generally**: If you want to do model selection, control for model complexity. The more complex the model, the higher the cost related to the increase of accuracy.
 
 ```{=html}
   <hr/>
