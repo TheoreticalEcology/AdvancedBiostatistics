@@ -25,7 +25,31 @@ The following data set contains information about life satisfaction in Germany, 
 satisf = read.csv(file = "https://www.dropbox.com/s/sggy9b9xb0rekkx/soep_satisfcation.csv?dl=1")
 ```
 
+```{=html}
+  <hr/>
+  <strong><span style="color: #0011AA; font-size:25px;">Task</span></strong><br/>
+```
+
 Perform an exploratory causal analysis of the data to find out what determines life satisfaction and if the effect of those factors has changed over time. 
+
+
+```{=html}
+  <details>
+    <summary>
+      <strong><span style="color: #0011AA; font-size:25px;">Solution</span></strong>
+    </summary>
+    <p>
+```
+
+```{r chunk_chapter4_task_0, message=FALSE, warning=FALSE}
+
+```
+
+```{=html}
+    </p>
+  </details>
+  <br/><hr/>
+```
 
 
 ## General Modelling Strategy for lm() + Correction of Residuals
@@ -169,7 +193,7 @@ summary(fit)
 
 ### Exercise
 
-Take this plot of Ozone ~ Solar.R using the airquality data - clearly there is heteroskedasticity in the relationship
+Take this plot of Ozone ~ Solar.R using the airquality data - Clearly there is heteroskedasticity in the relationship:
 
 ```{r chunk_chapter4_chunk14, echo=TRUE, eval=TRUE}
 plot(Ozone ~ Solar.R, data = airquality)
@@ -183,11 +207,34 @@ par(mfrow = c(2, 2))
 plot(m1)
 ```
 
+```{=html}
+  <hr/>
+  <strong><span style="color: #0011AA; font-size:25px;">Task</span></strong><br/>
+```
+
 We could of course consider other predictors, but let's say we want to fit this model specifically
 
 1. Try to get the variance stable with a transformation.
 2. Use the gls function with the untransformed response to make the variance dependent on Solar.R. Hint: Read in corClasses and decide how to model this.
 3. Use glmmTMB to model heteroskedasticity.
+
+```{=html}
+  <details>
+    <summary>
+      <strong><span style="color: #0011AA; font-size:25px;">Solution</span></strong>
+    </summary>
+    <p>
+```
+
+```{r chunk_chapter4_task_1, message=FALSE, warning=FALSE}
+
+```
+
+```{=html}
+    </p>
+  </details>
+  <br/><hr/>
+```
 
 
 ### Non-normality and Outliers

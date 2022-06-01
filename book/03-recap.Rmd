@@ -558,7 +558,7 @@ plot(fit)
   <strong><span style="color: #0011AA; font-size:25px;">Task</span></strong><br/>
 ```
 
-Modify the formula to get (as far as possible) and acceptable fit to the data. Consider the following options:
+Modify the formula to get (as far as possible) an acceptable fit to the data. Consider the following options:
 
 ```{r chunk_chapter3_task_10, message=FALSE, warning=FALSE}
 fit = lm(Ozone ~ Wind, data = airquality) # Intercept + slope.
@@ -1394,27 +1394,368 @@ Ask me to comment on case 3!
 
 ## Model Choice and Causal Inference
 
+What we saw so far is that there is a large number of models we could fit. But how do we decide which is the "right" one? A basic requirement is that the residuals should more or less fit. It is seldom sensible to use a model that does not fit to the data. Beyond that, however, there is a range of options which is sensible, depending on the purpose of the model. 
+
+In stats, we distinguish at least 2 basic purposes: 
+
+* **Prediction**: If our purpose is to build a predictive model, we are searching for the model that makes the smallest possible error on a new data sample.
+* **(Causal) inference**: When we are speaking about inference, that means we are interested in the estimated effects and we would like them to be identical to the "true" causal effects. 
+
+There is a further subdivision with regards to prior knowledge:
+
+* In an **exploratory analysis**, we have only a vague idea what we are looking for. We might just be scanning the data set for possible (causal) relationships.
+* In a **confirmatory analysis**, we have a clear target for the analysis, and ideally a plan for which model we want to fit, *prior* to seeing the data. 
+
+Depending on the analysis goal, different methods are appropriate, and we will talk about those in this chapter. The most common goal for scientific papers is a confirmatory causal analysis (even though the actual practice does not always follow this).
+
+Even within each of these objectives, there are a number of additional criteria that may influence which method and model one will choose for the analysis. For example, 
+
+* Either for predictions or for estimators, do I care more about a small **error**, or about **bias**? (Error = typical (mean) difference between estimator and truth; Bias = systematic difference between estimator and truth)
+* Do I want confidence intervals to be correct (coverage), and calibrated p-values?
+
+* Do we have **experimental data**, where all predictors are known, measured, and randomized / orthogonal, or do we have **observational data**, where we do not have controlled predictors, and collinearity / confounding is the norm.
+
+All of these play into the choice of model and model selection method. Some methods, for example, produce smaller errors on the estimators, but a larger bias. In this chapter, I will provide you with a rough overview about the methods. We will talk about them in more detail in the next days.
+
+```{=html}
+  <hr/>
+  <strong><span style="color: #0011AA; font-size:25px;">Discussion</span></strong><br/>
+```
+
+Discuss with your partners: How do you typically choose which regression formula to fit?
+
+```{=html}
+    </p>
+  </details>
+  <br/><hr/>
+```
 
 
+### The Bias-Variance Trade-off
 
-### The Bias-Variance Tradeoff
+One fundamental idea about modelling choice is the **bias-variance trade-off**, which applies regardless of whether we are interested in causal effects (next section) or predictions. The idea is the following: 
 
+* The more variables / complexity we include in the model, the better it can (in principle) adjust to the true relationship, thus reducing model error from bias.
+* The more variables / complexity we include in the model, the larger our error (variance) on the fitted coefficients, thus increasing model error from variance. This means, the model adopts to the given data but no longer to the underlying relationship.
 
+If we sum both terms up, we see that at the total error of a model that is too simple will be dominated by bias (underfitting), and the total error of a model that is too complex will be dominated by variance (overfitting):
+
+```{r chunk_chapter3_71, echo=FALSE, out.width="150%", out.height="150%"}
+knitr::include_graphics(c("images/JIYOI.png"))
+```
+
+We will do some practical simulations on this on Wednesday, for the moment let's just accept this idea as a fact.
 
 
 ### Causal Inference
 
+Apart from the bias-variance trade-off, a crucial consideration is if we are just interested in predictions, or in causal effects. If we are after causal effects, the correct selection of variables is crucial, while it isn't if we just want to predict. This is reviewed in the excellent paper by Lederer et al., which is available <a href="https://www.atsjournals.org/doi/full/10.1513/AnnalsATS.201808-564PS" target="_blank" rel="noopener">here</a>.
 
+The basic idea is the following: 
+
+Let's first define what we mean by "causality": Assume we look at the effect of a target variable (something that could be manipulated = **predictor**) on another variable (the outcome = **response**) in the presence of other (non-target) variables. The goal of a causal analysis is to control for these other variables, in such a way that we estimate the same effect size we would obtain if only the target predictor was manipulated (as in a randomized controlled trial).
+
+You probably have learned in your intro stats class that, to do so, we have to control for **confounders.** I am less sure, however, if everyone is clear about what a confounder is. In particular, confounding is more specific than having a variable that correlates with predictor and response. The direction is crucial to identify true confounders. For example, Fig. 1 C from the Lederer paper shows a **collider**, i.e. a variable that is influenced by predictor and response. Although it correlates with predictor and response, correcting for it (or including it) in a multiple regression will create a collider bias on the causal link we are interested in (Corollary: Including all variables is not always a good thing).
+
+```{r chunk_chapter3_72, echo=FALSE, out.width="150%", out.height="150%"}
+knitr::include_graphics(c("images/confounderCollider.png"))
+```
+
+The bottom line of this discussions (and the essence of Pearl 2000, 2009) is that to establish causality for a specific link, we have to close the so-called back-door paths for this link. So, the strategy for fitting a causal effect is:
+
+* Start by writing down the hypothesis / structure that you want to estimate causally (for example, in A, B Exercise -> Lung cancer).
+
+Then, include / exclude other variables with the goal of: 
+
+* Controlling for confounders (back-doors, blue paths in the figure).
+* Not controlling for colliders, M-Bias, and other similar relationships (red paths).
+* It depends on the question whether we should control for **mediators** (yellow paths).
+
+Note: These other variables (if included) are just there to correct our estimates (-> called **nuisance parameters**), and we should later not discuss them, as they were not themselves checked for confounding (Table 2 fallacy).
+
+```{=html}
+  <hr/>
+  <strong><span style="color: #0011AA; font-size:25px;">Case study 1</span></strong><br/>
+```
+
+Take the example of the past exercise (airquality) and assume, the goal is to understand the causal effect of Temperature on Ozone (primary hypothesis). Draw a causal diagram to decide which variables to take into the regression (i.e. noting which are confounders, mediators or colliders), and fit the model.
+
+```{=html}
+  <details>
+    <summary>
+      <strong><span style="color: #0011AA; font-size:25px;">Solution</span></strong>
+    </summary>
+    <p>
+```
+
+```{r chunk_chapter3_task_31, message=FALSE, warning=FALSE}
+
+```
+
+```{=html}
+    </p>
+  </details>
+  <br/
+```
+
+```{=html}
+  <hr/>
+  <strong><span style="color: #0011AA; font-size:25px;">Case study 2</span></strong><br/>
+```
+
+Perform a causal, a predictive and an exploratory analysis of the Swiss fertility data set called "swiss", available in the standard R data sets. Target for the causal analysis is to estimate the causal (separate direct and indirect effects) of education on fertility, i.e. `lm(Fertility ~ Education, data = swiss)`{.R}.
+
+```{=html}
+  <details>
+    <summary>
+      <strong><span style="color: #0011AA; font-size:25px;">Solution</span></strong>
+    </summary>
+    <p>
+```
+
+```{r chunk_chapter3_task_32, message=FALSE, warning=FALSE}
+
+```
+
+```{=html}
+    </p>
+  </details>
+  <br/><hr/>
+```
 
 
 ### Model Selection Methods
 
+Regardless of whether we do a causal, exploratory or a predictive analysis, we sometimes may still want to get some aid in deciding on the model structure. Specifically:
+
+* For a predictive analysis, even if we know the true causal structure, it may be better to fit a simpler model to reduce the bias-variance trade-off.
+* For a causal analysis, we may not be sure about certain relationships, and we may want to test if a particular hypothesis is better supported by the data than another, or we may be data-limited as well, which means we have to reduce complexity.
+
+In these situations, model selection methods may help. The key for using them is to understand that neither of them can do magic. If you have a limited data set and a massive number of predictors, they will not magically produce the correct model. However, they can be useful in certain situations. Let's introduce them first. I discuss possible problems in the next chapter.
+
+***Likelihood-ratio tests***
+
+A likelihood-ratio test (LRT) is a hypothesis test that can be used to compare 2 **nested** models. Nested means that the simpler of the 2 models is included in the more complex model.
+
+The more complex model will always fit the data better, i.e. have a higher likelihood. This is the reason why you shouldn't use fit or residual patterns for model selection. The likelihood-ratio test tests whether this improvement in likelihood is significantly larger than one would expect if the simpler model is the correct model. 
+
+Likelihood-ratio tests are used to get the p-values in an R ANOVA, and thus you can also use the `anova`{.R} function to perform an likelihood-ratio test between 2 models (Note: For simple models, this will run an F-test, which is technically not exactly a likelihood-ratio test, but the principle is the same): 
+
+```{r chunk_chapter3_chunk73, echo=TRUE, eval=TRUE}
+# Model 1
+m1 = lm(Ozone ~ Wind , data = airquality)
+
+# Model 2
+m2 = lm(Ozone ~ Wind + Temp, data = airquality)
+
+# LRT
+anova(m1, m2)
+```
+
+***AIC model selection ***
+
+Another method for model selection, and probably the most widely used, also because it does not require that models are nested, is the AIC = **Akaike Information Criterion**.
+
+The AIC is defined as $2 \ln(\text{likelihood}) + 2k$, where $k$ = number of parameters.
+
+Essentially, this means AIC = Fit - Penalty for complexity.
+
+**Lower AIC is better!**
+
+```{r chunk_chapter3_chunk74, echo=TRUE, eval=TRUE}
+m1 = lm(Ozone ~ Temp, data = airquality)
+m2 = lm(Ozone ~ Temp + Wind, data = airquality)
+
+AIC(m1)
+AIC(m2)
+```
+
+**Note 1:** It can be shown that AIC is asymptotically identical to leave-one-out cross-validation, so what AIC is optimizing is essentially the predictive error of the model on new data.
+
+**Note 2:** There are other information criteria, such as BIC, DIC, WAIC etc., as well as sample-size corrected versions of either of them (e.g. AICc). The difference between the methods is beyond the scope of this course. For the most common one (BIC), just the note that this penalizes more strongly for large data sets, and thus corrects a tendency of AIC to overfit for large data sets.
+
+```{=html}
+  <hr/>
+  <strong><span style="color: #0011AA; font-size:25px;">Task</span></strong><br/>
+```
+
+Compare results of AIC with likelihood-ratio tests. Discuss: When to use one or the other?
+
+```{=html}
+  <details>
+    <summary>
+      <strong><span style="color: #0011AA; font-size:25px;">Solution</span></strong>
+    </summary>
+    <p>
+```
+
+```{r chunk_chapter3_task_33, message=FALSE, warning=FALSE}
+
+```
+
+```{=html}
+    </p>
+  </details>
+  <br/><hr/>
+```
+
+***Shrinkage estimation ***
+
+A third option option for model selection are shrinkage estimators. These include the LASSO and ridge. 
+
+The basic idea behind these estimators is not to reduce the number of parameters, but to reduce the flexibility of the model by introducing a penalty on the regression coefficients that code a preference for smaller or zero coefficient values. Effectively, this can either amount to model selection (because some coefficients are shrunk directly to zero), or it can mean that we can fit very large models while still being able to do good predictions, or avoid overfitting.
+
+To put a ridge penalty on the standard lm, we can use 
+
+```{r chunk_chapter3_chunk75, echo=TRUE, eval=TRUE}
+lm.ridge(Ozone ~ Wind + Temp + Solar.R, data = airquality, lambda = 2)
+```
+
+We can see how the regression estimates vary for different penalties via 
+
+```{r chunk_chapter3_chunk76, echo=TRUE, eval=TRUE}
+plot( lm.ridge( Ozone ~ Wind + Temp + Solar.R, data = airquality,
+              lambda = seq(0, 200, 0.1) ) )
+```
+
+***P-hacking***
+
+The most dubious model selection strategy, actually considered scientific **misconduct**, is **p-hacking**. The purpose of this exercises is to show you how **not** to do model selection, i.e, that by playing around with the variables, you can make any outcome significant. That is why your hypothesis needs to be fixed **before** looking at the data, ideally through pre-registration, based on an experimental plan or a causal analysis. Here is the example:
+
+Measurements of plant performance. Target was to find out if Gen1 has an effect on Performance. Various other variables are measured
+
+```{r chunk_chapter3_chunk77, echo=TRUE, eval=TRUE}
+set.seed(1)
+dat = data.frame(matrix(rnorm(300), ncol = 10))
+colnames(dat) = c("Performance", "Gen1", "Gen2", "soilC", "soilP", "Temp",
+                  "Humidity", "xPos", "yPos", "Water")
+summary(dat)
+# As you see, no effect of Gen1.
+summary(lm(Performance ~ ., data = dat))
+```
+
+```{=html}
+  <hr/>
+  <strong><span style="color: #0011AA; font-size:25px;">Task</span></strong><br/>
+```
+
+Task for you: P-hack the analysis, i.e. make an effect appear, by trying around (systematically, e.g. with selecting with data, model selection, or by hand to find a model combination that has an effect). The group who finds the model with the highest significance for Gen1 wins!
+
+```{=html}
+  <details>
+    <summary>
+      <strong><span style="color: #0011AA; font-size:25px;">Example</span></strong>
+    </summary>
+    <p>
+```
+
+```{r chunk_chapter3_task_34, message=FALSE, warning=FALSE}
+summary(lm(Performance ~ Gen1 * Humidity, data = dat[20:30,]))
+```
+
+```{=html}
+    </p>
+  </details>
+  <br/><hr/>
+```
+
+Here some inspiration: 
+
+1. Hack Your Way To Scientific Glory:  <a href="https://projects.fivethirtyeight.com/p-hacking/" target="_blank" rel="noopener">https://projects.fivethirtyeight.com/p-hacking/</a>
+2. False-Positive Psychology: Undisclosed Flexibility in Data Collection and Analysis Allows Presenting Anything as Significant:  <a href="https://journals.sagepub.com/doi/full/10.1177/0956797611417632" target="_blank" rel="noopener">https://journals.sagepub.com/doi/full/10.1177/0956797611417632</a>
+3. Sixty seconds on ... P-hacking:  <a href="https://sci-hub.tw/https://www.bmj.com/content/362/bmj.k4039" target="_blank" rel="noopener">https://sci-hub.tw/https://www.bmj.com/content/362/bmj.k4039</a>
+
+John Oliver about p-hacking:
+
+```{r chunk_chapter3_78, eval=knitr::is_html_output(excludes = "epub"), results = 'asis', echo = F}
+cat(
+  '<iframe width="560" height="315"
+  src="https://www.youtube.com/embed/FLNeWgs2n_Q" title="YouTube video player"
+  frameborder="0" allow="accelerometer; autoplay; clipboard-write;
+  encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+  </iframe>'
+)
+```
 
 
+### Problems of Stepwise Model Selection
 
-### Problems of Step-wise Model Selection
+LRT or AIC model selections are often used stepwise or global, i.e. we run either a chain of model selections (AIC or LRT), adding or removing complexity, or we run immediately all possible models and compare their AIC.  Options in R for automatic model selection using AIC are the 
 
+* StepAIC function
+* MuMIn package
 
+Here is an example for either of those:
+
+```{r chunk_chapter3_chunk79, echo=TRUE, eval=TRUE}
+library(MASS)
+library(MuMIn)
+
+fit = lm(Ozone ~ . , data = airquality)
+stepAIC(fit)
+
+# Default na.action for regressions in R is that NA lines are removed.
+# MuMIn requires that there are no NA in the data in the first place.
+# We have to change the default and remove the NA in the data.
+options(na.action = "na.fail")
+dat = airquality[complete.cases(airquality),]
+fit = lm(Ozone ~ . , data = dat)
+out = dredge(fit)
+
+# Set back to default NA action.
+options(na.action = "na.omit")
+
+print(out)
+```
+
+```{=html}
+  <hr/>
+  <strong><span style="color: #0011AA; font-size:25px;">Task</span></strong><br/>
+```
+
+Discuss with your group: What are the problems with model selection? Concentrate on two points in particular:
+
+* Causal structure.
+* Validity of p-values / multiple testing. For the latter, see example below.
+
+```{r chunk_chapter3_task_35, message=FALSE, warning=FALSE}
+set.seed(1)
+library(MASS)
+
+dat = data.frame(matrix(runif(20000), ncol = 100))
+dat$y = rnorm(200)
+fullModel = lm(y ~ . , data = dat)
+summary(fullModel)
+# 2 predictors out of 100 significant (on average, we expect 5 of 100 to be significant).
+
+selection = stepAIC(fullModel)
+summary(selection)
+
+# Voila, 15 out of 28 (before 100) predictors significant.
+# Looks like we could have good fun to discuss / publish these results!
+```
+
+```{=html}
+  <details>
+    <summary>
+      <strong><span style="color: #0011AA; font-size:25px;">Solution</span></strong>
+    </summary>
+    <p>
+```
+
+```{r chunk_chapter3_task_36, message=FALSE, warning=FALSE}
+
+```
+
+```{=html}
+    </p>
+  </details>
+  <br/><hr/>
+```
+
+Conclusion: Stepwise selection + regression table is **hidden multiple testing** and has inflated Type I error rates! This is well-known in the stats literature. You *CAN* do hypothesis tests after model selection, but those require corrections and are not particularly popular, because they are even less significant than the full regression. 
+
+That being said, those methods work excellent to generate *predictive* models!
 
 
 ### Exercise: Global Plant Trait Analysis #3
@@ -1437,7 +1778,7 @@ Revisit exercises \@ref(plantTrait1) / \@ref(plantTrait2), and discuss / analyze
     <p>
 ```
 
-```{r chunk_chapter3_task_31, message=FALSE, warning=FALSE}
+```{r chunk_chapter3_task_37, message=FALSE, warning=FALSE}
 
 ```
 
