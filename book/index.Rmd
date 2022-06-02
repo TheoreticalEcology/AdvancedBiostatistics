@@ -15,7 +15,7 @@ description: "Advanced Biostatistics with R"
 ---
 
 
-# Prerequisites {#prerequisites}
+# Preface {#preface}
 
 ```{=html}
 <!-- Put this here (right after the first markdown headline) and only here for each document! -->
@@ -30,50 +30,16 @@ knitr::write_bib(c(.packages(), 'bookdown', 'knitr', 'rmarkdown'),
 knitr::opts_chunk$set(cache = TRUE)
 ``` 
 
-
-## R System
-
-Make sure you have a recent version of R (>= 3.6, ideally >= 4.0) and RStudio on your computers. 
+The aim of this course is to be able to gain a good theoretical and practical understanding of the statistical problem of estimating an effect: we have a response variable, and we want to understand how this response variable is influenced by a number of other factors. Truly understanding this problem will require mastering a number of skills, in particular: 
 
 
-## EcoData
+* understanding of the fundamental statistical indicators in a regression analysis (p-value, estimator) and their quality (power, bias, error, coverage)
+* good understanding of causal inference in a regression context, and its relation to model selection
+* inderstanding of all building block of the "advanced GLMM framework", i.e. GLM, random effects, GAM, correlation structures
+* knowledge of standard non-parametric evaluation methods such as parametric and non-parametric bootstrap, cross-validation
+* and the ability to use all of these methods in an applied data analysis. 
 
-We may sometimes use data sets from the EcoData package. To install the package, run:
-
-```{r chunk_chapter1_1, eval=FALSE}
-devtools::install_github(repo = "florianhartig/EcoData", subdir = "EcoData",
-                         dependencies = TRUE, build_vignettes = TRUE)
-```
-
-
-## Further Used Libraries
-
-We will make huge use of different libraries. So take a coffee or two (that will take a while...) and install the following libraries.
-Please do this in the given order unless you know what you're doing, because there are some dependencies between the packages.
-
-```{r chunk_chapter1_2, code=xfun::read_utf8('dependencies.R'), eval=FALSE}
-```
-
-
-## Linux/UNIX Systems Have to Fulfill Some Further Dependencies
-
-**Debian based systems**
-
-For Debian based systems, we need:
-
-```{}
-build-essential
-gfortran
-libmagick++-dev
-r-base-dev
-cmake
-```
-
-If you are new to installing packages on Debian / Ubuntu, etc., type the following:
-
-```{}
-sudo apt update && sudo apt install -y --install-recommends build-essential gfortran libmagick++-dev r-base-dev cmake
-```
+This is what we will mainly train in this course. Don't worry if you think that this sounds too simple. We could spend an entire week to only understand the p-value, no problem. We will still only scratch the surface. But I want to make sure that you get an overview of these topics, and are confident enough to run a realistic scientific analysis on your own. Additionally, we will shortly cover advanced topics that lead into the area of machine learning and predictive inference, for example regularization (L1 / L2 penalty), as well as regression trees and the associated methods (e.g. boosting, bagging), and model averaging
 
 
 ```{=html}

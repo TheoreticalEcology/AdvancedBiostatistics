@@ -28,15 +28,65 @@ Make sure you have a recent version of R + RStudio installed on your computer.
 
 If you have never used RStudio, <a href="https://videocampus.sachsen.de/video/First-steps-with-R-and-RStudio/528e5d164219f2d07e32a51736c3f7d1" target="_blank" rel="noopener">here</a> is an introductory video.
 
+For Windows / Mac, R should work out of the box. For Debian based systems, may also need to run
+
+```{}
+build-essential
+gfortran
+libmagick++-dev
+r-base-dev
+cmake
+```
+
+If you are new to installing packages on Debian / Ubuntu, etc., type the following:
+
+```{}
+sudo apt update && sudo apt install -y --install-recommends build-essential gfortran libmagick++-dev r-base-dev cmake
+```
+
+
+### Instsalling librararies
+
+
+
+### EcoData
+
+We may sometimes use data sets from the EcoData package. To install the package, run:
+
+```{r chunk_chapter1_1, eval=FALSE}
+devtools::install_github(repo = "florianhartig/EcoData", subdir = "EcoData",
+                         dependencies = TRUE, build_vignettes = TRUE)
+```
+
+
+### Further Used Libraries
+
+We will make huge use of different libraries. So take a coffee or two (that will take a while...) and install the following libraries.
+Please do this in the given order unless you know what you're doing, because there are some dependencies between the packages.
+
+```{r chunk_chapter1_2, code=xfun::read_utf8('dependencies.R'), eval=FALSE}
+```
+
 
 ## Data Types in R
 
-The following subchapters introduce / remind you of R data types.
+### Exploring data structures
 
+A fundamental requirement to working with data is representing it in a computer. In R, if I type
 
-### Test Your Knowledge
+```{r}
+x <- 1
+```
 
-Discuss with your partner(s) - what is the meaning / structure / properties of the following data types in R:
+the variable x now contains some data, namely the value 1, and I can use x in as a placeholder for the data it contains in further calculations. If you have worked with R, you should know this already, and you should also know that the commands
+
+```{r, eval = F}
+class(x)
+dim(x)
+str(x)
+```
+
+Allow you to explore you the structure of variables and the data they contain. Ask yourself, or discuss with your partner(s) - what is the meaning of the three functions, and what is the structure / properties of the following data types in R:
 
 * Atomic types (which atomic types exist)
 * list
@@ -45,19 +95,11 @@ Discuss with your partner(s) - what is the meaning / structure / properties of t
 * matrix
 * array
 
-
-### Iris Data
-
-What is the data type of the iris data set? Explore using the following commands:
+Moreover, what is the data type of the iris data set, which is build-in in R under the name
 
 ```{r chunk_chapter2_0, eval=FALSE}
 iris
-
-class(iris)
-dim(iris)
-str(iris)
 ```
-
 
 ### Dynamic Typing
 
@@ -85,9 +127,7 @@ iris$Sepal.Length = as.numeric(iris$Sepal.Length)
 
 Have a look at what this does to the values in iris$Sepal.Length.
 
-Note:
-The actions above operate on a local copy of the iris data set. You don't overwrite the base data and can use it again in a new R session or reset it with "data(iris)".
-
+Note: The actions above operate on a local copy of the iris data set. You don't overwrite the base data and can use it again in a new R session or reset it with "data(iris)".
 
 ## Data Selection, Slicing and Subsetting
 
