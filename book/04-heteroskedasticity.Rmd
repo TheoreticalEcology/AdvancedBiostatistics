@@ -262,7 +262,7 @@ plot(fit)
 What can we do to deal with such distributional problems and outliers?
 
 * **Removing** - Bad option, hard to defend, reviewers don't like this - if at all, better show robustness with and without outlier, but result is sometimes not robust.
-* **Change the distribution** - Fit a model with a different distribution, i.e. GLM or other -> we will do this on Wednesday.
+* **Change the distribution** - Fit a model with a different distribution, i.e. GLM or other. -> We will do this on Wednesday.
 * **Robust regressions**.
 * **Quantile regression** - A special type of regression that does not assume a particular residual distribution.
 
@@ -495,14 +495,58 @@ Advanced / optional:
 
 ### Problems With Mixed Models
 
+Specifying mixed models is quite simple, however, there is a large list of (partly quite complicate) issues in their practical application. Here, a (incomplete) list: 
 
+***Interpretation of random effects***
 
+What do the random effects mean? The classical interpretation is that they are a structured error, so they are basically group residuals and are not of further importance. However, people increasingly see random effects also as a means to fit effects that could otherwise not be fittet. For example, if we have data for common and rare species, and we are interested in the density dependence of the species, we could fit
 
+```{r chunk_chapter4_chunk30, echo=TRUE, eval=FALSE, purl=FALSE}
+mortality ~ density + (density | species)
+```
 
+In such a model, we have the mean density effect across all species, and rare species with few data will be constrained by this effect, while common species with a lot of data can overrule the normal distribution imposed by the random slope and get their own estimate. In this picture, the random effect imposes an adaptive shrinkage, similar to a LASSO or ridge shrinkage estimator, with the shrinkage strength controlled by the standard deviation of the random effect. 
 
+***Degrees of freedom for a random effect***
 
+The second problem is: How many parameters does a random effect model have? To know how many parameters the model hss is crucial for calculating p-values, AIC and all that. We can estimate roughly how many parameters we should have by looking at the fixed effect version of the models: 
 
+```{r chunk_chapter4_chunk31, echo=TRUE, eval=TRUE}
+mod1 = lm(normexam ~ standLRT + sex , data = Exam)
+mod1$rank # 3 parameters.
 
+mod2 = lmer(normexam ~ standLRT + sex +  (1 | school), data = Exam)
+# No idea how many parameters.
+
+mod3 = lm(normexam ~ standLRT + sex + school, data = Exam)
+mod3$rank # 67 parameters.
+```
+
+What we can say is that the mixed model is more complicated than mod1, but less than mod2 (as it has the additional constraint), so the complexity must be somewhere in-between. But now much? 
+
+In fact, the complexity is controlled by the estimated variance of the random effect. For a high variance, the model is nearly as complex as mod3, for a low variance, it is only as complex as mod1. Because of these issues, `lmer`{.R} by default does not return p-values. However, you can calculate p-values based on approximate degrees of freedom via the `lmerTest`{.R} package, which also corrects ANOVA for random effeects, but not AIC.
+
+```{r chunk_chapter4_chunk32, echo=TRUE, eval=TRUE}
+library(lmerTest)
+
+m2 = lmer(normexam ~ standLRT + sex +  (1 | school), data = Exam, REML = F)
+summary(m2)
+```
+
+***Variance partitioning / ANOVA***
+
+Also variance partitioning is a bit tricky, as (see type I/II/III ANOVA discussion) fixed and random components of the model are in some way "correlated". The question is: Do you want to count the random effect variance as "explained", or "residual". The most common approach is the hierarchical partitioning proposed by by *Nakagawa & Schielzeth 2013, Nakagawa et al. (2017)*, which is implemented in the MuMIn package. With this, we can run 
+
+```{r chunk_chapter4_chunk33, echo=TRUE, eval=TRUE}
+library(MuMIn)
+
+r.squaredGLMM(m2) 
+```
+
+Interpretation
+
+* R2m: Marginal ${R}^{2}$ value associated with fixed effects.
+* R2c: Conditional ${R}^{2}$ value associated with fixed effects plus the random effects.
 
 
 ### Case Study 2 - Honeybee Data

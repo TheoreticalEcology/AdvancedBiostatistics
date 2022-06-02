@@ -1228,7 +1228,7 @@ car::Anova(fit, type = "III")
 Here is an overview of the situation, from Smith, Carrie E., and Robert Cribbie. "Factorial ANOVA with unbalanced data: A fresh look at the types of sums of squares." Journal of Data Science 12.3 (2014): 385-403, for 2 predictors (Gender and AthStat, and their interaction). Case a) corresponds to the case where we have no collinearity between either of those variables. b-d are the three possible types of ANOVA for variables with collinearity. The "overlap" between the circles depicts the shared part, i.e. the variability that can be expressed by either variable (due to collinearity). Note that the shares in Type II, III do not add up to 1, as there is a kind of "dark variation" that we cannot securely add to either variable. 
 
 ```{r chunk_chapter3_64, echo=FALSE, out.width="150%", out.height="150%"}
-knitr::include_graphics(c("images/ANOVA.png"))
+knitr::include_graphics(c("images/ANOVA.jpg"))
 ```
 
 ```{=html}
@@ -1259,7 +1259,7 @@ Try out the difference between type I, II, III ANOVA for the airquality data set
 
 ### Interactions
 
-When we have multiple variables, we can have the situation that the value of one variable influences the effect of the other(s). Technically, this is called in **interaction**. In situations where the causal direction is known, this is also called a **moderator**. An example: Imagine we observe that the effect of aspirin differs depending on the weight of the subject. Technically, we have an interaction between aspirin and weight. Physiologically, we know the causal direction is weight -> effect of aspirin, so we can say weight is a moderator for the effect of aspirin. 
+When we have multiple variables, we can have the situation that the value of one variable influences the effect of the other(s). Technically, this is called in **interaction**. In situations where the causal direction is known, this is also called a **moderator**. An example: Imagine we observe that the effect of aspirin differs depending on the weight of the subject. Technically, we have an interaction between aspirin and weight. Physiologically, we know the causal direction is "weight -> effect of aspirin", so we can say weight is a moderator for the effect of aspirin. 
 
 ```{r chunk_chapter3_chunk65, echo=TRUE, eval=TRUE}
 fit = lm(Ozone ~ Temp * Wind, data = airquality)
@@ -1441,7 +1441,7 @@ One fundamental idea about modelling choice is the **bias-variance trade-off**, 
 If we sum both terms up, we see that at the total error of a model that is too simple will be dominated by bias (underfitting), and the total error of a model that is too complex will be dominated by variance (overfitting):
 
 ```{r chunk_chapter3_71, echo=FALSE, out.width="150%", out.height="150%"}
-knitr::include_graphics(c("images/JIYOI.png"))
+knitr::include_graphics(c("images/CausalStructures.jpg"))
 ```
 
 We will do some practical simulations on this on Wednesday, for the moment let's just accept this idea as a fact.
@@ -1458,7 +1458,7 @@ Let's first define what we mean by "causality": Assume we look at the effect of 
 You probably have learned in your intro stats class that, to do so, we have to control for **confounders.** I am less sure, however, if everyone is clear about what a confounder is. In particular, confounding is more specific than having a variable that correlates with predictor and response. The direction is crucial to identify true confounders. For example, Fig. 1 C from the Lederer paper shows a **collider**, i.e. a variable that is influenced by predictor and response. Although it correlates with predictor and response, correcting for it (or including it) in a multiple regression will create a collider bias on the causal link we are interested in (Corollary: Including all variables is not always a good thing).
 
 ```{r chunk_chapter3_72, echo=FALSE, out.width="150%", out.height="150%"}
-knitr::include_graphics(c("images/confounderCollider.png"))
+knitr::include_graphics(c("images/BiasBarianceTradeOff.jpg.jpg"))
 ```
 
 The bottom line of this discussions (and the essence of Pearl 2000, 2009) is that to establish causality for a specific link, we have to close the so-called back-door paths for this link. So, the strategy for fitting a causal effect is:
@@ -1618,7 +1618,8 @@ plot( lm.ridge( Ozone ~ Wind + Temp + Solar.R, data = airquality,
               lambda = seq(0, 200, 0.1) ) )
 ```
 
-***P-hacking***
+
+### P-hacking {#pHacking}
 
 The most dubious model selection strategy, actually considered scientific **misconduct**, is **p-hacking**. The purpose of this exercises is to show you how **not** to do model selection, i.e, that by playing around with the variables, you can make any outcome significant. That is why your hypothesis needs to be fixed **before** looking at the data, ideally through pre-registration, based on an experimental plan or a causal analysis. Here is the example:
 

@@ -30,17 +30,15 @@ knitr::write_bib(c(.packages(), 'bookdown', 'knitr', 'rmarkdown'),
 knitr::opts_chunk$set(cache = TRUE)
 ``` 
 
-The aim of this course is to be able to gain a good theoretical and practical understanding of the statistical problem of estimating an effect: we have a response variable, and we want to understand how this response variable is influenced by a number of other factors. Truly understanding this problem will require mastering a number of skills, in particular: 
+The aim of this course is to be able to gain a good theoretical and practical understanding of the statistical problem of estimating an effect: We have a response variable and want to understand how this response variable is influenced by a number of other factors. Truly understanding this problem will require mastering a number of skills, in particular: 
 
-
-* understanding of the fundamental statistical indicators in a regression analysis (p-value, estimator) and their quality (power, bias, error, coverage)
-* good understanding of causal inference in a regression context, and its relation to model selection
-* inderstanding of all building block of the "advanced GLMM framework", i.e. GLM, random effects, GAM, correlation structures
-* knowledge of standard non-parametric evaluation methods such as parametric and non-parametric bootstrap, cross-validation
+* Understanding of the fundamental statistical indicators in regression analysis (p-value, estimator) and their quality (power, bias, error, coverage),
+* good understanding of causal inference in a regression context, and its relation to model selection,
+* understanding of all building blocks of the "advanced GLMM framework", i.e. GLM, random effects, GAM, correlation structures,
+* knowledge of standard non-parametric evaluation methods such as parametric and non-parametric bootstrap, cross-validation,
 * and the ability to use all of these methods in an applied data analysis. 
 
-This is what we will mainly train in this course. Don't worry if you think that this sounds too simple. We could spend an entire week to only understand the p-value, no problem. We will still only scratch the surface. But I want to make sure that you get an overview of these topics, and are confident enough to run a realistic scientific analysis on your own. Additionally, we will shortly cover advanced topics that lead into the area of machine learning and predictive inference, for example regularization (L1 / L2 penalty), as well as regression trees and the associated methods (e.g. boosting, bagging), and model averaging
-
+This is what we will mainly train in this course. Don't worry if you think that this sounds too simple. We could spend an entire week to only understand the p-value, no problem. We will still only scratch the surface. But I want to make sure that you get an overview of these topics and are confident enough to run a realistic scientific analysis on your own. Additionally, we will shortly cover advanced topics that lead into the area of machine learning and predictive inference, for example regularization (L1 / L2 penalty), as well as regression trees and the associated methods (e.g. boosting, bagging) as well as model averaging.
 
 ```{=html}
 <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>
