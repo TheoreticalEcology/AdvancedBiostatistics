@@ -1,19 +1,26 @@
+install.packages("ape")
 install.packages("car")
+install.packages("caper")
 install.packages("devtools")
 install.packages("effects")
 install.packages("gdata")
+install.packages("geiger")
 install.packages("glmmTMB")
 install.packages("knitr")
 install.packages("lmerTest")
 install.packages("MASS")
 install.packages("mgcv")
 install.packages("mlmRev")
+install.packages("modEvA")
 install.packages("multcomp")
 install.packages("MuMIn")
 install.packages("nlme")
+install.packages("phytools")
 install.packages("quantreg")
 install.packages("readxl")
 install.packages("robustbase")
 install.packages("stringr")
+
+
 
 

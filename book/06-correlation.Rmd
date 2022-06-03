@@ -19,26 +19,376 @@ This chapter explains how to model correlation structures in the residuals.
 
 ## General Idea
 
+Except for the random effects, we have so far assumed that observations are independent. We will now relax this assumption. As a motivation, you can skim the following paper from <a href="https://onlinelibrary.wiley.com/doi/10.1111/ecog.02881" target="_blank" rel="noopener">Roberts et al., 2016</a>.
 
+```{r chunk_chapter6_chunk0, echo=FALSE, out.width="150%", out.height="150%"}
+knitr::include_graphics(c("images/correlation.jpg"))
+```
+
+We have already discussed random effects, which is a grouped correlation. All of the other three correlation structures discussed here are different. They are distance-based correlations between data points. Distance is expressed, e.g., by:
+
+* Spatial distance.
+* Temporal distance.
+* Phylogenetic distance.
+
+For either of these structures, there can be two phenomena that lead to correlations:
+
+1. There can be a **trend** in the given space (e.g. time, space), which we have to remove first.
+2. After accounting for the trend, there can be a so-called **autocorrelation** between data points. 
+
+The idea of the so-called **conditional autoregressive** (CAR) structures is, that we make parametric assumptions for how the correlation between data points falls off with distance. Then, we fit the model with this structure.
+
+Similar as for the variance modelling, we can add this structures
+
+* either in `nlme::gls`{.R}, see <a href="https://stat.ethz.ch/R-manual/R-devel/library/nlme/html/corClasses.html" target="_blank" rel="noopener">https://stat.ethz.ch/R-manual/R-devel/library/nlme/html/corClasses.html</a>,
+* or in `glmmTMB`{.R}, see <a href="https://cran.r-project.org/web/packages/glmmTMB/vignettes/covstruct.html" target="_blank" rel="noopener">https://cran.r-project.org/web/packages/glmmTMB/vignettes/covstruct.html</a>.
+
+The following pages provide examples and further comments on how to do this. 
 
 
 ## Temporal and Spatial Correlation Structures
 
+In principle, spatial and temporal correlation are quite similar, there are 2 options we can have:
 
+1. There is a spatial trend in time / space, which creates a correlation in space / time.
+2. There truly is a spatial correlation, after accounting for the trend.
+
+Unfortunately, the distinction between a larger trend and a correlation is quite fluid. Nevertheless, one should always first check for and remove the trend, typically by including time/space as a predictor, potentially in a flexible way (GAMs come in handy). After this is done, we can fit a model with a temporally/spatially correlated error.
+
+***Temporal correlation***
+
+As our first example, I look at the hurricane study from yesterday, which is, after all, temporal data.
+
+```{r chunk_chapter6_chunk1, echo=TRUE, eval=FALSE, purl=FALSE}
+library(gdata)
+library(glmmTMB)
+
+Data = read.xls("http://www.pnas.org/content/suppl/2014/05/30/1402786111.DCSupplemental/pnas.1402786111.sd01.xlsx", 
+                nrows = 92, as.is = TRUE)
+
+originalModelGAM = glmmTMB(alldeaths ~ scale(MasFem) * 
+                          (scale(Minpressure_Updated.2014) + scale(NDAM)), 
+                           data = Data, family = nbinom2)
+
+# Residual checks with DHARMa.
+res = simulateResiduals(originalModelGAM)
+plot(res)
+
+# No significant deviation in the general plot, but try this, which was highlighted by
+# https://www.theguardian.com/science/grrlscientist/2014/jun/04/hurricane-gender-name-bias-sexism-statistics
+plotResiduals(res, Data$NDAM)
+
+# We also find temporal autocorrelation.
+res2 = recalculateResiduals(res, group = Data$Year)
+testTemporalAutocorrelation(res2, time = unique(Data$Year))
+```
+
+A second example from Pinheiro and Bates, pp. 255-258. The data originates from Vonesh and Carter (1992), who describe data measured on high-flux hemodialyzers to assess their in vivo ultrafiltration characteristics. The ultrafiltration rates (in mL/hr) of 20 high-flux dialyzers were measured at seven different transmembrane pressures (in dmHg). The in vitro evaluation of the dialyzers used bovine blood at flow rates of either 200~dl/min or 300~dl/min. The data, are also analyzed in Littell, Milliken, Stroup and Wolfinger (1996).
+
+See `?Dialyzer`{.R} for explanation of the variables (data comes with the package nlme).
+
+The data highlights the flexibility of gls for structured (1|subject) temporal data. Unfortunately, nlme does not interface with DHARMa.
+
+```{r chunk_chapter6_chunk2, echo=TRUE, eval=TRUE}
+library(nlme)
+
+fm1Dial.gls = gls(rate ~(pressure + I(pressure^2) + I(pressure^3) + I(pressure^4))*QB,
+                  data = Dialyzer)
+plot(fm1Dial.gls)
+fm2Dial.gls = update(fm1Dial.gls, weights = varPower(form = ~ pressure))
+plot(fm2Dial.gls)
+fm3Dial.gls = update(fm2Dial.gls, corr = corAR1(0.771, form = ~ 1 | Subject))
+summary(fm3Dial.gls)
+```
+
+***Spatial models***
+
+We will use a data set with thick densities and a spatial (soil) predictor. Read in data
+
+```{r chunk_chapter6_chunk3, echo=TRUE, eval=TRUE}
+spdata = read.table("https://stats.idre.ucla.edu/stat/r/faq/thick.csv",
+                     header = T, sep = ",", row.names = 1)
+```
+
+Fit the model:
+
+```{r chunk_chapter6_chunk4, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE}
+library(DHARMa)
+library(gstat)
+
+plot(thick ~ soil, data = spdata)
+fit = lm(thick ~ soil, data = spdata)
+summary(fit)
+
+# Quantile residuals are not actually needed in this case but
+# DHARMa includes a test for spatial autocorrelation which
+# will save us coding time
+res = simulateResiduals(fit)
+testSpatialAutocorrelation(res, x = spdata$north, y = spdata$east)
+
+# Looking also at the directional variogram
+tann.dir.vgm = variogram(residuals(fit) ~ 1,
+                         loc =~ east + north, data = spdata,
+                         alpha = c(0, 45, 90, 135))
+plot(tann.dir.vgm)
+```
+
+Remove trend via a GAM:
+
+```{r chunk_chapter6_chunk5, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE}
+library(mgcv)
+library(modEvA)
+
+fit1 = gam(thick ~ soil + te(east, north) , data = spdata)
+summary(fit1)
+plot(fit1)
+
+col = colorRamp(c("red", "white", "blue"))(range01(residuals(fit1)))
+ 
+plot(spdata$east, spdata$north, col = rgb(col, maxColorValue = 255) )
+```
+
+Almost the same, but simpler: 
+
+```{r chunk_chapter6_chunk6, echo=TRUE, eval=TRUE}
+fit = lm(thick ~ soil + north + I(north^2), data = spdata)
+```
+
+Alternatively, fit an autoregressive model. Of course, both options can be combined. 
+
+```{r chunk_chapter6_chunk7, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE}
+fit2 = gls(thick ~ soil , correlation = corExp(form =~ east + north) , data = spdata)
+summary(fit2)
+
+fit1 = gls(thick ~ soil + north + I(north^2), data = spdata)
+
+anova(fit1, fit2)
+```
 
 
 ## Phylogenetic Structures (PGLS)
 
+This is mostly taken from <a href="https://lukejharmon.github.io/ilhabela/instruction/2015/07/03/PGLS/" target="_blank" rel="noopener">https://lukejharmon.github.io/ilhabela/instruction/2015/07/03/PGLS/</a>.
 
+You can download the data set at the link above and run the following code (don't forget to adjust the corresponding path):
+
+```{r chunk_chapter6_chunk8, echo=TRUE, eval=FALSE, purl=FALSE}
+anolisTree = read.tree("/tmp/anolis.phy")
+anolisData = read.csv("/tmp/anolisDataAppended.csv", row.names = 1)
+save(anolisTree, anolisData, file = "/tmp/anolis.Rdata")
+```
+
+Alternatively, download the data set at <a href="https://www.dropbox.com/s/8akya9qpg4oln61/anolis.Rdata?dl=0" target="_blank" rel="noopener">https://www.dropbox.com/s/8akya9qpg4oln61/anolis.Rdata?dl=0</a> and read it in (don't forget to adjust the corresponding path).
+
+```{r chunk_chapter6_chunk9, echo=TRUE, eval=FALSE, purl=FALSE}
+load("/tmp/anolis.Rdata")
+```
+
+Perform analysis:
+
+```{r chunk_chapter6_chunk10, echo=TRUE, eval=TRUE}
+library(ape)
+library(geiger)
+library(nlme)
+library(phytools)
+library(DHARMa)
+
+# Check tree.
+plot(anolisTree)
+# Check whether names are matching in both files.
+name.check(anolisTree, anolisData)
+
+# Plot traits.
+plot(anolisData[, c("awesomeness", "hostility")])
+
+# lm analysis.
+plot(hostility ~ awesomeness, data = anolisData)
+fit = lm(hostility ~ awesomeness, data = anolisData)
+summary(fit)
+abline(fit)
+
+# Calculate weight matrix for phylogenetic distance.
+w = 1/cophenetic(anolisTree)
+diag(w) = 0
+
+# Check for phylogenetic signal in hostility.
+Moran.I(anolisData$hostility, w)
+
+# Check for phylogenetic signal in residuals.
+Moran.I(residuals(fit), w)
+# Conclusion: signal in the residuals, a normal lm will not work.
+
+# You can also check with DHARMa, using this works also for GLMMs
+res = simulateResiduals(fit)
+testSpatialAutocorrelation(res, distMat = cophenetic(anolisTree))
+```
+
+An old-school method to deal with the problem are the so-called **Phylogenetically Independent Contrasts** (PICs) (Felsenstein, J. (1985) "Phylogenies and the comparative method". American Naturalist, 125, 1–15.). The idea here is to transform your data in a way that an lm is still appropriate. For completeness, I show the method here.
+
+```{r chunk_chapter6_chunk11, echo=TRUE, eval=TRUE}
+# Extract columns.
+host = anolisData[, "hostility"]
+awe = anolisData[, "awesomeness"]
+
+# Give them names.
+names(host) = names(awe) = rownames(anolisData)
+
+# Calculate PICs.
+hPic = pic(host, anolisTree)
+aPic = pic(awe, anolisTree)
+
+# Make a model.
+picModel = lm(hPic ~ aPic - 1)
+
+summary(picModel) # Yes, significant.
+
+# plot results.
+plot(hPic ~ aPic)
+abline(a = 0, b = coef(picModel))
+```
+
+Now, new school, with a PGLS
+
+```{r chunk_chapter6_chunk12, echo=TRUE, eval=TRUE}
+pglsModel = gls(hostility ~ awesomeness, 
+                 correlation = corBrownian(phy = anolisTree),
+                 data = anolisData, method = "ML")
+summary(pglsModel)
+coef(pglsModel)
+plot(host ~ awe)
+abline(pglsModel, col = "red")
+```
+
+OK, same result, but PGLS is WAY more flexible than PICs.
+For example, we can include a discrete predictor:
+
+```{r chunk_chapter6_chunk13, echo=TRUE, eval=TRUE}
+pglsModel2 = gls(hostility ~ ecomorph, 
+                    correlation = corBrownian(phy = anolisTree),
+                    data = anolisData, method = "ML")
+summary(pglsModel2)
+anova(pglsModel2)
+
+# We can even include multiple predictors:
+  
+pglsModel3 = gls(hostility ~ ecomorph * awesomeness, 
+                correlation = corBrownian(phy = anolisTree),
+                data = anolisData, method = "ML")
+summary(pglsModel3)
+anova(pglsModel3)
+```
+
+We can also assume that the error structure follows an **Ornstein-Uhlenbeck** model rather than **Brownian motion**. When trying this, however, I noted that the model does not converge due to a scaling problem. We can do a quick fix by making the branch lengths longer. This will not affect the analysis other than rescaling a nuisance parameter.
+
+```{r chunk_chapter6_chunk14, echo=TRUE, eval=TRUE}
+tempTree = anolisTree
+tempTree$edge.length = tempTree$edge.length * 100
+pglsModelLambda = gls(hostility ~ awesomeness,
+                      correlation = corPagel(1, phy = tempTree, fixed = FALSE),
+                      data = anolisData, method = "ML")
+summary(pglsModelLambda)
+
+pglsModelOU = gls(hostility ~ awesomeness, 
+                   correlation = corMartins(1, phy = tempTree),
+                   data = anolisData, method = "ML")
+summary(pglsModelOU)
+```
+
+Other example: <a href="http://schmitzlab.info/pgls.htmla" target="_blank" rel="noopener">http://schmitzlab.info/pgls.html</a>.
+
+For fitting PGLS with various models, you should also consider the `caper`{.R} package.
 
 
 ## Exercices
 
+```{=html}
+  <hr/>
+  <strong><span style="color: #0011AA; font-size:25px;">Task</span></strong><br/>
+```
 
+Fit either
+
+* snouter
+* plantcounts
+
+from package EcoData, and check for spatial dependencies in the residuals. See data set help for details on the variables. 
+
+Plantcount data is <a href="https://github.com/TheoreticalEcology/ecodata/blob/master/EcoData/Data/plantcounts.Rdata" target="_blank" rel="noopener">here</a>.
+
+Read in the .RData files like descripted below (adjust to the right path):
+
+```{r chunk_chapter6_task_0, message=FALSE, warning=FALSE, eval=FALSE, purl=FALSE}
+load("/tmp/plantcounts.Rdata")
+```
+
+```{=html}
+  <details>
+    <summary>
+      <strong><span style="color: #0011AA; font-size:25px;">Solution</span></strong>
+    </summary>
+    <p>
+```
+
+```{r chunk_chapter6_task_1, message=FALSE, warning=FALSE}
+
+```
+
+```{=html}
+    </p>
+  </details>
+  <br/><hr/>
+```
 
 
 ## Intro Bayes
 
+Intro Bayes will be done via a <a href="https://www.dropbox.com/s/27zp86y2wnxpdp7/1.1-FlorianHartig_Intro-Bayes.pdf?dl=0" target="_blank" rel="noopener">lecture</a> Code for the lecture <a href="https://www.dropbox.com/s/xjpvdsygy12sffu/1.1-practical.R?dl=0" target="_blank" rel="noopener">here</a>.
 
+To fit Bayesian models, for full flexibility, most people use **Stan**. Stan is a completely new modelling specification language, therefore we won't do this here. 
 
+However, there is the `BRMS`{.R} package. `BRMS`{.R} allows you to specify regression models in the same syntax as `lme4`{.R} / `glmmTMB`{.R}, but translates then to Stan code and fits them. Here a comparison:
+
+```{r chunk_chapter6_chunk15, echo=FALSE, out.width="150%", out.height="150%"}
+knitr::include_graphics(c("images/STAN1.jpg"))
+```
+
+Extended syntax:
+
+```{r chunk_chapter6_chunk16, echo=FALSE, out.width="150%", out.height="150%"}
+knitr::include_graphics(c("images/STAN2.jpg"))
+```
+
+```{=html}
+  <hr/>
+  <strong><span style="color: #0011AA; font-size:25px;">Task</span></strong><br/>
+```
+
+Take any of our simpler models, and run them with BRMS!
+
+```{=html}
+  <details>
+    <summary>
+      <strong><span style="color: #0011AA; font-size:25px;">Solution</span></strong>
+    </summary>
+    <p>
+```
+
+```{r chunk_chapter6_task_2, message=FALSE, warning=FALSE}
+
+```
+
+```{=html}
+    </p>
+  </details>
+  <br/><hr/>
+```
+
+***Bayesian model comparison:*** 
+
+In Bayesian stats, there is no p-value. So, how do we know if something has an effect? There are two options: 
+
+* Just look at the effect size and its uncertainties.
+* Compare the simpler with the more complex model, and calculate which has a higher posterior probability 
+
+The latter is called **posterior weights**, and they are based on the so-called **Bayes factor**. For simple tests, e.g. t-test or lm, the Bayes factor is implemented in the BayesFactor package in R. Look at the examples <a href="https://cran.r-project.org/web/packages/BayesFactor/vignettes/manual.html" target="_blank" rel="noopener">here</a>. 
 
