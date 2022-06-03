@@ -17,31 +17,420 @@ documentclass: book
 
 ## Reminder: Modelling Strategy
 
+```{r chunk_chapter7_chunk0, echo=FALSE, out.width="150%", out.height="150%"}
+knitr::include_graphics(c("images/reminder.jpg"))
+```
+
+Strategy for analysis:
+
+1. Define formula via scientific questions + confounders.
+2. Define type of GLM (lm, logistic, Poisson).
+3. Blocks in data -> Random effects, start with random intercept.
+
+Fit this base model, then do residual checks for
+
+* Wrong functional form -> Change fitted function.
+* Wrong distribution-> Transformation or GLM adjustment.
+* (Over)dispersion -> Variable dispersion GLM.
+* Heteroskedasticity -> Model dispersion.
+* Zero-inflation -> Add ZIP term.
+* Correlation -> Add correlation structure.
+
+And adjust the model accordingly.
+
+Packages:
+
+* baseR: lm, glm.
+* lme4: mixed models, lmer, glmer.
+* mgcv: GAM.
+* nlme: Variance and correlations structure modelling for linear (mixed) models, using gls + lme.
+* glmmTMB: Generalized linear mixed models with variance / correlation modelling and zip term.
 
 
+## Thoughts About the Analysis Pipeline
 
-## Thoughts About the Modelling Pipeline
+In statistics, we rarely use a simple analysis. We often use an entire pipeline, consisting, for example, of the protocol that I sketched in chapter \@ref(protocol). What we should constantly ask ourselves: Is our pipeline good? By "good", we typically mean: If 1000 analyses are run in that way:
 
+* What is the typical error of the estimate?
+* What is the Type I error (false positives)?
+* Are the confidence intervals correctly calculated?
+* ...
 
+The way to check this is to run simulations. For example, the following function creates data that follows the assumptions of a linear regression with slope 0.5, then fits a linear regression, and returns the estimate
+
+```{r chunk_chapter7_chunk1, echo=TRUE, eval=TRUE}
+getEstimate = function(n = 100){
+  x = runif(n)
+  y = 0.5 * x + rnorm(n)
+  fit = lm(y ~ x)
+  x = summary(fit)
+  return(x$coefficients[2, 1])  # Get fitted x weight (should be ~0.5).
+}
+```
+
+The replicate function allows us to execute this 1000 times:
+
+```{r chunk_chapter7_chunk2, echo=TRUE, eval=TRUE}
+set.seed(543210)
+
+out = replicate(1000, getEstimate())
+```
+
+Plotting the result, we can check whether the linear regression is an unbiased estimator for the slope. 
+
+```{r chunk_chapter7_chunk3, echo=TRUE, eval=TRUE}
+hist(out, breaks = 50)
+abline(v = 0.5, col = "red")
+```
+
+"Unbiased" means that, while each single estimate will have some error, the mean of many estimates will spread around the true value.
+
+***Explicitly calculating these values***
+
+**Bias**
+
+```{r chunk_chapter7_chunk4, echo=TRUE, eval=TRUE}
+mean(out) - 0.5 # Should be ~0.
+```
+
+**Variance / standard deviation of the estimator**
+
+```{r chunk_chapter7_chunk5, echo=TRUE, eval=TRUE}
+sd(out)
+```
+
+To check p-values, we could run:
+
+```{r chunk_chapter7_chunk6, echo=TRUE, eval=TRUE}
+set.seed(12345)
+
+getEstimate = function(n = 100){  # Mind: Function has changed!
+  x = runif(n)
+  y = rnorm(n)  # No dependence of x! Identical: y = 0 * x + rnorm(100).
+  fit = lm(y ~ x)
+  x = summary(fit)
+  return(x$coefficients[2, 4])  # P-value for H0: Weight of x = 0.
+}
+
+out = replicate(2000, getEstimate())
+
+hist(out) # Expected: Uniformly distributed p-values. -> Check.
+
+mean(out < 0.05) # Expected: ~0.05. But this is NO p-value... Check H0/H1!
+# Explanation of syntax: Logical vectors are interpreted as vectors of 0s and 1s.
+```
+
+To check the properties of other, possibly more complicated pipelines, statisticians will typically use the same technique. I recommend doing this! For example, you could modify the function above to have a non-normal error. How much difference does that make? Simulating often beats recommendations in the books!
 
 
 ## Bootstrap
 
+***Standard (non-parametric) bootstrap***
 
+The **bootstrap** is a method to generate approximate confidence intervals based on resampling the data. Imagine you have some kind of weird data distribution:
+
+```{r chunk_chapter7_chunk7, echo=TRUE, eval=TRUE}
+set.seed(123)
+
+data = ifelse(rbinom(100, 1, 0.5) == 1, rexp(100, 4) , rnorm(100, -2))
+hist(data)
+```
+
+We want to calculate the mean and it's uncertainty. The mean is simple, but what is the uncertainty of the mean? The standard error can't be used, because this is not a normal distribution. If we don't know the distribution, we can't use a parametric method to calculate the confidence interval.
+
+The solution is the bootstrap. The idea is the following: We re-sample from the data to generate an estimation of the uncertainty of the mean. Let's first do this by hand:
+
+```{r chunk_chapter7_chunk8, echo=TRUE, eval=TRUE}
+set.seed(123)
+
+performBootstrap = function(){
+  resampledData = sample(data, size = length(data), replace = T) 
+  return(mean(resampledData))
+}
+
+bootstrappedMean = replicate(500, performBootstrap())
+hist(bootstrappedMean, breaks = 50)
+abline(v = mean(data), col = "red")
+```
+
+Roughly, this distribution is the confidence interval for the mean for this particular distribution. 
+
+In detail, there are a few tricks to correct confidence intervals for the bootstrap, which are implemented in the `boot`{.R} package. Here is how you would do a boostrap with the boot package. The trick here is to implement the function f(), which must take the data as well as a selection of data points "k" (for example `c(1,3,4,5,8,9)`{.R}, or `1:20`{.R}, etc.) as input, and calculate the desired statistics. 
+
+```{r chunk_chapter7_chunk9, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE}
+library(boot)
+
+f = function(d, k){ mean(d[k]) }
+out = boot(data, f, 500)
+plot(out)
+boot.ci(out)
+```
+
+```{=html}
+  <hr/>
+  <strong><span style="color: #0011AA; font-size:25px;">Task</span></strong><br/>
+```
+
+Calculate a bootstrapped confidence interval for the mean of this exponential distribution. Compare it to the naive standard error:
+
+```{r chunk_chapter7_task_0, message=FALSE, warning=FALSE}
+set.seed(1234)
+
+data = rexp(500)
+```
+
+```{=html}
+  <details>
+    <summary>
+      <strong><span style="color: #0011AA; font-size:25px;">Solution</span></strong>
+    </summary>
+    <p>
+```
+
+```{r chunk_chapter7_task_1, message=FALSE, warning=FALSE}
+
+```
+
+```{=html}
+    </p>
+  </details>
+  <br/><hr/>
+```
+
+***Jacknife***
+
+An alternative to the bootstrap is the **jacknife**.
+
+From Wikipedia:
+
+> In statistics, the jackknife is a resampling technique especially useful for variance and bias estimation. The jackknife predates other common resampling methods such as the bootstrap. The jackknife estimator of a parameter is found by systematically leaving out each observation from a data set and calculating the estimate and then finding the average of these calculations. Given a sample of size N, the jackknife estimate is found by aggregating the estimates of each N-1-sized sub-sample.
+
+> The jackknife technique was developed by Maurice Quenouille (1949, 1956). John Tukey (1958) expanded on the technique and proposed the name "jackknife" since, like a physical jack-knife (a compact folding knife), it is a rough-and-ready tool that can improvise a solution for a variety of problems even though specific problems may be more efficiently solved with a purpose-designed tool.
+
+> The jackknife is a linear approximation of the bootstrap.
+
+```{r chunk_chapter7_chunk10, echo=TRUE, eval=TRUE}
+library(bootstrap)
+
+theta = function(x){ mean(x) }
+results = jackknife(data, theta)
+
+results$jack.se
+results$jack.bias
+```
+
+***Parametric bootstrap***
+
+We call it a **parametric bootstrap** if we don't re-sample the data to generate new data, but simulate from the fitted model. Simple example with a linear model:
+
+```{r chunk_chapter7_chunk11, echo=TRUE, eval=TRUE}
+set.seed(123)
+
+x = runif(100, -2, 2)
+y = rnorm(100, 1 + 2*x, 1)
+dat = data.frame(x = x, y = y)
+
+m = lm(y ~ x)
+
+summary(m)
+```
+
+We are interested in getting the confidence intervals for the coefficients of the model:
+
+```{r chunk_chapter7_chunk12, echo=TRUE, eval=TRUE}
+resampledParameters = function(){
+  newData = dat
+  newData$y = unlist(simulate(m))
+  mNew = lm(y ~ x, newData)
+  return(coef(mNew)[1])
+}
+bootstrappedIntercept = replicate(500, resampledParameters())
+
+hist(bootstrappedIntercept, breaks = 50)
+abline(v = coef(m)[1], col = "red")
+```
+
+The same with the boot package. We need a statistics:
+
+```{r chunk_chapter7_chunk14, echo=TRUE, eval=TRUE}
+foo = function(out){
+  m = lm(y ~ x, out)
+  return(coef(m))
+}
+```
+
+and a function to create new data
+
+```{r chunk_chapter7_chunk15, echo=TRUE, eval=TRUE}
+rgen = function(dat, mle){
+  out = dat
+  out$y = unlist(simulate(mle))
+  return(out)
+}
+
+b2 = boot(dat, foo, R = 1000, sim = "parametric", ran.gen = rgen, mle = m)
+boot.ci(b2, type = "perc", index = 1)
+```
+
+***Application: Simulated likelihood ratio test***
+
+The parametric bootstrap can be used to generate simulated likelihood ratio tests for mixed models. This allows us to test for the significance of variance components without specifying degrees of freedom. We could program this ourselves, but here is a package:
+
+```{r chunk_chapter7_chunk16, echo=TRUE, eval=TRUE}
+library(pbkrtest)
+
+data(beets, package = "pbkrtest")
+head(beets)
+
+## Linear mixed effects model:
+sug = lmer(sugpct ~ block + sow + harvest + (1 | block:harvest), data = beets,
+           REML = FALSE)
+sug.h = update(sug, .~. -harvest)
+sug.s = update(sug, .~. -sow)
+
+anova(sug, sug.h)
+PBmodcomp(sug, sug.h, nsim = 50)
+anova(sug, sug.s)
+PBmodcomp(sug, sug.s, nsim = 50)
+```
+
+A similar approach is taken in `RLRsim`{.R}:
+
+```{r chunk_chapter7_chunk17, echo=TRUE, eval=TRUE}
+library(RLRsim)
+library(lme4)
+
+set.seed(1234)
+
+g = rep(1:10, e = 10)
+x = rnorm(100)
+y = 0.1 * x + rnorm(100)
+
+m = lmer(y ~ x + (1|g), REML = FALSE)
+m0 = lm(y ~ 1)
+
+obs.LRT = 2*(logLik(m) - logLik(m0))
+X = getME(m, "X")
+Z = t(as.matrix(getME(m, "Zt")))
+sim.LRT = LRTSim(X, Z, 1, diag(10))
+pval = mean(sim.LRT > obs.LRT)
+```
 
 
 ## Cross-validation
 
+Cross-validation is the non-parametric alternative to AIC. Note that AIC is asymptotically equal to leave-one-out cross-validation. 
 
+For most advanced models, you will have to program the cross-validation by hand, but here an example for glm, using the `cv.glm`{.R} function:
+
+```{r chunk_chapter7_chunk18, echo=TRUE, eval=TRUE}
+library(boot)
+
+# Leave-one-out and 6-fold cross-validation prediction error for the mammals data set.
+data(mammals, package="MASS")
+mammals.glm = glm(log(brain) ~ log(body), data = mammals)
+(cv.err = cv.glm(mammals, mammals.glm)$delta)
+(cv.err.6 = cv.glm(mammals, mammals.glm, K = 6)$delta)
+
+# As this is a linear model we could calculate the leave-one-out 
+# cross-validation estimate without any extra model-fitting.
+muhat = fitted(mammals.glm)
+mammals.diag = glm.diag(mammals.glm)
+(cv.err = mean((mammals.glm$y - muhat)^2/(1 - mammals.diag$h)^2))
+
+# Leave-one-out and 11-fold cross-validation prediction error for 
+# the nodal data set.  Since the response is a binary variable an
+# appropriate cost function is
+cost = function(r, pi = 0){ mean(abs(r - pi) > 0.5) }
+
+nodal.glm = glm(r ~ stage+xray+acid, binomial, data = nodal)
+(cv.err = cv.glm(nodal, nodal.glm, cost, K = nrow(nodal))$delta)
+(cv.11.err = cv.glm(nodal, nodal.glm, cost, K = 11)$delta)
+```
+
+Note that cross-validation requires independence of data points. For non-independent data, it is possible to block the cross-validation, see Roberts, David R., et al. "Cross‐validation strategies for data with temporal, spatial, hierarchical, or phylogenetic structure." *Ecography* 40.8 (2017): 913-929., methods implemented in package `blockCV`{.R}, see <a href="https://cran.r-project.org/web/packages/blockCV/vignettes/BlockCV_for_SDM.html" target="_blank" rel="noopener">https://cran.r-project.org/web/packages/blockCV/vignettes/BlockCV_for_SDM.html</a>.
 
 
 ## Null Models
 
+Parametric hypothesis tests usually make a fixed assumption about H0. A non-parametric method to get around this that is used for complicated situations are ***randomization null models***. The idea of these is to shuffle around the data, and thus generate a null distribution 
+
+```{r chunk_chapter7_chunk19, echo=TRUE, eval=TRUE}
+set.seed(1337)
+
+# Permutation t-test.
+# A hand-coded randomization test for comparing two groups with arbitrary distribution.
+
+groupA = rnorm(50)
+groupB = rlnorm(50)
+
+dat = data.frame(value = c(groupA, groupB), group = factor(rep(c("A", "B"), each = 50)))
+plot(value ~ group, data = dat)
+
+# Point here is that we can't do a t-test, because groups are not normal. We could do
+
+hist(dat$value, breaks = 40)
+
+reference = mean(groupA) - mean(groupB)
+
+nSim = 5000
+nullDistribution = rep(NA, nSim)
+
+for(i in 1:nSim){
+  sel = dat$value[sample.int(100, size = 100)]
+  nullDistribution[i] = mean(sel[1:50]) - mean(sel[51:100])
+}
+
+hist(nullDistribution, xlim = c(-2,2))
+abline(v = reference, col = "red")
+ecdf(nullDistribution)(reference)
+```
+
+Null models are used abundant, e.g., in packages:
+
+* library(vegan)
+* library(bipartide)
 
 
+## Structural Equation Models (SEMs)
 
-## Structural Equation Mdels (SEMs)
+Structural equation models (SEMs) are models that are designed to estimate entire causal diagrams. For GLMs responses, you will currently have to estimate the DAG (directed aciclic graph) piece-wise, e.g. with <a href="https://cran.r-project.org/web/packages/piecewiseSEM/vignettes/piecewiseSEM.html" target="_blank" rel="noopener">https://cran.r-project.org/web/packages/piecewiseSEM/vignettes/piecewiseSEM.html</a>.
 
+```{r chunk_chapter7_chunk20, echo=TRUE, eval=TRUE}
+library(piecewiseSEM)
 
+mod = psem(
+ lm(rich ~ distance + elev + abiotic + age + hetero + firesev + cover, data = keeley),
+ lm(firesev ~ elev + age + cover, data = keeley), 
+ lm(cover ~ age + elev + hetero + abiotic, data = keeley)
+)
 
+summary(mod)
+plot(mod)
+```
+
+For linear SEMs, we can estimate the entire DAG in one go. This also allows to have unobserved variables in the DAG. One of the most popular packages for this is lavaan:
+
+```{r chunk_chapter7_chunk21, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE}
+library(lavaan)
+mod = "
+  rich ~ distance + elev + abiotic + age + hetero + firesev + cover
+  firesev ~ elev + age + cover
+  cover ~ age + elev + abiotic 
+"
+
+fit = sem(mod, data = keeley)
+
+summary(fit)
+```
+
+Plot options ... not so nice as before.
+
+```{r chunk_chapter7_chunk22, echo=TRUE, eval=TRUE}
+library(lavaanPlot)
+lavaanPlot(model = fit)
+
+library(semPlot)
+semPaths(fit)
+```
 
