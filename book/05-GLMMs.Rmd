@@ -338,13 +338,13 @@ Thus, if you see underdispersion in variable-dispersion GLM for count data, chec
 In the context of GLM(M)s, you have also to be careful about p-hacking. See \@ref(pHacking).
 
 
-## Case Studies
+## Case Studies {#protocol}
 
 Strategy for analysis:
 
 1. Define formula via scientific questions + confounders.
 2. Define type of GLM (lm, logistic, Poisson).
-3. Blocks in data -> random effects, start with random intercept.
+3. Blocks in data -> Random effects, start with random intercept.
 
 Fit this base model, then do residual checks for
 
@@ -422,7 +422,7 @@ The data is available <a href="https://elearning.uni-regensburg.de/pluginfile.ph
 
 You can adopt the file's path and use the following code to read in the data:
 
-```{r chunk_chapter5_task_5, message=FALSE, warning=FALSE}
+```{r chunk_chapter5_task_5, eval=FALSE, purl=FALSE, message=FALSE, warning=FALSE}
 library(readxl)
 Data = read_excel("~/Downloads/pnas.1402786111.sd01.xlsx", n_max = 92)
 Data = as.data.frame(Data)
@@ -431,14 +431,14 @@ str(Data)
 
 Some plots:
 
-```{r chunk_chapter5_task_6, message=FALSE, warning=FALSE}
+```{r chunk_chapter5_task_6, eval=FALSE, purl=FALSE, message=FALSE, warning=FALSE}
 plot(Data$MasFem, Data$NDAM, cex = 0.5, pch = 5)
 points(Data$MasFem, Data$NDAM, cex = Data$alldeaths/20, pch = 4, col= "red")
 ```
 
 The original model from the paper fits a negative binomial, using mgcv.
 
-```{r chunk_chapter5_task_7, message=FALSE, warning=FALSE}
+```{r chunk_chapter5_task_7, eval=FALSE, purl=FALSE, message=FALSE, warning=FALSE}
 originalModelGAM = gam(alldeaths ~ MasFem * (Minpressure_Updated.2014 + NDAM), 
     data = Data, family = nb, na.action = "na.fail")
 summary(originalModelGAM)
@@ -470,16 +470,156 @@ Tasks:
 
 ### Researchers Degrees of Freedom — Skin Color and Red Cards
 
+In 2018 Silberzahn et al. published a "meta analysis" in *Advances in Methods and Practices in Psychological Science*, where they had provided 29 teams with the same data set to answer one research question: "*[W]hether soccer players with dark skin tone are more likely than those with light skin tone to receive red cards from referees*".
 
+**Spoiler**: They found that the "[a]nalytic approaches varied widely across the teams, and the estimated effect sizes ranged from 0.89 to 2.93 (Mdn = 1.31) in odds-ratio units", highlighting that different approaches in data analysis can yield significant variation in the results.
+
+You can find the paper "Many Analysts, One Data Set: Making Transparent How Variations in Analytic Choices Affect Results" at <a href="https://journals.sagepub.com/doi/10.1177/2515245917747646" target="_blank" rel="noopener">https://journals.sagepub.com/doi/10.1177/2515245917747646</a>.
+
+```{=html}
+  <hr/>
+  <strong><span style="color: #0011AA; font-size:25px;">Task</span></strong><br/>
+```
+
+Do a re-analysis of the data as if you were the 30th team to contribute the results to the meta analysis.
+
+* Download the data file "CrowdstormingDataJuly1st.csv" here: <a href="https://osf.io/fv8c3/" target="_blank" rel="noopener">https://osf.io/fv8c3/</a>.
+* Variable explanations are provided in the README: <a href="https://osf.io/9yh4x/" target="_blank" rel="noopener">https://osf.io/9yh4x/</a>.
+* Analyze the data. Given the research question, the selected variables are:
+  1. Response variable: 'redCards' (+'yellowReds'?).
+  2. Multiple variables, potentially accounting for confounding, offsetting, grouping, ... are included in the data.
+  3. primary predictors: 'rater1', 'rater2'
+    * These variables reflect ratings of "two independent raters blind to the research question who, based on their profile photo, categorized players on a 5-point scale ranging from (1) very light skin to (5) very dark skin.
+    * Make sure that 'rater1' and 'rater2' are rescaled to the range 0 ... 1 as described in the paper ("This variable was rescaled to be bounded by 0 (very light skin) and 1 (very dark skin) prior to the final analysis, to ensure consistency of effect sizes across the teams of analysts. The raw ratings were rescaled to 0, .25, .50, .75, and 1 to create this new scale.")
+* Research the concept of **odd ratios** and convert your effect estimate into this format. Are your results within the range of estimates from the 29 teams in Silberzahn et al. (2018)?
+* Have a look at the other modelling teams. Do you understand the models they fit?
+
+```{=html}
+  <details>
+    <summary>
+      <strong><span style="color: #0011AA; font-size:25px;">Solution</span></strong>
+    </summary>
+    <p>
+```
+
+```{r chunk_chapter5_task_9, message=FALSE, warning=FALSE}
+
+```
+
+```{=html}
+    </p>
+  </details>
+  <br/><hr/>
+```
 
 
 ### Marmots
 
+```{=html}
+  <hr/>
+  <strong><span style="color: #0011AA; font-size:25px;">Task</span></strong><br/>
+```
 
+Analyze the Marmot data. Available at <a href="http://highstat.com/Books/Book4/Marmots.txt" target="_blank" rel="noopener">http://highstat.com/Books/Book4/Marmots.txt</a>. You can read the URL directly with R, no need to download. A description of the data is available <a href="https://elearning.uni-regensburg.de/pluginfile.php/1922323/mod_assign/introattachment/0/Marmots.pdf?forcedownload=1" target="_blank" rel="noopener">https://osf.io/9yh4x/</a>.
+
+Use the following snippet to read in the data:
+
+```{r chunk_chapter5_task_10, eval=FALSE, purl=FALSE, message=FALSE, warning=FALSE}
+marmots = read.table(url("http://highstat.com/Books/Book4/Marmots.txt"))
+```
+
+```{=html}
+  <details>
+    <summary>
+      <strong><span style="color: #0011AA; font-size:25px;">Solution</span></strong>
+    </summary>
+    <p>
+```
+
+```{r chunk_chapter5_task_11, message=FALSE, warning=FALSE}
+
+```
+
+```{=html}
+    </p>
+  </details>
+  <br/><hr/>
+```
 
 
 ## Thoughts About the Analysis Pipeline
 
+In statistics, we rarely use a simple analysis. We often use an entire pipeline, consisting, for example, of the protocol that I sketched in chapter \@ref(protocol). What we should constantly ask ourselves: Is our pipeline good? By "good", we typically mean: If 1000 analyses are run in that way:
 
+* What is the typical error of the estimate?
+* What is the Type I error (false positives)?
+* Are the confidence intervals correctly calculated?
+* ...
+
+The way to check this is to run simulations. For example, the following function creates data that follows the assumptions of a linear regression with slope 0.5, then fits a linear regression, and returns the estimate
+
+```{r chunk_chapter5_chunk23, echo=TRUE, eval=TRUE}
+getEstimate = function(n = 100){
+  x = runif(n)
+  y = 0.5 * x + rnorm(n)
+  fit = lm(y ~ x)
+  x = summary(fit)
+  return(x$coefficients[2, 1])  # Get fitted x weight (should be ~0.5).
+}
+```
+
+The replicate function allows us to execute this 1000 times:
+
+```{r chunk_chapter5_chunk24, echo=TRUE, eval=TRUE}
+set.seed(543210)
+
+out = replicate(1000, getEstimate())
+```
+
+Plotting the result, we can check whether the linear regression is an unbiased estimator for the slope. 
+
+```{r chunk_chapter5_chunk25, echo=TRUE, eval=TRUE}
+hist(out, breaks = 50)
+abline(v = 0.5, col = "red")
+```
+
+"Unbiased" means that, while each single estimate will have some error, the mean of many estimates will spread around the true value.
+
+***Explicitly calculating these values***
+
+**Bias**
+
+```{r chunk_chapter5_chunk26, echo=TRUE, eval=TRUE}
+mean(out) - 0.5 # Should be ~0.
+```
+
+**Variance / standard deviation of the estimator**
+
+```{r chunk_chapter5_chunk27, echo=TRUE, eval=TRUE}
+sd(out)
+```
+
+To check p-values, we could run:
+
+```{r chunk_chapter5_chunk28, echo=TRUE, eval=TRUE}
+set.seed(12345)
+
+getEstimate = function(n = 100){  # Mind: Function has changed!
+  x = runif(n)
+  y = rnorm(n)  # No dependence of x! Identical: y = 0 * x + rnorm(100).
+  fit = lm(y ~ x)
+  x = summary(fit)
+  return(x$coefficients[2, 4])  # P-value for H0: Weight of x = 0.
+}
+
+out = replicate(2000, getEstimate())
+
+hist(out) # Expected: Uniformly distributed p-values. -> Check.
+
+mean(out < 0.05) # Expected: ~0.05. But this is NO p-value... Check H0/H1!
+# Explanation of syntax: Logical vectors are interpreted as vectors of 0s and 1s.
+```
+
+To check the properties of other, possibly more complicated pipelines, we will typically use the same technique. I recommend doing this! Simulating often beats recommendations in the books!
 
 
