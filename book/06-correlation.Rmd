@@ -170,23 +170,16 @@ anova(fit1, fit2)
 
 This is mostly taken from <a href="https://lukejharmon.github.io/ilhabela/instruction/2015/07/03/PGLS/" target="_blank" rel="noopener">https://lukejharmon.github.io/ilhabela/instruction/2015/07/03/PGLS/</a>.
 
-You can download the data set at the link above and run the following code (don't forget to adjust the corresponding path):
+To make things easy, there is an already prepared data set for download. Just run the following code (don't forget to adjust the corresponding paths!).
 
-```{r chunk_chapter6_chunk8, echo=TRUE, eval=FALSE, purl=FALSE}
-anolisTree = read.tree("/tmp/anolis.phy")
-anolisData = read.csv("/tmp/anolisDataAppended.csv", row.names = 1)
-save(anolisTree, anolisData, file = "/tmp/anolis.Rdata")
-```
-
-Alternatively, download the data set at <a href="https://www.dropbox.com/s/8akya9qpg4oln61/anolis.Rdata?dl=0" target="_blank" rel="noopener">https://www.dropbox.com/s/8akya9qpg4oln61/anolis.Rdata?dl=0</a> and read it in (don't forget to adjust the corresponding path).
-
-```{r chunk_chapter6_chunk9, echo=TRUE, eval=FALSE, purl=FALSE}
+```{r chunk_chapter6_chunk8, echo=TRUE, eval=TRUE}
+download.file("https://www.dropbox.com/s/8akya9qpg4oln61/anolis.Rdata?dl=1", "/tmp/anolis.Rdata")
 load("/tmp/anolis.Rdata")
 ```
 
 Perform analysis:
 
-```{r chunk_chapter6_chunk10, echo=TRUE, eval=TRUE}
+```{r chunk_chapter6_chunk9, echo=TRUE, eval=TRUE}
 library(ape)
 library(geiger)
 library(nlme)
@@ -225,7 +218,7 @@ testSpatialAutocorrelation(res, distMat = cophenetic(anolisTree))
 
 An old-school method to deal with the problem are the so-called **Phylogenetically Independent Contrasts** (PICs) (Felsenstein, J. (1985) "Phylogenies and the comparative method". American Naturalist, 125, 1–15.). The idea here is to transform your data in a way that an lm is still appropriate. For completeness, I show the method here.
 
-```{r chunk_chapter6_chunk11, echo=TRUE, eval=TRUE}
+```{r chunk_chapter6_chunk10, echo=TRUE, eval=TRUE}
 # Extract columns.
 host = anolisData[, "hostility"]
 awe = anolisData[, "awesomeness"]
@@ -249,7 +242,7 @@ abline(a = 0, b = coef(picModel))
 
 Now, new school, with a PGLS
 
-```{r chunk_chapter6_chunk12, echo=TRUE, eval=TRUE}
+```{r chunk_chapter6_chunk11, echo=TRUE, eval=TRUE}
 pglsModel = gls(hostility ~ awesomeness, 
                  correlation = corBrownian(phy = anolisTree),
                  data = anolisData, method = "ML")
@@ -262,7 +255,7 @@ abline(pglsModel, col = "red")
 OK, same result, but PGLS is WAY more flexible than PICs.
 For example, we can include a discrete predictor:
 
-```{r chunk_chapter6_chunk13, echo=TRUE, eval=TRUE}
+```{r chunk_chapter6_chunk12, echo=TRUE, eval=TRUE}
 pglsModel2 = gls(hostility ~ ecomorph, 
                     correlation = corBrownian(phy = anolisTree),
                     data = anolisData, method = "ML")
@@ -280,7 +273,7 @@ anova(pglsModel3)
 
 We can also assume that the error structure follows an **Ornstein-Uhlenbeck** model rather than **Brownian motion**. When trying this, however, I noted that the model does not converge due to a scaling problem. We can do a quick fix by making the branch lengths longer. This will not affect the analysis other than rescaling a nuisance parameter.
 
-```{r chunk_chapter6_chunk14, echo=TRUE, eval=TRUE}
+```{r chunk_chapter6_chunk13, echo=TRUE, eval=TRUE}
 tempTree = anolisTree
 tempTree$edge.length = tempTree$edge.length * 100
 pglsModelLambda = gls(hostility ~ awesomeness,
@@ -290,7 +283,7 @@ summary(pglsModelLambda)
 
 pglsModelOU = gls(hostility ~ awesomeness, 
                    correlation = corMartins(1, phy = tempTree),
-                   data = anolisData, method = "ML")
+                   data = anolisData)
 summary(pglsModelOU)
 ```
 
@@ -311,7 +304,7 @@ Fit either
 * snouter
 * plantcounts
 
-from package EcoData, and check for spatial dependencies in the residuals. See data set help for details on the variables. 
+from package EcoData, and check for spatial dependencies in the residuals. See the data set's help for details on the variables. 
 
 Plantcount data is <a href="https://github.com/TheoreticalEcology/ecodata/blob/master/EcoData/Data/plantcounts.Rdata" target="_blank" rel="noopener">here</a>.
 
@@ -348,13 +341,13 @@ To fit Bayesian models, for full flexibility, most people use **Stan**. Stan is 
 
 However, there is the `BRMS`{.R} package. `BRMS`{.R} allows you to specify regression models in the same syntax as `lme4`{.R} / `glmmTMB`{.R}, but translates then to Stan code and fits them. Here a comparison:
 
-```{r chunk_chapter6_chunk15, echo=FALSE, out.width="150%", out.height="150%"}
+```{r chunk_chapter6_chunk14, echo=FALSE, out.width="150%", out.height="150%"}
 knitr::include_graphics(c("images/STAN1.jpg"))
 ```
 
 Extended syntax:
 
-```{r chunk_chapter6_chunk16, echo=FALSE, out.width="150%", out.height="150%"}
+```{r chunk_chapter6_chunk15, echo=FALSE, out.width="150%", out.height="150%"}
 knitr::include_graphics(c("images/STAN2.jpg"))
 ```
 

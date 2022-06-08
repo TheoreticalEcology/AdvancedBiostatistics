@@ -400,9 +400,9 @@ Structural equation models (SEMs) are models that are designed to estimate entir
 library(piecewiseSEM)
 
 mod = psem(
- lm(rich ~ distance + elev + abiotic + age + hetero + firesev + cover, data = keeley),
- lm(firesev ~ elev + age + cover, data = keeley), 
- lm(cover ~ age + elev + hetero + abiotic, data = keeley)
+  lm(rich ~ distance + elev + abiotic + age + hetero + firesev + cover, data = keeley),
+  lm(firesev ~ elev + age + cover, data = keeley), 
+  lm(cover ~ age + elev + hetero + abiotic, data = keeley)
 )
 
 summary(mod)
@@ -413,6 +413,7 @@ For linear SEMs, we can estimate the entire DAG in one go. This also allows to h
 
 ```{r chunk_chapter7_chunk21, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE}
 library(lavaan)
+
 mod = "
   rich ~ distance + elev + abiotic + age + hetero + firesev + cover
   firesev ~ elev + age + cover

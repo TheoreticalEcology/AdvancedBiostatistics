@@ -1225,7 +1225,7 @@ There is also type III, which is as type II, but avoids a similar problem for in
 car::Anova(fit, type = "III")
 ```
 
-Here is an overview of the situation, from Smith, Carrie E., and Robert Cribbie. "Factorial ANOVA with unbalanced data: A fresh look at the types of sums of squares." Journal of Data Science 12.3 (2014): 385-403, for 2 predictors (Gender and AthStat, and their interaction). Case a) corresponds to the case where we have no collinearity between either of those variables. b-d are the three possible types of ANOVA for variables with collinearity. The "overlap" between the circles depicts the shared part, i.e. the variability that can be expressed by either variable (due to collinearity). Note that the shares in Type II, III do not add up to 1, as there is a kind of "dark variation" that we cannot securely add to either variable. 
+Here is an overview of the situation for 2 predictors A and B and their interaction. The upper left figure corresponds to the case where we have no collinearity between either of those variables. The figure on the top right (and similarly types I - III) are the three possible types of ANOVA for variables with collinearity. The "overlap" between the circles depicts the shared part, i.e. the variability that can be expressed by either variable (due to collinearity). Note that the shares in Type II, III do not add up to 1, as there is a kind of "dark variation" that we cannot securely add to either variable. 
 
 ```{r chunk_chapter3_64, echo=FALSE, out.width="150%", out.height="150%"}
 knitr::include_graphics(c("images/ANOVA.jpg"))
@@ -1441,7 +1441,7 @@ One fundamental idea about modelling choice is the **bias-variance trade-off**, 
 If we sum both terms up, we see that at the total error of a model that is too simple will be dominated by bias (underfitting), and the total error of a model that is too complex will be dominated by variance (overfitting):
 
 ```{r chunk_chapter3_71, echo=FALSE, out.width="150%", out.height="150%"}
-knitr::include_graphics(c("images/CausalStructures.jpg"))
+knitr::include_graphics(c("images/BiasBarianceTradeOff.jpg"))
 ```
 
 We will do some practical simulations on this on Wednesday, for the moment let's just accept this idea as a fact.
@@ -1455,20 +1455,20 @@ The basic idea is the following:
 
 Let's first define what we mean by "causality": Assume we look at the effect of a target variable (something that could be manipulated = **predictor**) on another variable (the outcome = **response**) in the presence of other (non-target) variables. The goal of a causal analysis is to control for these other variables, in such a way that we estimate the same effect size we would obtain if only the target predictor was manipulated (as in a randomized controlled trial).
 
-You probably have learned in your intro stats class that, to do so, we have to control for **confounders.** I am less sure, however, if everyone is clear about what a confounder is. In particular, confounding is more specific than having a variable that correlates with predictor and response. The direction is crucial to identify true confounders. For example, Fig. 1 C from the Lederer paper shows a **collider**, i.e. a variable that is influenced by predictor and response. Although it correlates with predictor and response, correcting for it (or including it) in a multiple regression will create a collider bias on the causal link we are interested in (Corollary: Including all variables is not always a good thing).
+You probably have learned in your intro stats class that, to do so, we have to control for **confounders.** I am less sure, however, if everyone is clear about what a confounder is. In particular, confounding is more specific than having a variable that correlates with predictor and response. The direction is crucial to identify true confounders. For example, C) in the figure below  shows a **collider**, i.e. a variable that is influenced by predictor and response. Although it correlates with predictor and response, correcting for it (or including it) in a multiple regression will create a collider bias on the causal link we are interested in (Corollary: Including all variables is not always a good thing).
 
 ```{r chunk_chapter3_72, echo=FALSE, out.width="150%", out.height="150%"}
-knitr::include_graphics(c("images/BiasBarianceTradeOff.jpg.jpg"))
+knitr::include_graphics(c("images/CausalStructures.jpg"))
 ```
 
 The bottom line of this discussions (and the essence of Pearl 2000, 2009) is that to establish causality for a specific link, we have to close the so-called back-door paths for this link. So, the strategy for fitting a causal effect is:
 
-* Start by writing down the hypothesis / structure that you want to estimate causally (for example, in A, B Exercise -> Lung cancer).
+* Start by writing down the hypothesis / structure that you want to estimate causally (for example, in A, B "Plant diversity" -> Ecosystem productivity).
 
 Then, include / exclude other variables with the goal of: 
 
 * Controlling for confounders (back-doors, blue paths in the figure).
-* Not controlling for colliders, M-Bias, and other similar relationships (red paths).
+* Not controlling for colliders, (something similar, called "M-Bias",) and other similar relationships (red paths).
 * It depends on the question whether we should control for **mediators** (yellow paths).
 
 Note: These other variables (if included) are just there to correct our estimates (-> called **nuisance parameters**), and we should later not discuss them, as they were not themselves checked for confounding (Table 2 fallacy).
@@ -1720,8 +1720,8 @@ Discuss with your group: What are the problems with model selection? Concentrate
 * Validity of p-values / multiple testing. For the latter, see example below.
 
 ```{r chunk_chapter3_task_35, message=FALSE, warning=FALSE}
-set.seed(1)
 library(MASS)
+set.seed(1)
 
 dat = data.frame(matrix(runif(20000), ncol = 100))
 dat$y = rnorm(200)

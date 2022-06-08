@@ -32,7 +32,6 @@ satisf = read.csv(file = "https://www.dropbox.com/s/sggy9b9xb0rekkx/soep_satisfc
 
 Perform an exploratory causal analysis of the data to find out what determines life satisfaction and if the effect of those factors has changed over time. 
 
-
 ```{=html}
   <details>
     <summary>
@@ -99,7 +98,7 @@ and see if the residuals are getting better. To avoid doing this totally randoml
 
 Another options are GAMs = Generalized Additive Models. The idea is to fit a smooth function to data, to automatically find the "right" functional form. The smoothness of the function is automatically optimized.
 
-```{r chunk_chapter4_chunk4, echo=TRUE, eval=TRUE, message=FALSE}
+```{r chunk_chapter4_chunk4, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE}
 library(mgcv)
 
 fit = gam(Ozone ~ s(Wind) + s(Temp) + s(Solar.R) , data = airquality)
@@ -193,13 +192,13 @@ summary(fit)
 
 ### Exercise
 
-Take this plot of Ozone ~ Solar.R using the airquality data - Clearly there is heteroskedasticity in the relationship:
+Take this plot of Ozone ~ Solar.R using the airquality data. Clearly there is heteroskedasticity in the relationship:
 
 ```{r chunk_chapter4_chunk14, echo=TRUE, eval=TRUE}
 plot(Ozone ~ Solar.R, data = airquality)
 ```
 
-We can also see this if we fit the regression model:
+We can also see this when we fit the regression model:
 
 ```{r chunk_chapter4_chunk15, echo=TRUE, eval=FALSE}
 m1 = lm(Ozone ~ Solar.R, data = airquality)
@@ -255,7 +254,7 @@ Fitting the model, we see that the distribution is to wide:
 
 ```{r chunk_chapter4_chunk17, echo=TRUE, eval=TRUE}
 fit = lm(growth ~ concentration)
-par(mfrow = c(2,2))
+par(mfrow = c(2, 2))
 plot(fit)
 ```
 
