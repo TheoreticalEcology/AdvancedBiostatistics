@@ -102,7 +102,9 @@ plot(allEffects(m2))
 Note: 
 
 * Treatment coding for factors works as before.
-* Age effects for male / female cannot directly be compared, because they are calculated at a different intercept, and through the nonlinear link, this leads to a different effect on the response. One option to solve this are the so-called odds ratios. Or just look at the response scale, e.g. via the effect plots, and interpret there!
+* Age effects for male / female cannot directly be compared, because they are calculated at a different intercept, and through the nonlinear link, this leads to a different effect on the response. One option to solve this are the so-called **odds ratios**. Or just look at the response scale, e.g. via the effect plots, and interpret there!
+
+
 
 ***Residual checks***
 
@@ -119,7 +121,7 @@ par(mfrow = c(2, 2))
 plot(m2)
 ```
 
-still work, but they don't look any better than before, because they still check for normality of the residuals, while we are interested in the question of whether the residuals are binomially distributed. The DHARMa package solves this problem. Load the DHARMa package, which should have been installed with EcoData already:
+still work, but they don't look any better than before, because they still check for normality of the residuals, while we are interested in the question of whether the residuals are binomially distributed. The `DHARMa`.{R} package solves this problem. Load the `DHARMa`.{R} package, which should have been installed with EcoData already:
 
 ```{r chunk_chapter5_chunk11, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE}
 library(DHARMa)
@@ -162,7 +164,8 @@ dataUsed = as.numeric(rownames(model.frame(m2)))
 plotResiduals(m2, form = titanic$pclass[dataUsed])
 ```
 
-We will talk about DHARMa more later, see also comments on testing binomial GLMs <a href="https://cran.r-project.org/web/packages/DHARMa/vignettes/DHARMa.html#binomial-data" target="_blank" rel="noopener">here</a>.
+We will talk about `DHARMa`.{R} more later, see also comments on testing binomial GLMs  
+<a href="https://cran.r-project.org/web/packages/DHARMa/vignettes/DHARMa.html#binomial-data" target="_blank" rel="noopener">here</a>.
 
 
 ### A Poisson Example
@@ -248,6 +251,8 @@ This is obviously not always a good assumption. In most cases with count data, w
 
 Because the 3rd option gives us more possibilities to model e.g. heteroskedasticity later, its preferable over an OLRE. I would always recommend the third option.
 
+
+
 ***Example:***
 
 ```{r chunk_chapter5_chunk20, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE}
@@ -287,7 +292,7 @@ res = simulateResiduals(m4, plot = T)
 
 ### Heteroskedasticity in GLMMs
 
-GLM(M)s can be heteroskedastic as well, i.e. dispersion depends on some predictors. In glmmTMB, you can make the dispersion of the negative Binomial dependent on a formula via the dispformula argument, in the same way as in nlme for the linear model. 
+GLM(M)s can be heteroskedastic as well, i.e. dispersion depends on some predictors. In `glmmTMB`.{R}, you can make the dispersion of the negative Binomial dependent on a formula via the `dispformula`.{R} argument, in the same way as in `nlme`.{R} for the linear model. 
 
 Variance problems would show up when plotting residuals against predicted and predictors. On the previous page, we saw some variance problems in the Salamander model. We could add a variable dispersion model via 
 
@@ -312,13 +317,15 @@ Another common problem in count data (Poisson / negative binomial), but also oth
 
 Note that the result of 2. can again be zero, so there are two explanations for a zero in the data. 
 
-Zero-inflated GLMMs can, for example, be fit with the glmmTMB package, using `ziformula = ~ 0`{.R}. 
+Zero-inflated GLMMs can, for example, be fit with the `glmmTMB`.{R} package, using `ziformula = ~ 0`{.R}. 
+
+
 
 ***How to check for zero-inflation***
 
 *Important*: Do not check for zero-inflation in the response. 
 
-DHARMa has a function for testing zero-inflation:
+`DHARMa`.{R} has a function for testing zero-inflation:
 
 ```{r chunk_chapter5_chunk22, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE}
 m4 = glmmTMB(count ~ spp + mined + (1|site), family = nbinom2, data = Salamanders)
@@ -365,7 +372,7 @@ And adjust the model accordingly.
   <strong><span style="color: #0011AA; font-size:25px;">Task</span></strong><br/>
 ```
 
-Look at the Owl data set in the glmmTMB package. The initial hypothesis is 
+Look at the Owl data set in the `glmmTMB`.{R} package. The initial hypothesis is 
 
 ```{r chunk_chapter5_task_3, message=FALSE, warning=FALSE}
 m1 = glm(SiblingNegotiation ~ FoodTreatment*SexParent + offset(log(BroodSize)),
@@ -418,7 +425,8 @@ In <a href="https://www.pnas.org/content/111/24/8782" target="_blank" rel="noope
 
 Specifically, they analyze the number of hurricane fatalities, and claim that there is an effect of the femininity of the name on the number of fatalities, correcting for several possible confounders. They interpret the result as causal (including mediators), claiming that giving only male names to hurricanes would considerably reduce death toll. 
 
-The data is available <a href="https://elearning.uni-regensburg.de/pluginfile.php/2365101/mod_book/chapter/48142/Hurricanes.Rdata" target="_blank" rel="noopener">https://elearning.uni-regensburg.de/pluginfile.php/2365101/mod_book/chapter/48142/Hurricanes.Rdata</a>.
+The data is available at:  
+<a href="https://elearning.uni-regensburg.de/pluginfile.php/2365101/mod_book/chapter/48142/Hurricanes.Rdata" target="_blank" rel="noopener">https://elearning.uni-regensburg.de/pluginfile.php/2365101/mod_book/chapter/48142/Hurricanes.Rdata</a>.
 
 You can adopt the file's path and use the following code to read in the data:
 
@@ -437,7 +445,7 @@ plot(Data$MasFem, Data$NDAM, cex = 0.5, pch = 5)
 points(Data$MasFem, Data$NDAM, cex = Data$alldeaths/20, pch = 4, col= "red")
 ```
 
-The original model from the paper fits a negative binomial, using mgcv.
+The original model from the paper fits a negative binomial, using `mgcv`.{R}.
 
 ```{r chunk_chapter5_task_7, eval=FALSE, purl=FALSE, message=FALSE, warning=FALSE}
 originalModelGAM = gam(alldeaths ~ MasFem * (Minpressure_Updated.2014 + NDAM), 
@@ -475,7 +483,7 @@ In 2018 Silberzahn et al. published a "meta analysis" in *Advances in Methods an
 
 **Spoiler**: They found that the "[a]nalytic approaches varied widely across the teams, and the estimated effect sizes ranged from 0.89 to 2.93 (Mdn = 1.31) in odds-ratio units", highlighting that different approaches in data analysis can yield significant variation in the results.
 
-You can find the paper "Many Analysts, One Data Set: Making Transparent How Variations in Analytic Choices Affect Results" at <a href="https://journals.sagepub.com/doi/10.1177/2515245917747646" target="_blank" rel="noopener">https://journals.sagepub.com/doi/10.1177/2515245917747646</a>.
+You can find the paper "Many Analysts, One Data Set: Making Transparent How Variations in Analytic Choices Affect Results" at: <a href="https://journals.sagepub.com/doi/10.1177/2515245917747646" target="_blank" rel="noopener">https://journals.sagepub.com/doi/10.1177/2515245917747646</a>.
 
 ```{=html}
   <hr/>

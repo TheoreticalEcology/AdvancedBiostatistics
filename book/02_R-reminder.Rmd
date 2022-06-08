@@ -187,13 +187,13 @@ Data.frames are the same as matrices, except that, like with lists of vectors, y
 Slicing is very powerful if you combine it with logical operators, such as "&" (logical and), "|" (logical or), "==" (equal), "!=" (not equal), "<=", ">", etc. Here are a few examples:
 
 ```{r chunk_chapter2_12}
-iris[iris$Species == "virginica", ]
+head(iris[iris$Species == "virginica", ], 20)   # Show first 20 entries only.
 ```
 
 Note that this is identical to the following:
 
 ```{r chunk_chapter2_13}
-subset(iris, Species == "virginica") 
+head(subset(iris, Species == "virginica"), 20)  # Show first 20 entries only.
 ```
 
 You can also combine several logical commands:
@@ -412,7 +412,7 @@ c()
 aggregate(. ~ Species, data = iris, FUN = max)
 ```
 
-Note that max is the function to get the maximum value, and has nothing to do with your lecturer, who should be spelled Max. 
+Note that `max`{.R}` is the function to get the maximum value, and has nothing to do with your lecturer, who should be spelled Max. 
 
 The dot is general R syntax and usually refers to "use all columns in the data set".
 

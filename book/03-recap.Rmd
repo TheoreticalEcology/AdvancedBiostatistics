@@ -45,7 +45,7 @@ cor(airquality$Ozone, airquality$Wind, use = "complete.obs")
 
 to get the (Pearson) correlation, which is negative: -0.6015465.
 
-What we want to do now is fitting regression models through the data with the lm() function of R. The function name lm is short for "linear model". However, remember from the basic course: This model is not called linear because we necessarily fit a linear function. It's called linear because we express the response (in our case Wind) as a polynomial of the predictor(s). That means, the predictors have linear coefficients but they might themselves be for example quadratic or sinus terms. So $y = \operatorname{f}(x) + \mathcal{N}(0, \sigma)$, where $\operatorname{f}$ is a polynomial, e.g. ${a}_{0} + {a}_{1} \cdot x + {a}_{2} \cdot {x}^{2}$, and $\mathcal{N}(0, \sigma)$ means that we assume the data scattering as a normal (Gaussian) distribution with unknown standard deviation $\sigma$ around $\operatorname{f}(x)$. The model is called linear because when estimating the unknown parameters (we call them "*effects*") of the polynomial, we will see that they are all affecting the predictions linearly, and can thus be solved as a system of linear equations.
+What we want to do now is fitting regression models through the data with the `lm()`{.R} function of R. The function name lm is short for "linear model". However, remember from the basic course: This model is not called linear because we necessarily fit a linear function. It's called linear because we express the response (in our case Wind) as a polynomial of the predictor(s). That means, the predictors have linear coefficients but they might themselves be for example quadratic or sinus terms. So $y = \operatorname{f}(x) + \mathcal{N}(0, \sigma)$, where $\operatorname{f}$ is a polynomial, e.g. ${a}_{0} + {a}_{1} \cdot x + {a}_{2} \cdot {x}^{2}$, and $\mathcal{N}(0, \sigma)$ means that we assume the data scattering as a normal (Gaussian) distribution with unknown standard deviation $\sigma$ around $\operatorname{f}(x)$. The model is called linear because when estimating the unknown parameters (we call them "*effects*") of the polynomial, we will see that they are all affecting the predictions linearly, and can thus be solved as a system of linear equations.
 
 
 ### Fitting and Interpreting the Regression
@@ -101,7 +101,7 @@ fit = lm(Ozone ~ Wind - 1, data = airquality)
 summary(fit)
 ```
 
-In the results, you can see that we estimate a positive slope, in contradiction to our visual assessment that the data seems negatively correlated. this is because we are forcing the line to go through the origin (0, 0).
+In the results, you can see that we estimate a positive slope, in contradiction to our visual assessment that the data seems negatively correlated. This is because we are forcing the regression line to go through the origin (0, 0).
 
 ```{r chunk_chapter3_chunk8, echo=FALSE, eval=TRUE}
 summary(fit)
@@ -123,16 +123,16 @@ abline(fit)
 summary(fit)
 ```
 
--   "*Call*" repeats the regression formula.
--   "*Residuals*" gives you an indication about how far the observed data scatters around the fitted regression line / function.
--   The *regression table* (starting with "Coefficients") provides the estimated parameters, one row for each fitted parameter. The first column is the estimate, the second (standard error) is the 0.63 confidence interval (for 0.95 confidence interval multiply with 1.96), and the fourth column is the p-value for a two-sided test with ${H}_{0}$: "Estimate is zero". The t-value is used for calculation of the p-value and can usually be ignored.
+-   "**Call**" repeats the regression formula.
+-   "**Residuals**" gives you an indication about how far the observed data scatters around the fitted regression line / function.
+-   The *regression table* (starting with "**Coefficients**") provides the estimated parameters, one row for each fitted parameter. The first column is the estimate, the second (standard error) is the 0.63 confidence interval (for 0.95 confidence interval multiply with 1.96), and the fourth column is the p-value for a two-sided test with ${H}_{0}$: "Estimate is zero". The t-value is used for calculation of the p-value and can usually be ignored.
 -   The last section of the summary provides information about the *model fit*.
-    -   Residual error = standard deviation of the residuals,
-    -   114 df = degrees of freedom = observed - fitted parameters.
-    -   R-squared $\left({R}^{2}\right)$ = how much of the signal, respective variance is explained by the model, calculated by
-    $$\displaystyle 1 - \frac{\text{residual variance}}{\text{total variance}}$$.
-    -   Adjusted R-squared = adjusted for model complexity.
-    -   F-test = test against intercept only model, i.e. is the fitted model significantly better than the intercept only model (most relevant for models with \> 1 predictor).
+    -   Residual error = Standard deviation of the residuals,
+    -   114 df = Degrees of freedom = Observed - fitted parameters.
+    -   R-squared $\left({R}^{2}\right)$ = How much of the signal, respective variance is explained by the model, calculated by
+    $\displaystyle 1 - \frac{\text{residual variance}}{\text{total variance}}$.
+    -   Adjusted R-squared = Adjusted for model complexity.
+    -   F-test = Test against intercept only model, i.e. is the fitted model significantly better than the intercept only model (most relevant for models with \> 1 predictor).
 
 ```{=html}
   <hr/>
@@ -286,7 +286,7 @@ coef(fit)
   <strong><span style="color: #0011AA; font-size:25px;">Task</span></strong><br/>
 ```
 
-Define new variables through linear transformations, meaning that you *either* subtract / add something to the variable, *or* multiply/divide the variable by a certain value. Understand how this changes the regression's estimates.
+Define new variables through linear transformations, meaning that you *either* subtract / add something to the variable, *or* multiply / divide the variable by a certain value. Understand how this changes the regression's estimates.
 
 ```{=html}
   <details>
@@ -362,7 +362,7 @@ preList = list(cTemp = seq(-10, 110, 1))
 plot(Effect("cTemp", fit,  xlevels = preList))
 ```
 
-(mind the library "effects") and compare `vcov(fit)`{.R} (calculates variance-covariance matrix) for both models.
+(mind the library `effects`.{R}) and compare `vcov(fit)`{.R} (calculates variance-covariance matrix) for both models.
 
 ```{=html}
   <details>
@@ -497,11 +497,12 @@ So, the question is: do the model assumptions `lm(Ozone ~ Wind - 1)`{.R} even fi
 With a bit of experience, you can already see with a simple prediction plot overlaid with the data that this is not the case. It seems the model systematically underpredicts Ozone for low Wind, and overpredicts for high Wind.
 
 ```{r chunk_chapter3_chunk18, echo=TRUE, eval=TRUE}
+fit = lm(Ozone ~ cTemp, data = airquality)
 plot(Ozone ~ cTemp, data = airquality)
 abline(fit)
 ```
 
-We can see this a bit nicer if we use the effects package, which we will use from now on for doing result plots for regression models.
+We can see this a bit nicer if we use the `effects`.{R} package, which we will use from now on for doing result plots for regression models.
 
 ```{r chunk_chapter3_chunk19, echo=TRUE, eval=TRUE}
 library(effects)
@@ -520,7 +521,7 @@ fit = lm(Ozone ~ Wind + Temp, data = airquality)
 plot(allEffects(fit, partial.residuals = T))
 ```
 
-This looks already better, but there seems to be still a bit of a pattern regarding the scattering of the observed data around the regression line. We can get the difference between model and observations via `residuals(fit)`{.R}, and we could plot them against the model predictions (which can be obtained via the predict function) via
+This looks already better, but there seems to be still a bit of a pattern regarding the scattering of the observed data around the regression line. We can get the difference between model and observations via `residuals(fit)`{.R}, and we could plot them against the model predictions (which can be obtained via the `predict`{.R} function) via
 
 ```{r chunk_chapter3_chunk21, echo=TRUE, eval=TRUE}
 plot(residuals(fit) ~ predict(fit))
@@ -609,6 +610,8 @@ Slightly better fit, especially in the middle of the data. Better diagnosis plot
 
 Note that now (Ozone^0.35), 1 is in the 95% confidence interval, actually near the middle of the interval. Ozone doesn't need to be transformed more, at least according to the Box-Cox transformation.
 
+
+
 ***I consider this as the best fit in this solution.***
 
 ```{=html}
@@ -679,15 +682,17 @@ Yet outliers at the border are perfectly fitted.
 
 ### Categorical Predictors
 
-The lm() function can handle both numerical and categorical variables. To understand what happens if the predictor is categorical, we'll use another data set here, PlantGrowth (type `?PlantGrowth`{.R} or F1 help if you want details). We visualize the data via:
+The `lm()`{.R} function can handle both numerical and categorical variables. To understand what happens if the predictor is categorical, we'll use another data set here, PlantGrowth (type `?PlantGrowth`{.R} or F1 help if you want details). We visualize the data via:
 
 ```{r chunk_chapter3_chunk24, echo=TRUE, eval=TRUE}
 boxplot(weight ~ group, data = PlantGrowth)
 ```
 
+
+
 ***A basic lm()***
 
-Let's fit an lm() now with the categorical explanatory variable group. They syntax is the same as before:
+Let's fit an `lm()`{.R} now with the categorical explanatory variable group. They syntax is the same as before:
 
 ```{r chunk_chapter3_chunk25, echo=TRUE, eval=TRUE}
 fit = lm(weight ~ group, data = PlantGrowth)
@@ -697,6 +702,8 @@ summary(fit)
 But the interpretation of the results often leads to confusion. Let's look at the results of `summary(fit)`{.R}.
 
 Where did the group ctrl go? The answer is there is a short, and longer answer to this. Let's first give the short one: ctrl is the intercept, and the other predictors depict the difference between ctrl and the respective levels. So, we could say that ctrl is a kind of "reference", encoded by the intercept, and we test for a difference of the other levels against this reference. 
+
+
 
 ***Re-ordering the levels***
 
@@ -716,7 +723,6 @@ We see that trt1 is the first level (you can also see this if checking `levels()
 
 ```{r chunk_chapter3_chunk28, echo=TRUE, eval=TRUE}
 fit = lm(weight ~ group2, data = PlantGrowth)
-summary(fit)
 ```
 
 And this is the result:
@@ -732,9 +738,11 @@ So, if the ordering influences what levels are compared (technically, we call th
 
 First, in many cases, the scientific question / experimental design determines which factor level should be first. In this case, the original reference was ctrl. This clearly stands for control. So, we have a special treatment here (control), and we are probably interested in the contrast between control and the treatments, but not between the different treatments. In this case, we are probably fine.
 
+
+
 ***ANOVA (Analysis of Variance)***
 
-Second, there is a another test that is commonly performed in this case, the ***ANOVA***. We can run this via
+Second, there is a another test that is commonly performed in this case, the **ANOVA**. We can run this via
 
 ```{r chunk_chapter3_chunk30, echo=TRUE, eval=TRUE}
 anov = aov(fit) 
@@ -754,6 +762,8 @@ To interpret this, recall that in a nutshell, the ANOVA starts with a base model
 
 In this case, we can conclude that the variable group (3 levels) significantly improves model fit, i.e. the group seems to have an overall effect, even though the individual contrasts in the original model where not significant.
 
+
+
 ***Post-Hoc Tests***
 
 Third, if there is no clear reference level, and the ANOVA confirms that the factor has an effect, we may want to compute p-values for all possible combinations of factor levels. This is done via the so-called post-hoc tests:
@@ -768,7 +778,7 @@ The result is:
 TukeyHSD(anov)
 ```
 
-This highlights, as before, a significant difference between trt1 and trt2. It is common to visualize the results of the post-hoc tests with the so-called **Compact Letter Display** (cld). This doesn't work with the base TukeyHSD function, so we will use the multcomp pacakge: 
+This highlights, as before, a significant difference between trt1 and trt2. It is common to visualize the results of the post-hoc tests with the so-called **Compact Letter Display** (cld). This doesn't work with the base `TukeyHSD`{.R} function, so we will use the `multcomp`.{R} pacakge: 
 
 ```{r chunk_chapter3_chunk34, echo=TRUE, eval=TRUE, fig.show='hide', message=FALSE, warning=FALSE}
 library(multcomp)
@@ -816,6 +826,8 @@ Execute this code and fit a regression for fMonth!
   </details>
   <br/><hr/>
 ```
+
+
 
 ***Advanced topic: Changing the contrasts***
 
@@ -948,6 +960,8 @@ But luckily we have the effect plots to make sense of this:
 ```{r chunk_chapter3_chunk46, echo=TRUE, eval=TRUE}
 plot(allEffects(fit))
 ```
+
+
 
 ***Multiple regression != A lot of univariate regressions***
 
@@ -1089,7 +1103,7 @@ coef(lm(y~x1 + x2))
 plot(effects::allEffects(lm(y ~ x1 + x2)), ylim = c(-12, 12))
 ```
 
-Both effects cancel out.
+*Both effects cancel out*.
 
 ```{=html}
     </p>
@@ -1152,8 +1166,8 @@ Note that all estimates are identical, except for the intercept, which is now th
   <strong><span style="color: #0011AA; font-size:25px;">Tasks</span></strong><br/>
 ```
 
-1. Compare centered / uncentered models visually, using the effects package. Are any of the predictions different, i.e. would you conclude something different using the different options?
-2. Discuss: If we get a different data set with a smaller sd() for e.g. Wind, the effect estimate would change. You can check this by just dividing the scaled variable by 0.5. Is this a problem? 
+1. Compare centered / uncentered models visually, using the `effects`.{R} package. Are any of the predictions different, i.e. would you conclude something different using the different options?
+2. Discuss: If we get a different data set with a smaller standard deviation for e.g. Wind, the effect estimate would change. You can check this by just dividing the scaled variable by 0.5. Is this a problem? 
 3. Discuss: Under which circumstances should you center / scale, and how should you discuss the estimated coefficients in a paper?
 
 ```{=html}
@@ -1236,7 +1250,7 @@ knitr::include_graphics(c("images/ANOVA.jpg"))
   <strong><span style="color: #0011AA; font-size:25px;">Task</span></strong><br/>
 ```
 
-Try out the difference between type I, II, III ANOVA for the airquality data set, either for the simple Wind + Temp model, or for more complicated models. If you want to see the effects Type III Anova, you need to add an interaction (see next section). 
+Try out the difference between type I, II, III ANOVA for the airquality data set, either for the simple Wind + Temp model, or for more complicated models. If you want to see the effects of Type III Anova, you need to add an interaction (see next section). 
 
 ```{=html}
   <details>
@@ -1268,7 +1282,7 @@ plot(allEffects(fit))
 
 We will have a look at the summary later, but for the moment, let's just look at the output visually. In the effect plots, we see the effect of Temperature on Ozone for different values of Wind. We also see that the slope changes. For low Wind, we have a strong effect of Temperature. For high Wind, the effect is basically gone.
 
-Let's look at the interaction syntax in more detail. The "*" operator in an lm is a shorthand for main effects + interactions. You can write equivalently:
+Let's look at the interaction syntax in more detail. The "*" operator in an `lm()`.{R} is a shorthand for main effects + interactions. You can write equivalently:
 
 ```{r chunk_chapter3_chunk66, echo=TRUE, eval=FALSE}
 fit = lm(Ozone ~ Wind + Temp + Wind:Temp, data = airquality)
@@ -1287,10 +1301,15 @@ There is another important syntax in R:
 ```{r chunk_chapter3_chunk68, echo=TRUE, eval=TRUE}
 fit = lm(Ozone ~ (Wind + Temp + Solar.R)^2 , data = airquality)
 summary(fit)
-plot(allEffects(fit))
+
+plot(allEffects(fit), selection = 1)
+plot(allEffects(fit), selection = 2)
+plot(allEffects(fit), selection = 3)
 ```
 
-This creates all main effect and second order (aka two-way) interactions between variables. You can also use ^3 to create all possible 2-way and 3-way interactions between the variables in the parentheses. By the way: the ()^2 syntax for interactions is the reason why we have to write I(x^2) if we want to write a quadratic effect in an lm.
+This creates all main effect and second order (aka two-way) interactions between variables. You can also use `^3`{.R} to create all possible 2-way and 3-way interactions between the variables in the parentheses. By the way: The `()^2`{.R} syntax for interactions is the reason why we have to write `I(x^2)`{.R} if we want to write a quadratic effect in an lm.
+
+
 
 ***Categorical variables***
 
@@ -1302,6 +1321,8 @@ summary(fit)
 ```
 
 The interpretation is like for a single categorical predictor, i.e. we see the effect of Wind as the effect for the first Month 5, and the Wind:fMonth6 effect, for example, tests for a difference in the Wind effect between month 5 (reference) and month 6. As before, you could change this behavior by changing contrasts. 
+
+
 
 ***Interactions and centering***
 
@@ -1337,7 +1358,8 @@ plot(allEffects(fit))
 ```
 
 Play around with the shift in x2, and observe how the effects change. Try how the estimates change when centering the variables via the `scale() `{.R} command. If you understand what's going on, you will realize that you should **always center** your variables, whenever you use any interactions.  
-Excellent explanations of the issues also in the attached paper <a href="https://besjournals.onlinelibrary.wiley.com/doi/epdf/10.1111/j.2041-210X.2010.00012.x" target="_blank" rel="noopener">https://besjournals.onlinelibrary.wiley.com/doi/epdf/10.1111/j.2041-210X.2010.00012.x</a>.
+Excellent explanations of the issues also in the attached paper  
+<a href="https://besjournals.onlinelibrary.wiley.com/doi/epdf/10.1111/j.2041-210X.2010.00012.x" target="_blank" rel="noopener">https://besjournals.onlinelibrary.wiley.com/doi/epdf/10.1111/j.2041-210X.2010.00012.x</a>.
 
 ```{=html}
   <details>
@@ -1495,7 +1517,7 @@ Take the example of the past exercise (airquality) and assume, the goal is to un
 ```{=html}
     </p>
   </details>
-  <br/
+  <br/>
 ```
 
 ```{=html}
@@ -1533,6 +1555,8 @@ Regardless of whether we do a causal, exploratory or a predictive analysis, we s
 
 In these situations, model selection methods may help. The key for using them is to understand that neither of them can do magic. If you have a limited data set and a massive number of predictors, they will not magically produce the correct model. However, they can be useful in certain situations. Let's introduce them first. I discuss possible problems in the next chapter.
 
+
+
 ***Likelihood-ratio tests***
 
 A likelihood-ratio test (LRT) is a hypothesis test that can be used to compare 2 **nested** models. Nested means that the simpler of the 2 models is included in the more complex model.
@@ -1551,6 +1575,8 @@ m2 = lm(Ozone ~ Wind + Temp, data = airquality)
 # LRT
 anova(m1, m2)
 ```
+
+
 
 ***AIC model selection ***
 
@@ -1598,6 +1624,8 @@ Compare results of AIC with likelihood-ratio tests. Discuss: When to use one or 
   </details>
   <br/><hr/>
 ```
+
+
 
 ***Shrinkage estimation ***
 
@@ -1683,8 +1711,8 @@ cat(
 
 LRT or AIC model selections are often used stepwise or global, i.e. we run either a chain of model selections (AIC or LRT), adding or removing complexity, or we run immediately all possible models and compare their AIC.  Options in R for automatic model selection using AIC are the 
 
-* StepAIC function
-* MuMIn package
+* `StepAIC function`{.R}
+* `MuMIn`.{R} package
 
 Here is an example for either of those:
 
@@ -1706,7 +1734,9 @@ out = dredge(fit)
 # Set back to default NA action.
 options(na.action = "na.omit")
 
-print(out)
+# Plot only first 6 and last 6 elements of the (realy) long list:
+head(out)
+tail(out)
 ```
 
 ```{=html}
@@ -1726,15 +1756,32 @@ set.seed(1)
 dat = data.frame(matrix(runif(20000), ncol = 100))
 dat$y = rnorm(200)
 fullModel = lm(y ~ . , data = dat)
-summary(fullModel)
-# 2 predictors out of 100 significant (on average, we expect 5 of 100 to be significant).
 
+# Number of predictors + intercept:
+length(fullModel$coefficients)
+
+# Number of significant predictors:
+length(summary(fullModel)[[4]][,4][summary(fullModel)[[4]][,4] <= 0.05])
+```
+
+2 predictors out of 100are significant (on average, we expect 5 of 100 to be significant).
+
+```{r chunk_chapter3_task_37, eval=TRUE, echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
 selection = stepAIC(fullModel)
+```
+
+```{r chunk_chapter3_task_38, message=FALSE, warning=FALSE}
 summary(selection)
 
-# Voila, 15 out of 28 (before 100) predictors significant.
-# Looks like we could have good fun to discuss / publish these results!
+# Number of predictors + intercept:
+length(selection$coefficients)
+
+# Number of significant predictors:
+length(summary(selection)[[4]][,4][summary(selection)[[4]][,4] <= 0.05])
 ```
+
+Voila, 15 out of 28 (before 100) predictors significant.
+Looks like we could have good fun to discuss / publish these results!
 
 ```{=html}
   <details>
@@ -1744,7 +1791,7 @@ summary(selection)
     <p>
 ```
 
-```{r chunk_chapter3_task_36, message=FALSE, warning=FALSE}
+```{r chunk_chapter3_task_39, message=FALSE, warning=FALSE}
 
 ```
 
@@ -1779,7 +1826,7 @@ Revisit exercises \@ref(plantTrait1) / \@ref(plantTrait2), and discuss / analyze
     <p>
 ```
 
-```{r chunk_chapter3_task_37, message=FALSE, warning=FALSE}
+```{r chunk_chapter3_task_40, message=FALSE, warning=FALSE}
 
 ```
 

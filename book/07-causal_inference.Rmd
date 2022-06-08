@@ -40,11 +40,11 @@ And adjust the model accordingly.
 
 Packages:
 
-* baseR: lm, glm.
-* lme4: mixed models, lmer, glmer.
-* mgcv: GAM.
-* nlme: Variance and correlations structure modelling for linear (mixed) models, using gls + lme.
-* glmmTMB: Generalized linear mixed models with variance / correlation modelling and zip term.
+* `baseR`.{R}: `lm`.{R}, `glm`.{R}.
+* `lme4`.{R}: mixed models, `lmer`.{R}, `glmer`.{R}.
+* `mgcv`.{R}: GAM.
+* `nlme`.{R}: Variance and correlations structure modelling for linear (mixed) models, using `gls`.{R} + `lme`.{R}.
+* `glmmTMB`.{R}: Generalized linear mixed models with variance / correlation modelling and zip term.
 
 
 ## Thoughts About the Analysis Pipeline
@@ -85,13 +85,19 @@ abline(v = 0.5, col = "red")
 
 "Unbiased" means that, while each single estimate will have some error, the mean of many estimates will spread around the true value.
 
+
+
 ***Explicitly calculating these values***
+
+
 
 **Bias**
 
 ```{r chunk_chapter7_chunk4, echo=TRUE, eval=TRUE}
 mean(out) - 0.5 # Should be ~0.
 ```
+
+
 
 **Variance / standard deviation of the estimator**
 
@@ -125,6 +131,8 @@ To check the properties of other, possibly more complicated pipelines, statistic
 
 ## Bootstrap
 
+
+
 ***Standard (non-parametric) bootstrap***
 
 The **bootstrap** is a method to generate approximate confidence intervals based on resampling the data. Imagine you have some kind of weird data distribution:
@@ -155,7 +163,7 @@ abline(v = mean(data), col = "red")
 
 Roughly, this distribution is the confidence interval for the mean for this particular distribution. 
 
-In detail, there are a few tricks to correct confidence intervals for the bootstrap, which are implemented in the `boot`{.R} package. Here is how you would do a boostrap with the boot package. The trick here is to implement the function f(), which must take the data as well as a selection of data points "k" (for example `c(1,3,4,5,8,9)`{.R}, or `1:20`{.R}, etc.) as input, and calculate the desired statistics. 
+In detail, there are a few tricks to correct confidence intervals for the bootstrap, which are implemented in the `boot`.{R} package. Here is how you would do a boostrap with the boot package. The trick here is to implement the function `f()`.{R}, which must take the data as well as a selection of data points "k" (for example `c(1,3,4,5,8,9)`{.R}, or `1:20`{.R}, etc.) as input, and calculate the desired statistics. 
 
 ```{r chunk_chapter7_chunk9, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE}
 library(boot)
@@ -197,6 +205,8 @@ data = rexp(500)
   <br/><hr/>
 ```
 
+
+
 ***Jacknife***
 
 An alternative to the bootstrap is the **jacknife**.
@@ -218,6 +228,8 @@ results = jackknife(data, theta)
 results$jack.se
 results$jack.bias
 ```
+
+
 
 ***Parametric bootstrap***
 
@@ -250,7 +262,7 @@ hist(bootstrappedIntercept, breaks = 50)
 abline(v = coef(m)[1], col = "red")
 ```
 
-The same with the boot package. We need a statistics:
+The same with the `boot`.{R} package. We need a statistics:
 
 ```{r chunk_chapter7_chunk14, echo=TRUE, eval=TRUE}
 foo = function(out){
@@ -272,11 +284,13 @@ b2 = boot(dat, foo, R = 1000, sim = "parametric", ran.gen = rgen, mle = m)
 boot.ci(b2, type = "perc", index = 1)
 ```
 
+
+
 ***Application: Simulated likelihood ratio test***
 
 The parametric bootstrap can be used to generate simulated likelihood ratio tests for mixed models. This allows us to test for the significance of variance components without specifying degrees of freedom. We could program this ourselves, but here is a package:
 
-```{r chunk_chapter7_chunk16, echo=TRUE, eval=TRUE}
+```{r chunk_chapter7_chunk16, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE}
 library(pbkrtest)
 
 data(beets, package = "pbkrtest")
@@ -296,7 +310,7 @@ PBmodcomp(sug, sug.s, nsim = 50)
 
 A similar approach is taken in `RLRsim`{.R}:
 
-```{r chunk_chapter7_chunk17, echo=TRUE, eval=TRUE}
+```{r chunk_chapter7_chunk17, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE}
 library(RLRsim)
 library(lme4)
 
@@ -321,7 +335,7 @@ pval = mean(sim.LRT > obs.LRT)
 
 Cross-validation is the non-parametric alternative to AIC. Note that AIC is asymptotically equal to leave-one-out cross-validation. 
 
-For most advanced models, you will have to program the cross-validation by hand, but here an example for glm, using the `cv.glm`{.R} function:
+For most advanced models, you will have to program the cross-validation by hand, but here an example for `glm`.{R}, using the `cv.glm`{.R} function:
 
 ```{r chunk_chapter7_chunk18, echo=TRUE, eval=TRUE}
 library(boot)
@@ -353,7 +367,7 @@ Note that cross-validation requires independence of data points. For non-indepen
 
 ## Null Models
 
-Parametric hypothesis tests usually make a fixed assumption about H0. A non-parametric method to get around this that is used for complicated situations are ***randomization null models***. The idea of these is to shuffle around the data, and thus generate a null distribution 
+Parametric hypothesis tests usually make a fixed assumption about H0. A non-parametric method to get around this that is used for complicated situations are **randomization null models**. The idea of these is to shuffle around the data, and thus generate a null distribution 
 
 ```{r chunk_chapter7_chunk19, echo=TRUE, eval=TRUE}
 set.seed(1337)
@@ -388,15 +402,15 @@ ecdf(nullDistribution)(reference)
 
 Null models are used abundant, e.g., in packages:
 
-* library(vegan)
-* library(bipartide)
+* `library(vegan)`.{R}
+* `library(bipartide)`.{R}
 
 
 ## Structural Equation Models (SEMs)
 
-Structural equation models (SEMs) are models that are designed to estimate entire causal diagrams. For GLMs responses, you will currently have to estimate the DAG (directed aciclic graph) piece-wise, e.g. with <a href="https://cran.r-project.org/web/packages/piecewiseSEM/vignettes/piecewiseSEM.html" target="_blank" rel="noopener">https://cran.r-project.org/web/packages/piecewiseSEM/vignettes/piecewiseSEM.html</a>.
+Structural equation models (SEMs) are models that are designed to estimate entire causal diagrams. For GLMs responses, you will currently have to estimate the DAG (directed acyclic graph) piece-wise, e.g. with <a href="https://cran.r-project.org/web/packages/piecewiseSEM/vignettes/piecewiseSEM.html" target="_blank" rel="noopener">https://cran.r-project.org/web/packages/piecewiseSEM/vignettes/piecewiseSEM.html</a>.
 
-```{r chunk_chapter7_chunk20, echo=TRUE, eval=TRUE}
+```{r chunk_chapter7_chunk20, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE}
 library(piecewiseSEM)
 
 mod = psem(
@@ -409,7 +423,7 @@ summary(mod)
 plot(mod)
 ```
 
-For linear SEMs, we can estimate the entire DAG in one go. This also allows to have unobserved variables in the DAG. One of the most popular packages for this is lavaan:
+For linear SEMs, we can estimate the entire DAG in one go. This also allows to have unobserved variables in the DAG. One of the most popular packages for this is `lavaan`.{R}:
 
 ```{r chunk_chapter7_chunk21, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE}
 library(lavaan)

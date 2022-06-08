@@ -55,6 +55,8 @@ In principle, spatial and temporal correlation are quite similar, there are 2 op
 
 Unfortunately, the distinction between a larger trend and a correlation is quite fluid. Nevertheless, one should always first check for and remove the trend, typically by including time/space as a predictor, potentially in a flexible way (GAMs come in handy). After this is done, we can fit a model with a temporally/spatially correlated error.
 
+
+
 ***Temporal correlation***
 
 As our first example, I look at the hurricane study from yesterday, which is, after all, temporal data.
@@ -85,9 +87,9 @@ testTemporalAutocorrelation(res2, time = unique(Data$Year))
 
 A second example from Pinheiro and Bates, pp. 255-258. The data originates from Vonesh and Carter (1992), who describe data measured on high-flux hemodialyzers to assess their in vivo ultrafiltration characteristics. The ultrafiltration rates (in mL/hr) of 20 high-flux dialyzers were measured at seven different transmembrane pressures (in dmHg). The in vitro evaluation of the dialyzers used bovine blood at flow rates of either 200~dl/min or 300~dl/min. The data, are also analyzed in Littell, Milliken, Stroup and Wolfinger (1996).
 
-See `?Dialyzer`{.R} for explanation of the variables (data comes with the package nlme).
+See `?Dialyzer`{.R} for explanation of the variables (data comes with the package `nlme`.{R}).
 
-The data highlights the flexibility of gls for structured (1|subject) temporal data. Unfortunately, nlme does not interface with DHARMa.
+The data highlights the flexibility of gls for structured `( 1| subject)`{.R} temporal data. Unfortunately, `nlme`.{R} does not interface with `DHARMa`.{R}.
 
 ```{r chunk_chapter6_chunk2, echo=TRUE, eval=TRUE}
 library(nlme)
@@ -100,6 +102,8 @@ plot(fm2Dial.gls)
 fm3Dial.gls = update(fm2Dial.gls, corr = corAR1(0.771, form = ~ 1 | Subject))
 summary(fm3Dial.gls)
 ```
+
+
 
 ***Spatial models***
 
@@ -141,7 +145,7 @@ library(modEvA)
 
 fit1 = gam(thick ~ soil + te(east, north) , data = spdata)
 summary(fit1)
-plot(fit1)
+plot(fit1, pages = 0, lwd = 2)
 
 col = colorRamp(c("red", "white", "blue"))(range01(residuals(fit1)))
  
@@ -179,7 +183,7 @@ load("/tmp/anolis.Rdata")
 
 Perform analysis:
 
-```{r chunk_chapter6_chunk9, echo=TRUE, eval=TRUE}
+```{r chunk_chapter6_chunk9, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE, fig.width=8, fig.height=18}
 library(ape)
 library(geiger)
 library(nlme)
@@ -188,6 +192,9 @@ library(DHARMa)
 
 # Check tree.
 plot(anolisTree)
+```
+
+```{r chunk_chapter6_chunk10, echo=TRUE, eval=TRUE}
 # Check whether names are matching in both files.
 name.check(anolisTree, anolisData)
 
@@ -218,7 +225,7 @@ testSpatialAutocorrelation(res, distMat = cophenetic(anolisTree))
 
 An old-school method to deal with the problem are the so-called **Phylogenetically Independent Contrasts** (PICs) (Felsenstein, J. (1985) "Phylogenies and the comparative method". American Naturalist, 125, 1–15.). The idea here is to transform your data in a way that an lm is still appropriate. For completeness, I show the method here.
 
-```{r chunk_chapter6_chunk10, echo=TRUE, eval=TRUE}
+```{r chunk_chapter6_chunk11, echo=TRUE, eval=TRUE}
 # Extract columns.
 host = anolisData[, "hostility"]
 awe = anolisData[, "awesomeness"]
@@ -242,7 +249,7 @@ abline(a = 0, b = coef(picModel))
 
 Now, new school, with a PGLS
 
-```{r chunk_chapter6_chunk11, echo=TRUE, eval=TRUE}
+```{r chunk_chapter6_chunk12, echo=TRUE, eval=TRUE}
 pglsModel = gls(hostility ~ awesomeness, 
                  correlation = corBrownian(phy = anolisTree),
                  data = anolisData, method = "ML")
@@ -255,7 +262,7 @@ abline(pglsModel, col = "red")
 OK, same result, but PGLS is WAY more flexible than PICs.
 For example, we can include a discrete predictor:
 
-```{r chunk_chapter6_chunk12, echo=TRUE, eval=TRUE}
+```{r chunk_chapter6_chunk13, echo=TRUE, eval=TRUE}
 pglsModel2 = gls(hostility ~ ecomorph, 
                     correlation = corBrownian(phy = anolisTree),
                     data = anolisData, method = "ML")
@@ -273,7 +280,7 @@ anova(pglsModel3)
 
 We can also assume that the error structure follows an **Ornstein-Uhlenbeck** model rather than **Brownian motion**. When trying this, however, I noted that the model does not converge due to a scaling problem. We can do a quick fix by making the branch lengths longer. This will not affect the analysis other than rescaling a nuisance parameter.
 
-```{r chunk_chapter6_chunk13, echo=TRUE, eval=TRUE}
+```{r chunk_chapter6_chunk14, echo=TRUE, eval=TRUE}
 tempTree = anolisTree
 tempTree$edge.length = tempTree$edge.length * 100
 pglsModelLambda = gls(hostility ~ awesomeness,
@@ -339,15 +346,15 @@ Intro Bayes will be done via a <a href="https://www.dropbox.com/s/27zp86y2wnxpdp
 
 To fit Bayesian models, for full flexibility, most people use **Stan**. Stan is a completely new modelling specification language, therefore we won't do this here. 
 
-However, there is the `BRMS`{.R} package. `BRMS`{.R} allows you to specify regression models in the same syntax as `lme4`{.R} / `glmmTMB`{.R}, but translates then to Stan code and fits them. Here a comparison:
+However, there is the `brms`{.R} package. `brms`{.R} allows you to specify regression models in the same syntax as `lme4`{.R} / `glmmTMB`{.R}, but translates then to Stan code and fits them. Here a comparison:
 
-```{r chunk_chapter6_chunk14, echo=FALSE, out.width="150%", out.height="150%"}
+```{r chunk_chapter6_chunk15, echo=FALSE, out.width="150%", out.height="150%"}
 knitr::include_graphics(c("images/STAN1.jpg"))
 ```
 
 Extended syntax:
 
-```{r chunk_chapter6_chunk15, echo=FALSE, out.width="150%", out.height="150%"}
+```{r chunk_chapter6_chunk16, echo=FALSE, out.width="150%", out.height="150%"}
 knitr::include_graphics(c("images/STAN2.jpg"))
 ```
 
@@ -356,7 +363,7 @@ knitr::include_graphics(c("images/STAN2.jpg"))
   <strong><span style="color: #0011AA; font-size:25px;">Task</span></strong><br/>
 ```
 
-Take any of our simpler models, and run them with BRMS!
+Take any of our simpler models, and run them with `brms`{.R}!
 
 ```{=html}
   <details>
@@ -367,6 +374,7 @@ Take any of our simpler models, and run them with BRMS!
 ```
 
 ```{r chunk_chapter6_task_2, message=FALSE, warning=FALSE}
+library(brms)
 
 ```
 
@@ -375,6 +383,8 @@ Take any of our simpler models, and run them with BRMS!
   </details>
   <br/><hr/>
 ```
+
+
 
 ***Bayesian model comparison:*** 
 
