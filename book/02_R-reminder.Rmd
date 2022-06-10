@@ -7,7 +7,7 @@ documentclass: book
 ---
 
 
-# Reminders About Basic Operations in R {#reminder}
+# Reminder: R basics {#reminder}
 
 ```{=html}
 <!-- Put this here (right after the first markdown headline) and only here for each document! -->
@@ -46,22 +46,22 @@ sudo apt update && sudo apt install -y --install-recommends build-essential gfor
 
 If you use other operating systems, you presumably will be able to install the necessary packages on your own.
 
+### Installing Libraries
 
-## Installing Libraries
+The R engine comes with a number of base functions, but one of the great things about R is that you can extend these based functions by libraries that can be programmed by anyone. In principle, you can install libraries from any website or file. In practice, however, most commonly used libraries are distributed via two major repositories. For statistical methods, this is CRAN, and for bioinformatics, this is Bioconductor.
 
+To install a package from a library, use the command
 
-### Miscellaneous Used Libraries
+```{r, eval = F}
+install.packages(LIBRARY)
+```
 
-We will make huge use of different libraries. So take a coffee or two (that will take a while...) and install the following libraries.
-Please do this in the given order unless you know what you're doing, because there are some dependencies between the packages.
+Exchanging LIBRARY with the name of the library you want to install. The default is to search the package in CRAN, but you can specify other repositories or file locations in the function. To save typing for you, you can install an entire list of libraries that you will need by exexcuting the following commands: 
 
 ```{r chunk_chapter2_0, code=xfun::read_utf8('dependencies.R'), eval=FALSE}
 ```
 
-
-### EcoData
-
-We may sometimes use data sets from the EcoData package. To install the package, run:
+Moreover, in this book, we will often use data sets from the EcoData package, which is not on CRAN. To install the package, run:
 
 ```{r chunk_chapter2_1, eval=FALSE}
 devtools::install_github(repo = "florianhartig/EcoData", subdir = "EcoData",
@@ -69,7 +69,7 @@ devtools::install_github(repo = "florianhartig/EcoData", subdir = "EcoData",
 ```
 
 
-## Data Types in R
+## Operating with data in R
 
 
 ### Exploring Data Structures
@@ -140,12 +140,10 @@ Have a look at what this does to the values in iris$Sepal.Length.
 Note: The actions above operate on a local copy of the iris data set. You don't overwrite the base data and can use it again in a new R session or reset it with `data(iris)`{.R}.
 
 
-## Data Selection, Slicing and Subsetting
-
-In this chapter, we will discuss data selection, slicing and subsetting.
+### Data Selection, Slicing and Subsetting
 
 
-### Subsetting and Slicing for Single Data Types
+#### Subsetting and Slicing for Single Data Types
 
 We often want to select only a subset of our data. You can generally subset from data structures using indices and TRUE/FALSE (or T/F).
 Here for a vector:
@@ -182,7 +180,7 @@ The syntax `matrix[1,]`{.R} is also called *slicing*, for obvious reasons.
 Data.frames are the same as matrices, except that, like with lists of vectors, you can also access columns via names as in `data.frame$column`{.R}.
 
 
-### Logic and Slicing
+#### Logic and Slicing
 
 Slicing is very powerful if you combine it with logical operators, such as "&" (logical and), "|" (logical or), "==" (equal), "!=" (not equal), "<=", ">", etc. Here are a few examples:
 
@@ -458,7 +456,7 @@ cat(
 
 ## Additional Resources
 
-As additional R resources for self-study, we recommend:
+As additional R resources for self-study, I recommend:
 
 
 ### Books

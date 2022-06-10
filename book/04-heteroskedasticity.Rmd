@@ -589,10 +589,11 @@ Interpretation
   <strong><span style="color: #0011AA; font-size:25px;">Task</span></strong><br/>
 ```
 
-The data is <a href="https://elearning.uni-regensburg.de/pluginfile.php/2365103/mod_book/chapter/48053/Bees.txt" target="_blank" rel="noopener">here</a> Read it in via (don't forget to adjust the paths!):
+We use 
 
 ```{r chunk_chapter4_task_3, message=FALSE, warning=FALSE, eval = FALSE, purl=FALSE}
-bees = read.table("/tmp/Bees.txt", header = T)
+library(EcoData)
+str(bees)
 ```
 
 Perform the data analysis, according to the hypothesis above.

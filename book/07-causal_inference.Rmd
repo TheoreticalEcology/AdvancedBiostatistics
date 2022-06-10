@@ -4,6 +4,8 @@ output:
   bookdown::gitbook:
     highlight: kate
 documentclass: book
+editor_options: 
+  chunk_output_type: console
 ---
 
 

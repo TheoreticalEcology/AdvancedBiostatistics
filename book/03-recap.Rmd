@@ -7,7 +7,7 @@ documentclass: book
 ---
 
 
-# Recap / Basics {#recap}
+# Understanding linear regression {#recap}
 
 ```{=html}
 <!-- Put this here (right after the first markdown headline) and only here for each document! -->
