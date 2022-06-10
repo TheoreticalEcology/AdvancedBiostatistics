@@ -4,6 +4,8 @@ output:
   bookdown::gitbook:
     highlight: kate
 documentclass: book
+editor_options: 
+  chunk_output_type: console
 ---
 
 
@@ -14,12 +16,27 @@ documentclass: book
 <script src="./scripts/multipleChoice.js"></script>
 ```
 
-This chapter is a reminder about the basic regression model functions in R.
+This chapter is a reminder about the basic regression model functions in R. 
+
+Here a warm-up exercise: fit the regression: 
+
+```{r, eval = FALSE}
+summary(lm(Ozone ~ Wind, data = airquality))
+```
+
+And answer / discuss with your partner the following questions: what is the effect of Wind on Ozone? How important is wind to explain Ozone? Next, run the following regressions:
+
+```{r, eval = FALSE}
+summary(lm(Ozone ~ Wind + Temp, data = airquality))
+summary(lm(Ozone ~ Wind * Temp, data = airquality))
+```
+
+Why does the effect of Wind on Ozone change each time we change the formula? What is the "true" or correct estimate of the effect of Wind on Ozone? At the end of this chapter, you should be able to answer all these questions!
 
 
 ## Simple Linear Regression
 
-To fit our first regression, we will used the data set airquality, which is built-in in R. If you don't know the data set, have a look at the description via
+OK, after our warm-up, let's start with the basics. We will again used the data set airquality, which is built-in in R. If you don't know the data set, have a look at the description via
 
 ```{r chunk_chapter3_chunk0, echo=TRUE, eval=FALSE}
 ?airquality
@@ -37,16 +54,15 @@ To get started, let's say we want to examine the relationship between Ozone and 
 plot(Ozone ~ Wind, data = airquality)
 ```
 
-OK, I would say there is some dependency there. If you want, you could also run
+OK, I would say there is some dependency there. To quantify this numerically, you could also run
 
 ```{r chunk_chapter3_chunk3, echo=TRUE, eval=FALSE}
 cor(airquality$Ozone, airquality$Wind, use = "complete.obs")
 ```
 
-to get the (Pearson) correlation, which is negative: -0.6015465.
+to get the (Pearson) correlation, which is negative: -0.6015465. 
 
 What we want to do now is fitting regression models through the data with the `lm()`{.R} function of R. The function name lm is short for "linear model". However, remember from the basic course: This model is not called linear because we necessarily fit a linear function. It's called linear because we express the response (in our case Wind) as a polynomial of the predictor(s). That means, the predictors have linear coefficients but they might themselves be for example quadratic or sinus terms. So $y = \operatorname{f}(x) + \mathcal{N}(0, \sigma)$, where $\operatorname{f}$ is a polynomial, e.g. ${a}_{0} + {a}_{1} \cdot x + {a}_{2} \cdot {x}^{2}$, and $\mathcal{N}(0, \sigma)$ means that we assume the data scattering as a normal (Gaussian) distribution with unknown standard deviation $\sigma$ around $\operatorname{f}(x)$. The model is called linear because when estimating the unknown parameters (we call them "*effects*") of the polynomial, we will see that they are all affecting the predictions linearly, and can thus be solved as a system of linear equations.
-
 
 ### Fitting and Interpreting the Regression
 
@@ -233,9 +249,7 @@ fit = lm(Ozone ~ Wind, data = airquality)
 summary(fit)
 ```
 
-we saw an intercept of 96 for the Wind parameter.
-
-Per definition, the intercept is the predicted value for $y$ (Ozone) at $x$ (Wind) = 0. It's fine to report this, as long as we are interested in this value. However, there are certain situations where the value at predictor = 0 is not particularly interesting. Let's look at the regression for Temp, for example:
+we saw an intercept of 96 for the Wind parameter. Per definition, the intercept is the predicted value for $y$ (Ozone) at $x$ (Wind) = 0. It's fine to report this, as long as we are interested in this value. However, there are certain situations where the value at predictor = 0 is not particularly interesting. Let's look at the regression for Temp, for example:
 
 ```{r chunk_chapter3_chunk12, echo=TRUE, eval=TRUE}
 fit = lm(Ozone ~ Temp, data = airquality)
@@ -257,7 +271,13 @@ That shows us that the value 0 is far outside of the set of our observed values 
 airquality$cTemp = airquality$Temp - mean(airquality$Temp)
 ```
 
-Fitting this
+Alternatively, you can center with the build-in R command scale
+
+```{r chunk_chapter3_chunk14, echo=TRUE, eval=TRUE}
+airquality$cTemp = scale(airquality$Temp, center = T, scale = F)
+```
+
+Fitting the model with the centered variable
 
 ```{r chunk_chapter3_chunk15, echo=TRUE, eval=TRUE}
 fit = lm(Ozone ~ cTemp, data = airquality)
