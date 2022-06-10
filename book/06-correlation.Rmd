@@ -1,10 +1,10 @@
 --- 
 site: bookdown::bookdown_site
-output: 
+output:
   bookdown::gitbook:
     highlight: kate
 documentclass: book
-editor_options: 
+editor_options:
   chunk_output_type: console
 ---
 
@@ -36,7 +36,7 @@ We have already discussed random effects, which is a grouped correlation. All of
 For either of these structures, there can be two phenomena that lead to correlations:
 
 1. There can be a **trend** in the given space (e.g. time, space), which we have to remove first.
-2. After accounting for the trend, there can be a so-called **autocorrelation** between data points. 
+2. After accounting for the trend, there can be a so-called **autocorrelation** between data points.
 
 The idea of the so-called **conditional autoregressive** (CAR) structures is, that we make parametric assumptions for how the correlation between data points falls off with distance. Then, we fit the model with this structure.
 
@@ -45,7 +45,7 @@ Similar as for the variance modelling, we can add this structures
 * either in `nlme::gls`{.R}, see <a href="https://stat.ethz.ch/R-manual/R-devel/library/nlme/html/corClasses.html" target="_blank" rel="noopener">https://stat.ethz.ch/R-manual/R-devel/library/nlme/html/corClasses.html</a>,
 * or in `glmmTMB`{.R}, see <a href="https://cran.r-project.org/web/packages/glmmTMB/vignettes/covstruct.html" target="_blank" rel="noopener">https://cran.r-project.org/web/packages/glmmTMB/vignettes/covstruct.html</a>.
 
-The following pages provide examples and further comments on how to do this. 
+The following pages provide examples and further comments on how to do this.
 
 
 ## Temporal and Spatial Correlation Structures
@@ -68,8 +68,8 @@ library(EcoData)
 library(glmmTMB)
 library(DHARMa)
 
-originalModelGAM = glmmTMB(alldeaths ~ scale(MasFem) * 
-                          (scale(Minpressure_Updated_2014) + scale(NDAM)), 
+originalModelGAM = glmmTMB(alldeaths ~ scale(MasFem) *
+                          (scale(Minpressure_Updated_2014) + scale(NDAM)),
                            data = hurricanes, family = nbinom2)
 
 # Residual checks with DHARMa.
@@ -148,17 +148,17 @@ summary(fit1)
 plot(fit1, pages = 0, lwd = 2)
 
 col = colorRamp(c("red", "white", "blue"))(range01(residuals(fit1)))
- 
+
 plot(spdata$east, spdata$north, col = rgb(col, maxColorValue = 255) )
 ```
 
-Almost the same, but simpler: 
+Almost the same, but simpler:
 
 ```{r chunk_chapter6_chunk6, echo=TRUE, eval=TRUE}
 fit = lm(thick ~ soil + north + I(north^2), data = spdata)
 ```
 
-Alternatively, fit an autoregressive model. Of course, both options can be combined. 
+Alternatively, fit an autoregressive model. Of course, both options can be combined.
 
 ```{r chunk_chapter6_chunk7, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE}
 fit2 = gls(thick ~ soil , correlation = corExp(form =~ east + north) , data = spdata)
@@ -224,7 +224,7 @@ testSpatialAutocorrelation(res, distMat = cophenetic(anolisTree))
 
 An old-school method to deal with the problem are the so-called **Phylogenetically Independent Contrasts** (PICs) (Felsenstein, J. (1985) "Phylogenies and the comparative method". American Naturalist, 125, 1–15.). The idea here is to transform your data in a way that an lm is still appropriate. For completeness, I show the method here.
 
-```{r chunk_chapter6_chunk11, echo=TRUE, eval=TRUE}
+```{r chunk_chapter6_chunk12, echo=TRUE, eval=TRUE}
 # Extract columns.
 host = anolisData[, "hostility"]
 awe = anolisData[, "awesomeness"]
@@ -248,8 +248,8 @@ abline(a = 0, b = coef(picModel))
 
 Now, new school, with a PGLS
 
-```{r chunk_chapter6_chunk12, echo=TRUE, eval=TRUE}
-pglsModel = gls(hostility ~ awesomeness, 
+```{r chunk_chapter6_chunk13, echo=TRUE, eval=TRUE}
+pglsModel = gls(hostility ~ awesomeness,
                  correlation = corBrownian(phy = anolisTree, form=~species),
                  data = anolisData, method = "ML")
 summary(pglsModel)
@@ -261,16 +261,16 @@ abline(pglsModel, col = "red")
 OK, same result, but PGLS is WAY more flexible than PICs.
 For example, we can include a discrete predictor:
 
-```{r chunk_chapter6_chunk13, echo=TRUE, eval=TRUE}
-pglsModel2 = gls(hostility ~ ecomorph, 
+```{r chunk_chapter6_chunk14, echo=TRUE, eval=TRUE}
+pglsModel2 = gls(hostility ~ ecomorph,
                     correlation = corBrownian(phy = anolisTree, form=~species),
                     data = anolisData, method = "ML")
 summary(pglsModel2)
 anova(pglsModel2)
 
 # We can even include multiple predictors:
-  
-pglsModel3 = gls(hostility ~ ecomorph * awesomeness, 
+
+pglsModel3 = gls(hostility ~ ecomorph * awesomeness,
                 correlation = corBrownian(phy = anolisTree, form=~species),
                 data = anolisData, method = "ML")
 summary(pglsModel3)
@@ -279,7 +279,7 @@ anova(pglsModel3)
 
 We can also assume that the error structure follows an **Ornstein-Uhlenbeck** model rather than **Brownian motion**. When trying this, however, I noted that the model does not converge due to a scaling problem. We can do a quick fix by making the branch lengths longer. This will not affect the analysis other than rescaling a nuisance parameter.
 
-```{r chunk_chapter6_chunk14, echo=TRUE, eval=TRUE}
+```{r chunk_chapter6_chunk15, echo=TRUE, eval=TRUE}
 tempTree = anolisTree
 tempTree$edge.length = tempTree$edge.length * 100
 pglsModelLambda = gls(hostility ~ awesomeness,
@@ -287,7 +287,7 @@ pglsModelLambda = gls(hostility ~ awesomeness,
                       data = anolisData, method = "ML")
 summary(pglsModelLambda)
 
-pglsModelOU = gls(hostility ~ awesomeness, 
+pglsModelOU = gls(hostility ~ awesomeness,
                    correlation = corMartins(1, phy = tempTree, form=~species),
                    data = anolisData)
 summary(pglsModelOU)
@@ -310,7 +310,7 @@ Fit either
 * snouter
 * plantcounts
 
-from package EcoData, and check for spatial dependencies in the residuals. See the data set's help for details on the variables. 
+from package EcoData, and check for spatial dependencies in the residuals. See the data set's help for details on the variables.
 
 ```{=html}
   <details>
@@ -335,17 +335,17 @@ from package EcoData, and check for spatial dependencies in the residuals. See t
 
 Intro Bayes will be done via a <a href="https://www.dropbox.com/s/27zp86y2wnxpdp7/1.1-FlorianHartig_Intro-Bayes.pdf?dl=0" target="_blank" rel="noopener">lecture</a> Code for the lecture <a href="https://www.dropbox.com/s/xjpvdsygy12sffu/1.1-practical.R?dl=0" target="_blank" rel="noopener">here</a>.
 
-To fit Bayesian models, for full flexibility, most people use **Stan**. Stan is a completely new modelling specification language, therefore we won't do this here. 
+To fit Bayesian models, for full flexibility, most people use **Stan**. Stan is a completely new modelling specification language, therefore we won't do this here.
 
 However, there is the `brms`{.R} package. `brms`{.R} allows you to specify regression models in the same syntax as `lme4`{.R} / `glmmTMB`{.R}, but translates then to Stan code and fits them. Here a comparison:
 
-```{r chunk_chapter6_chunk15, echo=FALSE, out.width="150%", out.height="150%"}
+```{r chunk_chapter6_chunk16, echo=FALSE, out.width="150%", out.height="150%"}
 knitr::include_graphics(c("images/STAN1.jpg"))
 ```
 
 Extended syntax:
 
-```{r chunk_chapter6_chunk16, echo=FALSE, out.width="150%", out.height="150%"}
+```{r chunk_chapter6_chunk17, echo=FALSE, out.width="150%", out.height="150%"}
 knitr::include_graphics(c("images/STAN2.jpg"))
 ```
 
@@ -377,12 +377,11 @@ library(brms)
 
 
 
-***Bayesian model comparison:*** 
+***Bayesian model comparison:***
 
-In Bayesian stats, there is no p-value. So, how do we know if something has an effect? There are two options: 
+In Bayesian stats, there is no p-value. So, how do we know if something has an effect? There are two options:
 
 * Just look at the effect size and its uncertainties.
-* Compare the simpler with the more complex model, and calculate which has a higher posterior probability 
+* Compare the simpler with the more complex model, and calculate which has a higher posterior probability
 
-The latter is called **posterior weights**, and they are based on the so-called **Bayes factor**. For simple tests, e.g. t-test or lm, the Bayes factor is implemented in the BayesFactor package in R. Look at the examples <a href="https://cran.r-project.org/web/packages/BayesFactor/vignettes/manual.html" target="_blank" rel="noopener">here</a>. 
-
+The latter is called **posterior weights**, and they are based on the so-called **Bayes factor**. For simple tests, e.g. t-test or lm, the Bayes factor is implemented in the BayesFactor package in R. Look at the examples <a href="https://cran.r-project.org/web/packages/BayesFactor/vignettes/manual.html" target="_blank" rel="noopener">here</a>.
