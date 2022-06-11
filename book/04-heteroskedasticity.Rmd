@@ -213,7 +213,7 @@ plot(Ozone ~ Solar.R, data = airquality)
 
 We can also see this when we fit the regression model:
 
-```{r chunk_chapter4_chunk15, echo=TRUE, eval=FALSE}
+```{r chunk_chapter4_chunk15, echo=TRUE, eval=TRUE}
 m1 = lm(Ozone ~ Solar.R, data = airquality)
 par(mfrow = c(2, 2))
 plot(m1)
@@ -227,7 +227,7 @@ plot(m1)
 We could of course consider other predictors, but let's say we want to fit this model specifically
 
 1. Try to get the variance stable with a transformation.
-2. Use the gls function with the untransformed response to make the variance dependent on Solar.R. Hint: Read in `corClasses`.{R} and decide how to model this.
+2. Use the `gls`{.R} function (package `nlme`{.R}) with the untransformed response to make the variance dependent on Solar.R. Hint: Read in `corClasses`.{R} and decide how to model this.
 3. Use `glmmTMB`.{R} to model heteroskedasticity.
 
 ```{=html}
@@ -475,11 +475,11 @@ with(Exam, {
 
 ***Background and data structure***
 
-The GPA (college grade point average) data is a longitudinal data set, where 200 college students and their GPA have been followed 6 consecutive semesters. Look at the GPA (<a href="https://elearning.uni-regensburg.de/pluginfile.php/2365103/mod_book/chapter/72387/gpa.RData" target="_blank" rel="noopener">download</a>) data set, retrieved from <a href="https://m-clark.github.io/mixed-models-with-R/" target="_blank" rel="noopener">https://m-clark.github.io/mixed-models-with-R/</a>.
+The GPA (college grade point average) data is a **longitudinal** data set (also named **panel data**, German: "Längsschnittstudie". A study repeated at several different moments in time, compared to a **cross-sectional study** (German: "Querschnittstudie") which has several participants at *one time*). In this data set, 200 college students and their GPA have been followed 6 consecutive semesters. Look at the GPA data set, which can be found in the `EcoData`{.R} package:
 
-```{r chunk_chapter4_chunk29, echo=TRUE, eval=FALSE, purl=FALSE}
-# Loading data in RData format will attach objects, here "gpa", in the same environment.
-load("gpa.RData")
+```{r chunk_chapter4_chunk29, echo=TRUE, eval=TRUE}
+library(EcoData)
+
 str(gpa)
 ```
 
@@ -593,6 +593,7 @@ We use
 
 ```{r chunk_chapter4_task_3, message=FALSE, warning=FALSE, eval = FALSE, purl=FALSE}
 library(EcoData)
+
 str(bees)
 ```
 

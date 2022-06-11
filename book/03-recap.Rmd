@@ -9,24 +9,24 @@ editor_options:
 ---
 
 
-# Understanding linear regression {#recap}
+# Understanding Linear Regression {#recap}
 
 ```{=html}
 <!-- Put this here (right after the first markdown headline) and only here for each document! -->
 <script src="./scripts/multipleChoice.js"></script>
 ```
 
-This chapter is a reminder about the basic regression model functions in R. 
+This chapter is a reminder about the basic regression model functions in R.
 
-Here a warm-up exercise: fit the regression: 
+Here a warm-up exercise: Fit the regression: 
 
-```{r, eval = FALSE}
+```{r chunk_chapter3_chunk0, eval=FALSE}
 summary(lm(Ozone ~ Wind, data = airquality))
 ```
 
-And answer / discuss with your partner the following questions: what is the effect of Wind on Ozone? How important is wind to explain Ozone? Next, run the following regressions:
+And answer / discuss with your partner the following questions: What is the effect of Wind on Ozone? How important is Wind to explain Ozone? Next, run the following regressions:
 
-```{r, eval = FALSE}
+```{r chunk_chapter3_chunk1, eval=FALSE}
 summary(lm(Ozone ~ Wind + Temp, data = airquality))
 summary(lm(Ozone ~ Wind * Temp, data = airquality))
 ```
@@ -38,25 +38,25 @@ Why does the effect of Wind on Ozone change each time we change the formula? Wha
 
 OK, after our warm-up, let's start with the basics. We will again used the data set airquality, which is built-in in R. If you don't know the data set, have a look at the description via
 
-```{r chunk_chapter3_chunk0, echo=TRUE, eval=FALSE}
+```{r chunk_chapter3_chunk2, echo=TRUE, eval=FALSE}
 ?airquality
 ```
 
 and at the variables via
 
-```{r chunk_chapter3_chunk1, echo=TRUE, eval=FALSE}
+```{r chunk_chapter3_chunk3, echo=TRUE, eval=FALSE}
 str(airquality)
 ```
 
 To get started, let's say we want to examine the relationship between Ozone and Wind. Let's visualize this first:
 
-```{r chunk_chapter3_chunk2, echo=TRUE}
+```{r chunk_chapter3_chunk4, echo=TRUE}
 plot(Ozone ~ Wind, data = airquality)
 ```
 
 OK, I would say there is some dependency there. To quantify this numerically, you could also run
 
-```{r chunk_chapter3_chunk3, echo=TRUE, eval=FALSE}
+```{r chunk_chapter3_chunk5, echo=TRUE, eval=FALSE}
 cor(airquality$Ozone, airquality$Wind, use = "complete.obs")
 ```
 
@@ -78,20 +78,20 @@ Option 3 is the most common case, but we will discuss all 3 options here.
 
 The following code fits an intercept only model, meaning that we assume the line is perfectly flat, and we only adjust it's height (the intercept).
 
-```{r chunk_chapter3_chunk4, echo=TRUE, eval=TRUE, results='hide'}
+```{r chunk_chapter3_chunk6, echo=TRUE, eval=TRUE, results='hide'}
 fit = lm(Ozone ~ 1, data = airquality)
 ```
 
 We can visualize the result via
 
-```{r chunk_chapter3_chunk5, echo=TRUE, eval=TRUE}
+```{r chunk_chapter3_chunk7, echo=TRUE, eval=TRUE}
 plot(Ozone ~ Wind, data = airquality)
 abline(fit)
 ```
 
 and get a summary of the fitted regression coefficients via
 
-```{r chunk_chapter3_chunk6, echo=TRUE, eval=TRUE}
+```{r chunk_chapter3_chunk8, echo=TRUE, eval=TRUE}
 summary(fit)
 ```
 
@@ -108,7 +108,7 @@ By the way, the value for the intercept is identical to `mean(airquality$Ozone, 
 
 Although rarely sensible, you can also fit a model with just a slope. This only makes sense if you are sure that the line must go through the origin (0, 0) for physical or biological reasons.
 
-```{r chunk_chapter3_chunk7, echo=TRUE, eval=TRUE, results='hide'}
+```{r chunk_chapter3_chunk9, echo=TRUE, eval=TRUE, results='hide'}
 fit = lm(Ozone ~ Wind + 0, data = airquality)
 summary(fit)
 
@@ -119,11 +119,11 @@ summary(fit)
 
 In the results, you can see that we estimate a positive slope, in contradiction to our visual assessment that the data seems negatively correlated. This is because we are forcing the regression line to go through the origin (0, 0).
 
-```{r chunk_chapter3_chunk8, echo=FALSE, eval=TRUE}
+```{r chunk_chapter3_chunk10, echo=FALSE, eval=TRUE}
 summary(fit)
 ```
 
-```{r chunk_chapter3_chunk9, echo=TRUE, eval=TRUE}
+```{r chunk_chapter3_chunk11, echo=TRUE, eval=TRUE}
 plot(Ozone ~ Wind, data = airquality)
 abline(fit)
 ```
@@ -132,7 +132,7 @@ abline(fit)
 
 The most common case will be a model with slope and intercept which is probably corresponds most with our visual assessment. This time, we show the full regression table, so that we can also discuss the other outputs.
 
-```{r chunk_chapter3_chunk10, echo=TRUE, eval=TRUE}
+```{r chunk_chapter3_chunk12, echo=TRUE, eval=TRUE}
 fit = lm(Ozone ~ Wind, data = airquality)
 plot(Ozone ~ Wind, data = airquality)
 abline(fit)
@@ -244,21 +244,21 @@ Solar.R seems to have a positive effect of Ozone and this effect is significant.
 
 In the last model
 
-```{r chunk_chapter3_chunk11, echo=TRUE, eval=FALSE}
+```{r chunk_chapter3_chunk13, echo=TRUE, eval=FALSE}
 fit = lm(Ozone ~ Wind, data = airquality)
 summary(fit)
 ```
 
 we saw an intercept of 96 for the Wind parameter. Per definition, the intercept is the predicted value for $y$ (Ozone) at $x$ (Wind) = 0. It's fine to report this, as long as we are interested in this value. However, there are certain situations where the value at predictor = 0 is not particularly interesting. Let's look at the regression for Temp, for example:
 
-```{r chunk_chapter3_chunk12, echo=TRUE, eval=TRUE}
+```{r chunk_chapter3_chunk14, echo=TRUE, eval=TRUE}
 fit = lm(Ozone ~ Temp, data = airquality)
 summary(fit)
 ```
 
 Here, the intercept is -146, which doesn't make much sense for an ozone concentration, which should be positive. We can see the reason when we plot the results:
 
-```{r chunk_chapter3_chunk13, echo=TRUE, eval=TRUE}
+```{r chunk_chapter3_chunk15, echo=TRUE, eval=TRUE}
 plot(Ozone ~ Temp, data = airquality, xlim = c(-10, 110), ylim = c(-200, 170))
 abline(fit)
 abline(h = 0, lty = 2)
@@ -267,26 +267,26 @@ abline(v = 0, lty = 2)
 
 That shows us that the value 0 is far outside of the set of our observed values for Temp, which is measured in Fahrenheit. Thus, we are extrapolating the Ozone far beyond the observed data. What we can do to avoid this is to simply re-define the x-Axis, by subtracting the mean:
 
-```{r chunk_chapter3_chunk14, echo=TRUE, eval=TRUE}
+```{r chunk_chapter3_chunk16, echo=TRUE, eval=TRUE}
 airquality$cTemp = airquality$Temp - mean(airquality$Temp)
 ```
 
 Alternatively, you can center with the build-in R command scale
 
-```{r chunk_chapter3_chunk14, echo=TRUE, eval=TRUE}
+```{r chunk_chapter3_chunk17, echo=TRUE, eval=TRUE}
 airquality$cTemp = scale(airquality$Temp, center = T, scale = F)
 ```
 
 Fitting the model with the centered variable
 
-```{r chunk_chapter3_chunk15, echo=TRUE, eval=TRUE}
+```{r chunk_chapter3_chunk18, echo=TRUE, eval=TRUE}
 fit = lm(Ozone ~ cTemp, data = airquality)
 summary(fit)
 ```
 
 produces a more interpretable value for the intercept. We can see this also visual if we plot the results, i.e. the Ozone concentration at the mean observed temperature.
 
-```{r chunk_chapter3_chunk16, echo=TRUE, eval=TRUE}
+```{r chunk_chapter3_chunk19, echo=TRUE, eval=TRUE}
 plot(Ozone ~ cTemp, data = airquality)
 abline(fit)
 abline(v = 0, lty = 2)
@@ -295,7 +295,7 @@ abline(v = 0, lty = 2)
 Note that the intercept of the centered variable will typically be very similar to the grand mean\
 `lm(Ozone ~ 1, data = airquality)')`{.R}. Furthermore, when all (centered) predictors are at their average values, the centered variables are 0. Accordingly, the intercept can be interpreted as the predicted y value when the predictors are at their average values instead of being zero.
 
-```{r chunk_chapter3_chunk17, echo=TRUE, eval=TRUE}
+```{r chunk_chapter3_chunk20, echo=TRUE, eval=TRUE}
 mean(airquality$Temp) # = 77.88235.
 mean(airquality$cTemp)  # = 0, regarding rounding errors.
 coef(fit)
@@ -516,7 +516,7 @@ So, the question is: do the model assumptions `lm(Ozone ~ Wind - 1)`{.R} even fi
 
 With a bit of experience, you can already see with a simple prediction plot overlaid with the data that this is not the case. It seems the model systematically underpredicts Ozone for low Wind, and overpredicts for high Wind.
 
-```{r chunk_chapter3_chunk18, echo=TRUE, eval=TRUE}
+```{r chunk_chapter3_chunk21, echo=TRUE, eval=TRUE}
 fit = lm(Ozone ~ cTemp, data = airquality)
 plot(Ozone ~ cTemp, data = airquality)
 abline(fit)
@@ -524,7 +524,7 @@ abline(fit)
 
 We can see this a bit nicer if we use the `effects`.{R} package, which we will use from now on for doing result plots for regression models.
 
-```{r chunk_chapter3_chunk19, echo=TRUE, eval=TRUE}
+```{r chunk_chapter3_chunk22, echo=TRUE, eval=TRUE}
 library(effects)
 
 plot(allEffects(fit, partial.residuals = T))
@@ -536,14 +536,14 @@ The conclusion here would be: The model we are fitting does not fit to the data,
 
 Let's look at the same plot for the following model:
 
-```{r chunk_chapter3_chunk20, echo=TRUE, eval=TRUE}
+```{r chunk_chapter3_chunk23, echo=TRUE, eval=TRUE}
 fit = lm(Ozone ~ Wind + Temp, data = airquality)
 plot(allEffects(fit, partial.residuals = T))
 ```
 
 This looks already better, but there seems to be still a bit of a pattern regarding the scattering of the observed data around the regression line. We can get the difference between model and observations via `residuals(fit)`{.R}, and we could plot them against the model predictions (which can be obtained via the `predict`{.R} function) via
 
-```{r chunk_chapter3_chunk21, echo=TRUE, eval=TRUE}
+```{r chunk_chapter3_chunk24, echo=TRUE, eval=TRUE}
 plot(residuals(fit) ~ predict(fit))
 abline(h = 0)
 ```
@@ -552,13 +552,13 @@ Remember: The model assumes that the data scatters with a homogenous normal dist
 
 To better analyse these residuals (and potential problems), R offers a function for residual plots. It produces 4 plots. I think it's most convenient plotting them all into one figure, via
 
-```{r chunk_chapter3_chunk22, echo=TRUE, eval=FALSE}
+```{r chunk_chapter3_chunk25, echo=TRUE, eval=FALSE}
 par(mfrow = c(2, 2))
 ```
 
 which produces a figure with 2 x 2 = 4 panels.
 
-```{r chunk_chapter3_chunk23, echo=TRUE, eval=TRUE}
+```{r chunk_chapter3_chunk26, echo=TRUE, eval=TRUE}
 par(mfrow = c(2, 2))
 plot(fit)
 ```
@@ -702,9 +702,9 @@ Yet outliers at the border are perfectly fitted.
 
 ### Categorical Predictors
 
-The `lm()`{.R} function can handle both numerical and categorical variables. To understand what happens if the predictor is categorical, we'll use another data set here, PlantGrowth (type `?PlantGrowth`{.R} or F1 help if you want details). We visualize the data via:
+The `lm()`{.R} function can handle both numerical and categorical variables. To understand what happens if the predictor is categorical, we'll use another data set here, `PlantGrowth`{.R} (type `?PlantGrowth`{.R} or F1 help if you want details). We visualize the data via:
 
-```{r chunk_chapter3_chunk24, echo=TRUE, eval=TRUE}
+```{r chunk_chapter3_chunk27, echo=TRUE, eval=TRUE}
 boxplot(weight ~ group, data = PlantGrowth)
 ```
 
@@ -714,7 +714,7 @@ boxplot(weight ~ group, data = PlantGrowth)
 
 Let's fit an `lm()`{.R} now with the categorical explanatory variable group. They syntax is the same as before:
 
-```{r chunk_chapter3_chunk25, echo=TRUE, eval=TRUE}
+```{r chunk_chapter3_chunk28, echo=TRUE, eval=TRUE}
 fit = lm(weight ~ group, data = PlantGrowth)
 summary(fit)
 ```
@@ -729,25 +729,25 @@ Where did the group ctrl go? The answer is there is a short, and longer answer t
 
 If you want to change which factor level is the reference, you can use:
 
-```{r chunk_chapter3_chunk26, echo=TRUE, eval=TRUE}
+```{r chunk_chapter3_chunk29, echo=TRUE, eval=TRUE}
 PlantGrowth$group2 = relevel(PlantGrowth$group, "trt1")
 ```
 
 Now, we plot
 
-```{r chunk_chapter3_chunk27, echo=TRUE, eval=TRUE}
+```{r chunk_chapter3_chunk30, echo=TRUE, eval=TRUE}
 boxplot(weight ~ group2, data = PlantGrowth)
 ```
 
 We see that trt1 is the first level (you can also see this if checking `levels()`{.R} or `str()`{.R} for the factor). Let's fit the model:
 
-```{r chunk_chapter3_chunk28, echo=TRUE, eval=TRUE}
+```{r chunk_chapter3_chunk31, echo=TRUE, eval=TRUE}
 fit = lm(weight ~ group2, data = PlantGrowth)
 ```
 
 And this is the result:
 
-```{r chunk_chapter3_chunk29, echo=FALSE, eval=TRUE}
+```{r chunk_chapter3_chunk32, echo=FALSE, eval=TRUE}
 summary(fit)
 ```
 
@@ -764,14 +764,14 @@ First, in many cases, the scientific question / experimental design determines w
 
 Second, there is a another test that is commonly performed in this case, the **ANOVA**. We can run this via
 
-```{r chunk_chapter3_chunk30, echo=TRUE, eval=TRUE}
+```{r chunk_chapter3_chunk33, echo=TRUE, eval=TRUE}
 anov = aov(fit) 
 summary(anov)
 ```
 
 And the result is
 
-```{r chunk_chapter3_chunk31, echo=FALSE, eval=TRUE}
+```{r chunk_chapter3_chunk34, echo=FALSE, eval=TRUE}
 summary(anov)
 ```
 
@@ -788,19 +788,19 @@ In this case, we can conclude that the variable group (3 levels) significantly i
 
 Third, if there is no clear reference level, and the ANOVA confirms that the factor has an effect, we may want to compute p-values for all possible combinations of factor levels. This is done via the so-called post-hoc tests:
 
-```{r chunk_chapter3_chunk32, echo=TRUE, eval=FALSE}
+```{r chunk_chapter3_chunk35, echo=TRUE, eval=FALSE}
 TukeyHSD(anov)
 ```
 
 The result is:
 
-```{r chunk_chapter3_chunk33, echo=FALSE, eval=TRUE}
+```{r chunk_chapter3_chunk36, echo=FALSE, eval=TRUE}
 TukeyHSD(anov)
 ```
 
 This highlights, as before, a significant difference between trt1 and trt2. It is common to visualize the results of the post-hoc tests with the so-called **Compact Letter Display** (cld). This doesn't work with the base `TukeyHSD`{.R} function, so we will use the `multcomp`.{R} pacakge: 
 
-```{r chunk_chapter3_chunk34, echo=TRUE, eval=TRUE, fig.show='hide', message=FALSE, warning=FALSE}
+```{r chunk_chapter3_chunk37, echo=TRUE, eval=TRUE, fig.show='hide', message=FALSE, warning=FALSE}
 library(multcomp)
 
 fit = lm(weight ~ group, data = PlantGrowth)
@@ -812,7 +812,7 @@ plot(tuk.cld)
 
 The cld gives a new letter for each group of factor levels that are statistically undistinguishable. You can see the output via `tuk.cld`{.R}, here I only show the plot:
 
-```{r chunk_chapter3_chunk35, echo=FALSE, eval=TRUE}
+```{r chunk_chapter3_chunk38, echo=FALSE, eval=TRUE}
 plot(tuk.cld)
 ```
 
@@ -851,15 +851,15 @@ Execute this code and fit a regression for fMonth!
 
 ***Advanced topic: Changing the contrasts***
 
-Before, I said that there is a long and short answer to the interpretation of the regression coefficients. Now here is the long answer: Iif you have a categorical predictor with > 2 levels, there are several ways to set up the model to fit those levels. Maybe the easiest idea would be to fit a mean per level. You can actually tell R to do this via
+Before, I said that there is a long and short answer to the interpretation of the regression coefficients. Now here is the long answer: If you have a categorical predictor with > 2 levels, there are several ways to set up the model to fit those levels. Maybe the easiest idea would be to fit a mean per level. You can actually tell R to do this via
 
-```{r chunk_chapter3_chunk36, echo=TRUE, eval=TRUE}
+```{r chunk_chapter3_chunk39, echo=TRUE, eval=TRUE}
 fit = lm(weight ~ 0 + group, data = PlantGrowth)
 ```
 
 If we look at the output, we see that now we simply get the mean of each group (level):
 
-```{r chunk_chapter3_chunk37, echo=FALSE, eval=TRUE}
+```{r chunk_chapter3_chunk40, echo=FALSE, eval=TRUE}
 summary(fit)
 ```
 
@@ -867,7 +867,7 @@ Why does R not do that by default? Because now, we see the comparison of each gr
 
 There are actually a number of further options for specifying contrasts. You can tell R by hand how the levels should be compared or use some of the pre-defined contrasts. Here is an example:
 
-```{r chunk_chapter3_chunk38, echo=TRUE, eval=TRUE}
+```{r chunk_chapter3_chunk41, echo=TRUE, eval=TRUE}
 PlantGrowth$group3 = PlantGrowth$group
 contrasts(PlantGrowth$group3) = contr.helmert 
 fit = lm(weight ~ group3, data = PlantGrowth)
@@ -882,14 +882,14 @@ What we are using here is **Helmert contrasts**, which contrast the second level
 
 Look at the analysis of plant height data <a href="http://environmentalcomputing.net/linear-regression/" target="_blank" rel="noopener">here</a>. In this example, the authors perform a simple linear regression to answer the question whether height of plant species from around the world depends on temperature at the location of occurrence. Note that "loght" = log(height).
 
-```{r chunk_chapter3_chunk39, echo=TRUE, eval=TRUE}
+```{r chunk_chapter3_chunk42, echo=TRUE, eval=TRUE}
 Plant_height = read.csv(file ="https://www.dropbox.com/s/zgf1j59mho66z74/Plant_height.csv?dl=1")
 model = lm(loght ~ temp, data = Plant_height)
 ```
 
 The model suggests a significant global trend of plant height increasing with temperature:
 
-```{r chunk_chapter3_chunk40, echo=FALSE, eval=TRUE}
+```{r chunk_chapter3_chunk43, echo=FALSE, eval=TRUE}
 summary(model)
 ```
 
@@ -939,19 +939,19 @@ summary(model)
 
 Multiple (linear) regression means that we consider more than 1 predictor in the same model. The syntax is very easy: Just add your predictors (numerical or categorical) to your regression formula, as in 
 
-```{r chunk_chapter3_chunk41, echo=TRUE, eval=TRUE}
+```{r chunk_chapter3_chunk44, echo=TRUE, eval=TRUE}
 fit = lm(Ozone ~ Wind + Temp, data = airquality)
 ```
 
 The estimates for the regression will appear as before in the regression table:
 
-```{r chunk_chapter3_chunk42, echo=FALSE, eval=TRUE}
+```{r chunk_chapter3_chunk45, echo=FALSE, eval=TRUE}
 summary(fit)
 ```
 
 And we can visualize the results as before via:
 
-```{r chunk_chapter3_chunk43, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE}
+```{r chunk_chapter3_chunk46, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE}
 library(effects)
 
 plot(allEffects(fit, partial.residuals = T))
@@ -964,20 +964,20 @@ However, there are a few complications when adding multiple predictors, which we
 
 To get started with the multiple regression, let's just use a bunch of predictor variables in the airquality data set. I created a new variable fMonth to have month as a factor (categorical):
 
-```{r chunk_chapter3_chunk44, echo=TRUE, eval=TRUE}
+```{r chunk_chapter3_chunk47, echo=TRUE, eval=TRUE}
 airquality$fMonth = factor(airquality$Month)
 fit = lm(Ozone ~ Temp + Wind + Solar.R + fMonth, data = airquality)
 ```
 
 The resulting regression table looks already a bit intimidating:
 
-```{r chunk_chapter3_chunk45, echo=FALSE, eval=TRUE}
+```{r chunk_chapter3_chunk48, echo=FALSE, eval=TRUE}
 summary(fit)
 ```
 
 But luckily we have the effect plots to make sense of this: 
 
-```{r chunk_chapter3_chunk46, echo=TRUE, eval=TRUE}
+```{r chunk_chapter3_chunk49, echo=TRUE, eval=TRUE}
 plot(allEffects(fit))
 ```
 
@@ -987,7 +987,7 @@ plot(allEffects(fit))
 
 A common misunderstanding is that the above regression simply amounts to 4 independent univariate regressions. Let's look at the model
 
-```{r chunk_chapter3_chunk47, echo=TRUE, eval=TRUE}
+```{r chunk_chapter3_chunk50, echo=TRUE, eval=TRUE}
 fit = lm(Ozone ~ Wind , data = airquality)
 summary(fit)
 ```
@@ -996,7 +996,7 @@ The estimated effect is - 5.55, while in the multiple regression, we had -3.1. W
 
 The reason is that Wind and Temp are correlated (the technical term is **collinear**). You can see this by running 
 
-```{r chunk_chapter3_chunk48, echo=TRUE, eval=TRUE}
+```{r chunk_chapter3_chunk51, echo=TRUE, eval=TRUE}
 plot(Wind ~ Temp, data = airquality)
 ```
 
@@ -1034,34 +1034,34 @@ So, which effect is the correct one, the univariate or the multivariate model? W
 
 We can understand this problem in more detail if we simulate some data. Let's create 2 positively collinear predictors:
 
-```{r chunk_chapter3_chunk49, echo=TRUE, eval=TRUE}
+```{r chunk_chapter3_chunk52, echo=TRUE, eval=TRUE}
 x1 = runif(100, -5, 5)
 x2 = x1 + 0.2*runif(100, -5, 5)
 ```
 
 We can check whether this has worked, through visual inspection as well as by calculating the correlation coefficient:
 
-```{r chunk_chapter3_chunk50, echo=TRUE, eval=TRUE}
+```{r chunk_chapter3_chunk53, echo=TRUE, eval=TRUE}
 plot(x1, x2)
 cor(x1, x2)
 ```
 
 The first case I want to look at, is when effect1 and effect2 have equal sign. Let's create such a situation, by simulating a normal response $y$, where the intercept is 0, and both predictors have effect = 1:
 
-```{r chunk_chapter3_chunk51, echo=TRUE, eval=TRUE}
+```{r chunk_chapter3_chunk54, echo=TRUE, eval=TRUE}
 y = 0 + 1*x1 + 1*x2 + rnorm(100)
 ```
 
 In this case, univariate models have too high effect sizes, because in conjunction, 1) positive correlation between predictors and 2) equal effect direction can lead to predictors absorbing each other's effect if one is taken out:
 
-```{r chunk_chapter3_chunk52, echo=TRUE, eval=TRUE}
+```{r chunk_chapter3_chunk55, echo=TRUE, eval=TRUE}
 coef(lm(y ~ x1))
 coef(lm(y ~ x2))
 ```
 
 You can also see this visually:
 
-```{r chunk_chapter3_chunk53, echo=TRUE, eval=TRUE}
+```{r chunk_chapter3_chunk56, echo=TRUE, eval=TRUE}
 par(mfrow = c(1, 2))
 plot(x1, y, main = "x1 effect", ylim = c(-12, 12))
 abline(lm(y ~ x1))
@@ -1079,7 +1079,7 @@ legend("topleft", c("fitted", "true"), lwd = 1, col = c("black", "red"))
 
 The multivariate model, on the other hand, is fine:
 
-```{r chunk_chapter3_chunk54, echo=TRUE, eval=TRUE}
+```{r chunk_chapter3_chunk57, echo=TRUE, eval=TRUE}
 coef(lm(y~x1 + x2))
 plot(effects::allEffects(lm(y ~ x1 + x2)), ylim = c(-12, 12))
 ```
@@ -1136,7 +1136,7 @@ plot(effects::allEffects(lm(y ~ x1 + x2)), ylim = c(-12, 12))
 
 Before, we had already computed the regression table for a regression with 4 predictors: 
 
-```{r chunk_chapter3_chunk55, echo=TRUE, eval=TRUE}
+```{r chunk_chapter3_chunk58, echo=TRUE, eval=TRUE}
 airquality$fMonth = factor(airquality$Month)
 fit = lm(Ozone ~ Temp + Wind + Solar.R + fMonth, data = airquality)
 summary(fit)
@@ -1148,14 +1148,14 @@ No, and the reason is that we have to remember the effect on the response $y = \
 
 A small trick that is therefore often applied is to divide all numeric predictors by their standard deviation to bring them all on the same range, which will then be roughly between -2, 2. You can do this by hand, or use the `scale()`{.R} function in R:
 
-```{r chunk_chapter3_chunk56, echo=TRUE, eval=TRUE}
+```{r chunk_chapter3_chunk59, echo=TRUE, eval=TRUE}
 airquality$sTemp = scale(airquality$Temp, center = F)  
 airquality$sTemp = airquality$Temp / sd(airquality$Temp) # Identical.
 ```
 
 We do the same for the other numeric variables and run the regression:
 
-```{r chunk_chapter3_chunk57, echo=TRUE, eval=TRUE}
+```{r chunk_chapter3_chunk60, echo=TRUE, eval=TRUE}
 airquality$sWind = scale(airquality$Wind, center = F)  
 airquality$sSolar.R = scale(airquality$Solar.R, center = F) 
 fit = lm(Ozone ~ sTemp + sWind + sSolar.R + fMonth, data = airquality)
@@ -1166,7 +1166,7 @@ We can compare the effect sizes directly, which suggests that Temp is actually t
 
 Note: In the code above, I used `scale(..., center = F)`{.R}. By default, the scale function will scale and center. As discussed before, centering is nearly always useful as it improves the interpretability of the intercept, so we should have actually better run the defaults: 
 
-```{r chunk_chapter3_chunk58, echo=TRUE, eval=TRUE}
+```{r chunk_chapter3_chunk61, echo=TRUE, eval=TRUE}
 airquality$sTemp = scale(airquality$Temp)  
 airquality$sWind = scale(airquality$Wind)  
 airquality$sSolar.R = scale(airquality$Solar.R) 
@@ -1175,7 +1175,7 @@ fit = lm(Ozone ~ sTemp + sWind + sSolar.R + fMonth, data = airquality)
 
 Which results in the following regression table:
 
-```{r chunk_chapter3_chunk59, echo=FALSE, eval=TRUE}
+```{r chunk_chapter3_chunk62, echo=FALSE, eval=TRUE}
 summary(fit)
 ```
 
@@ -1231,16 +1231,16 @@ Another option to see which variable is more important is variance partitioning,
 
 In an ANOVA, we add variable by variable to the model, and see how much the fit to the data (expressed by residual sum of squares) improves. We can do this via
 
-```{r chunk_chapter3_chunk60, echo=TRUE, eval=TRUE}
+```{r chunk_chapter3_chunk63, echo=TRUE, eval=TRUE}
 fit = lm(Ozone ~ Wind + Temp, data = airquality)
 summary(aov(fit))
 ```
 
 So, why has Wind the larger effect, again? Didn't we just say that Temp has a larger effect? Is there something wrong with our ANOVA?
 
-The problem with the aov function is that it performs a so-called type I ANOVA. The type I ANOVA adds variables in the order in which they are in the model formula. If I specify another formula, the result is different:
+The problem with the `aov`{.R} function is that it performs a so-called type I ANOVA. The type I ANOVA adds variables in the order in which they are in the model formula. If I specify another formula, the result is different:
 
-```{r chunk_chapter3_chunk61, echo=TRUE, eval=TRUE}
+```{r chunk_chapter3_chunk64, echo=TRUE, eval=TRUE}
 fit = lm(Ozone ~ Temp + Wind, data = airquality)
 summary(aov(fit))
 ```
@@ -1249,19 +1249,19 @@ The difference is due to the collinearity of the variables. Because Temp and Win
 
 There are other types of ANOVA that avoid this problem. The so-called type II ANOVA shows for each variable only the part that is uniquely attributable to the respective variable
 
-```{r chunk_chapter3_chunk62, echo=TRUE, eval=TRUE}
+```{r chunk_chapter3_chunk65, echo=TRUE, eval=TRUE}
 car::Anova(fit, type = "II")
 ```
 
 There is also type III, which is as type II, but avoids a similar problem for interactions (see next subchapter). This is probably the most conservative setting:
 
-```{r chunk_chapter3_chunk63, echo=TRUE, eval=TRUE}
+```{r chunk_chapter3_chunk66, echo=TRUE, eval=TRUE}
 car::Anova(fit, type = "III")
 ```
 
 Here is an overview of the situation for 2 predictors A and B and their interaction. The upper left figure corresponds to the case where we have no collinearity between either of those variables. The figure on the top right (and similarly types I - III) are the three possible types of ANOVA for variables with collinearity. The "overlap" between the circles depicts the shared part, i.e. the variability that can be expressed by either variable (due to collinearity). Note that the shares in Type II, III do not add up to 1, as there is a kind of "dark variation" that we cannot securely add to either variable. 
 
-```{r chunk_chapter3_64, echo=FALSE, out.width="150%", out.height="150%"}
+```{r chunk_chapter3_67, echo=FALSE, out.width="150%", out.height="150%"}
 knitr::include_graphics(c("images/ANOVA.jpg"))
 ```
 
@@ -1295,7 +1295,7 @@ Try out the difference between type I, II, III ANOVA for the airquality data set
 
 When we have multiple variables, we can have the situation that the value of one variable influences the effect of the other(s). Technically, this is called in **interaction**. In situations where the causal direction is known, this is also called a **moderator**. An example: Imagine we observe that the effect of aspirin differs depending on the weight of the subject. Technically, we have an interaction between aspirin and weight. Physiologically, we know the causal direction is "weight -> effect of aspirin", so we can say weight is a moderator for the effect of aspirin. 
 
-```{r chunk_chapter3_chunk65, echo=TRUE, eval=TRUE}
+```{r chunk_chapter3_chunk68, echo=TRUE, eval=TRUE}
 fit = lm(Ozone ~ Temp * Wind, data = airquality)
 plot(allEffects(fit))
 ```
@@ -1304,13 +1304,13 @@ We will have a look at the summary later, but for the moment, let's just look at
 
 Let's look at the interaction syntax in more detail. The "*" operator in an `lm()`.{R} is a shorthand for main effects + interactions. You can write equivalently:
 
-```{r chunk_chapter3_chunk66, echo=TRUE, eval=FALSE}
+```{r chunk_chapter3_chunk69, echo=TRUE, eval=FALSE}
 fit = lm(Ozone ~ Wind + Temp + Wind:Temp, data = airquality)
 ```
 
 What is fit here is literally a third predictor that is specified as Wind * Temp (normal multiplication). The above syntax would allow you to also have interactions without main effects, e.g.:
 
-```{r chunk_chapter3_chunk67, echo=TRUE, eval=FALSE}
+```{r chunk_chapter3_chunk70, echo=TRUE, eval=FALSE}
 fit = lm(Ozone ~ Wind + Wind:Temp, data = airquality)
 ```
 
@@ -1318,7 +1318,7 @@ Although this is generally **never** advisable, as the main effect influences th
 
 There is another important syntax in R:
 
-```{r chunk_chapter3_chunk68, echo=TRUE, eval=TRUE}
+```{r chunk_chapter3_chunk71, echo=TRUE, eval=TRUE}
 fit = lm(Ozone ~ (Wind + Temp + Solar.R)^2 , data = airquality)
 summary(fit)
 
@@ -1335,7 +1335,7 @@ This creates all main effect and second order (aka two-way) interactions between
 
 When you include an interaction with a categorical variable, that means a separate effect will be fit for each level of the categorical variable, as in 
 
-```{r chunk_chapter3_chunk69, echo=TRUE, eval=TRUE}
+```{r chunk_chapter3_chunk72, echo=TRUE, eval=TRUE}
 fit = lm(Ozone ~ Wind * fMonth, data = airquality)
 summary(fit)
 ```
@@ -1362,7 +1362,7 @@ Compare the estimates for Wind / Temp for the following models
 
 How do you explain the differences in the estimates for the main effects of Wind and Temp? What do you think corresponds most closely to the "true" effect of Wind and Temp? Maybe you know the answer already. If not, consider the following simulation, where we create data with known effect sizes:
 
-```{r chunk_chapter3_chunk70, echo=TRUE, eval=TRUE}
+```{r chunk_chapter3_chunk73, echo=TRUE, eval=TRUE}
 # Create predictor variables.
 x1 = runif(100, -1, 1)
 x2 = runif(100, -1, 1)
@@ -1585,7 +1585,7 @@ The more complex model will always fit the data better, i.e. have a higher likel
 
 Likelihood-ratio tests are used to get the p-values in an R ANOVA, and thus you can also use the `anova`{.R} function to perform an likelihood-ratio test between 2 models (Note: For simple models, this will run an F-test, which is technically not exactly a likelihood-ratio test, but the principle is the same): 
 
-```{r chunk_chapter3_chunk73, echo=TRUE, eval=TRUE}
+```{r chunk_chapter3_chunk74, echo=TRUE, eval=TRUE}
 # Model 1
 m1 = lm(Ozone ~ Wind , data = airquality)
 
@@ -1608,7 +1608,7 @@ Essentially, this means AIC = Fit - Penalty for complexity.
 
 **Lower AIC is better!**
 
-```{r chunk_chapter3_chunk74, echo=TRUE, eval=TRUE}
+```{r chunk_chapter3_chunk75, echo=TRUE, eval=TRUE}
 m1 = lm(Ozone ~ Temp, data = airquality)
 m2 = lm(Ozone ~ Temp + Wind, data = airquality)
 
@@ -1653,15 +1653,15 @@ A third option option for model selection are shrinkage estimators. These includ
 
 The basic idea behind these estimators is not to reduce the number of parameters, but to reduce the flexibility of the model by introducing a penalty on the regression coefficients that code a preference for smaller or zero coefficient values. Effectively, this can either amount to model selection (because some coefficients are shrunk directly to zero), or it can mean that we can fit very large models while still being able to do good predictions, or avoid overfitting.
 
-To put a ridge penalty on the standard lm, we can use 
+To put a ridge penalty on the standard `lm`{.R}, we can use 
 
-```{r chunk_chapter3_chunk75, echo=TRUE, eval=TRUE}
+```{r chunk_chapter3_chunk76, echo=TRUE, eval=TRUE}
 lm.ridge(Ozone ~ Wind + Temp + Solar.R, data = airquality, lambda = 2)
 ```
 
 We can see how the regression estimates vary for different penalties via 
 
-```{r chunk_chapter3_chunk76, echo=TRUE, eval=TRUE}
+```{r chunk_chapter3_chunk77, echo=TRUE, eval=TRUE}
 plot( lm.ridge( Ozone ~ Wind + Temp + Solar.R, data = airquality,
               lambda = seq(0, 200, 0.1) ) )
 ```
@@ -1673,7 +1673,7 @@ The most dubious model selection strategy, actually considered scientific **misc
 
 Measurements of plant performance. Target was to find out if Gen1 has an effect on Performance. Various other variables are measured
 
-```{r chunk_chapter3_chunk77, echo=TRUE, eval=TRUE}
+```{r chunk_chapter3_chunk78, echo=TRUE, eval=TRUE}
 set.seed(1)
 dat = data.frame(matrix(rnorm(300), ncol = 10))
 colnames(dat) = c("Performance", "Gen1", "Gen2", "soilC", "soilP", "Temp",

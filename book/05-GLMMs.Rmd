@@ -30,10 +30,14 @@ Of course, there are many additional distributions that you could consider for y
 knitr::include_graphics(c("images/linkFunctions.jpg"))
 ```
 
+```{=html}
+<p><small>Screenshot taken from Wikipedia: <a href="https://en.wikipedia.org/wiki/Generalized_linear_model#Link_function" target="_blank" rel="noopener">https://en.wikipedia.org/wiki/Generalized_linear_model#Link_function</a>. Content licensed under the <a href="https://en.wikipedia.org/wiki/Wikipedia:Text_of_Creative_Commons_Attribution-ShareAlike_3.0_Unported_License" target="_blank" rel="noopener">Creative Commons Attribution-ShareAlike License 3.0</a>.</small></p>
+```
+
 
 ### A Binomial Example
 
-We want to look at the titanic data set. A cleaned version of this is in the package EcoData, which you have to install first from GitHub. If you haven't already installed this package, I hope this works for you:
+We want to look at the titanic data set. A cleaned version of this is in the package `EcoData`{.R}, which you have to install first from GitHub. If you haven't already installed this package, I hope this works for you:
 
 ```{r chunk_chapter5_chunk1, echo=TRUE, eval=FALSE, purl=FALSE}
 install.packages("devtools")
@@ -121,7 +125,7 @@ par(mfrow = c(2, 2))
 plot(m2)
 ```
 
-still work, but they don't look any better than before, because they still check for normality of the residuals, while we are interested in the question of whether the residuals are binomially distributed. The `DHARMa`.{R} package solves this problem. Load the `DHARMa`.{R} package, which should have been installed with EcoData already:
+still work, but they don't look any better than before, because they still check for normality of the residuals, while we are interested in the question of whether the residuals are binomially distributed. The `DHARMa`.{R} package solves this problem. Load the `DHARMa`.{R} package, which should have been installed with `EcoData`{.R} already:
 
 ```{r chunk_chapter5_chunk11, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE}
 library(DHARMa)
@@ -375,6 +379,8 @@ And adjust the model accordingly.
 Look at the Owl data set in the `glmmTMB`.{R} package. The initial hypothesis is 
 
 ```{r chunk_chapter5_task_3, message=FALSE, warning=FALSE}
+library(glmmTMB)
+
 m1 = glm(SiblingNegotiation ~ FoodTreatment*SexParent + offset(log(BroodSize)),
          data = Owls , family = poisson)
 res = simulateResiduals(m1)
@@ -425,31 +431,27 @@ In <a href="https://www.pnas.org/content/111/24/8782" target="_blank" rel="noope
 
 Specifically, they analyze the number of hurricane fatalities, and claim that there is an effect of the femininity of the name on the number of fatalities, correcting for several possible confounders. They interpret the result as causal (including mediators), claiming that giving only male names to hurricanes would considerably reduce death toll. 
 
-The data is available at:  
-<a href="https://elearning.uni-regensburg.de/pluginfile.php/2365101/mod_book/chapter/48142/Hurricanes.Rdata" target="_blank" rel="noopener">https://elearning.uni-regensburg.de/pluginfile.php/2365101/mod_book/chapter/48142/Hurricanes.Rdata</a>.
+The data is available in `EcoData`{.R}.
 
-You can adopt the file's path and use the following code to read in the data:
+```{r chunk_chapter5_task_5, eval=TRUE, message=FALSE, warning=FALSE}
+library(EcoData)
 
-```{r chunk_chapter5_task_5, eval=FALSE, purl=FALSE, message=FALSE, warning=FALSE}
-library(readxl)
-
-Data = read_excel("/tmp/pnas.1402786111.sd01.xlsx", n_max = 92)
-Data = as.data.frame(Data)
-str(Data)
+str(hurricanes)
 ```
 
 Some plots:
 
-```{r chunk_chapter5_task_6, eval=FALSE, purl=FALSE, message=FALSE, warning=FALSE}
-plot(Data$MasFem, Data$NDAM, cex = 0.5, pch = 5)
-points(Data$MasFem, Data$NDAM, cex = Data$alldeaths/20, pch = 4, col= "red")
+```{r chunk_chapter5_task_6, eval=TRUE, message=FALSE, warning=FALSE}
+plot(hurricanes$MasFem, hurricanes$NDAM, cex = 0.5, pch = 5)
+points(hurricanes$MasFem, hurricanes$NDAM, cex = hurricanes$alldeaths/20,
+       pch = 4, col= "red")
 ```
 
 The original model from the paper fits a negative binomial, using `mgcv`.{R}.
 
-```{r chunk_chapter5_task_7, eval=FALSE, purl=FALSE, message=FALSE, warning=FALSE}
+```{r chunk_chapter5_task_7, eval=TRUE, message=FALSE, warning=FALSE}
 originalModelGAM = gam(alldeaths ~ MasFem * (Minpressure_Updated.2014 + NDAM), 
-    data = Data, family = nb, na.action = "na.fail")
+    data = hurricanes, family = nb, na.action = "na.fail")
 summary(originalModelGAM)
 ```
 
@@ -529,12 +531,14 @@ Do a re-analysis of the data as if you were the 30th team to contribute the resu
   <strong><span style="color: #0011AA; font-size:25px;">Task</span></strong><br/>
 ```
 
-Analyze the Marmot data. Available at <a href="http://highstat.com/Books/Book4/Marmots.txt" target="_blank" rel="noopener">http://highstat.com/Books/Book4/Marmots.txt</a>. You can read the URL directly with R, no need to download. A description of the data is available <a href="https://elearning.uni-regensburg.de/pluginfile.php/1922323/mod_assign/introattachment/0/Marmots.pdf?forcedownload=1" target="_blank" rel="noopener">https://osf.io/9yh4x/</a>.
+Analyze the Marmot data you can find in `EcoData`{.R}. A description of the data is available <a href="https://elearning.uni-regensburg.de/pluginfile.php/1922323/mod_assign/introattachment/0/Marmots.pdf?forcedownload=1" target="_blank" rel="noopener">https://osf.io/9yh4x/</a>.
 
 Use the following snippet to read in the data:
 
-```{r chunk_chapter5_task_10, eval=FALSE, purl=FALSE, message=FALSE, warning=FALSE}
-marmots = read.table(url("http://highstat.com/Books/Book4/Marmots.txt"))
+```{r chunk_chapter5_task_10, eval=TRUE, message=FALSE, warning=FALSE}
+library(EcoData)
+
+str(marmots)
 ```
 
 ```{=html}

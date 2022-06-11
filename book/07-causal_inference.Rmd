@@ -23,7 +23,16 @@ editor_options:
 knitr::include_graphics(c("images/reminder.jpg"))
 ```
 
-Strategy for analysis:
+***Things to note:***
+
+1. For an lm, the link function is the identity function.
+2. Fixed effects $\operatorname{f}(x)$ can be either a polynomial $\left( a \cdot x = b \right)$ = linear regression, a nonlinear function = nonlinear regression, or a smooth spline = generalized additive model (GAM).
+3. Random effects assume normal distribution for groups.
+4. Random effects can also act on fixed effects (random slope).
+5. For an lm with correlation structure, C is integrated in Dist. For all other GLMMs, there is another distribution, plus the additional multivariate normal on the linear predictor.
+
+
+***Strategy for analysis:***
 
 1. Define formula via scientific questions + confounders.
 2. Define type of GLM (lm, logistic, Poisson).
