@@ -4,6 +4,8 @@ output:
   bookdown::gitbook:
     highlight: kate
 documentclass: book
+editor_options: 
+  chunk_output_type: console
 ---
 
 
@@ -434,7 +436,8 @@ Specifically, they analyze the number of hurricane fatalities, and claim that th
 The data is available in `EcoData`{.R}.
 
 ```{r chunk_chapter5_task_5, eval=TRUE, message=FALSE, warning=FALSE}
-library(EcoData)
+library(DHARMa)
+library(mgcv)
 
 str(hurricanes)
 ```
@@ -450,7 +453,7 @@ points(hurricanes$MasFem, hurricanes$NDAM, cex = hurricanes$alldeaths/20,
 The original model from the paper fits a negative binomial, using `mgcv`.{R}.
 
 ```{r chunk_chapter5_task_7, eval=TRUE, message=FALSE, warning=FALSE}
-originalModelGAM = gam(alldeaths ~ MasFem * (Minpressure_Updated.2014 + NDAM), 
+originalModelGAM = gam(alldeaths ~ MasFem * (Minpressure_Updated_2014 + NDAM), 
     data = hurricanes, family = nb, na.action = "na.fail")
 summary(originalModelGAM)
 ```

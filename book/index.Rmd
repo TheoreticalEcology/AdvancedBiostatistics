@@ -28,6 +28,7 @@ knitr::write_bib(c(.packages(), 'bookdown', 'knitr', 'rmarkdown'),
                  'packages.bib')
 
 knitr::opts_chunk$set(cache = TRUE)
+set.seed(123)
 ``` 
 
 The aim of this course is to be able to gain a good theoretical and practical understanding of the statistical problem of estimating an effect: We have a response variable and want to understand how this response variable is influenced by a number of other factors. Truly understanding this problem will require mastering a number of skills, in particular: 
@@ -41,5 +42,5 @@ The aim of this course is to be able to gain a good theoretical and practical un
 This is what we will mainly train in this course. Don't worry if you think that this sounds too simple. We could spend an entire week to only understand the p-value, no problem. We will still only scratch the surface. But I want to make sure that you get an overview of these topics and are confident enough to run a realistic scientific analysis on your own. Additionally, we will shortly cover advanced topics that lead into the area of machine learning and predictive inference, for example regularization (L1 / L2 penalty), as well as regression trees and the associated methods (e.g. boosting, bagging) as well as model averaging.
 
 ```{=html}
-<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>
+<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a> Note that some elements of this work (embedded videos, graphics) may be under a seperate licence and are thus not included in this licence. 
 ```

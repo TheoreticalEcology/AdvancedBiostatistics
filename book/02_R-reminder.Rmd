@@ -57,21 +57,19 @@ To install a package from a library, use the command
 install.packages(LIBRARY)
 ```
 
-Exchange "LIBRARY" with the name of the library you want to install. The default is to search the package in CRAN, but you can specify other repositories or file locations in the function. To save typing for you, you can install an entire list of libraries that you will need by executing the following commands: 
+Exchange "LIBRARY" with the name of the library you want to install. The default is to search the package in CRAN, but you can specify other repositories or file locations in the function. 
 
-```{r chunk_chapter2_1, code=xfun::read_utf8('dependencies.R'), eval=FALSE}
-```
-
-Moreover, in this book, we will often use data sets from the `EcoData`{.R} package, which is not on CRAN. To install the package, run:
+In this book, we will often use data sets from the `EcoData`{.R} package, which is not on CRAN, but on a GitHub page. To install the package, run:
 
 ```{r chunk_chapter2_2, eval=FALSE}
+# install.packages("devtools") # if you don't have the devtools package installed
 devtools::install_github(repo = "florianhartig/EcoData", subdir = "EcoData",
                          dependencies = TRUE, build_vignettes = TRUE)
 ```
 
+For your convenience, the EcoData installation also forces the installation of most of the packges needed in this book, so this may take a while. If you want to load only the EcoData package, or if you encounter problems during the install, set `dependencies = F, build_vignettes = F`. 
 
 ## Operating With Data in R
-
 
 ### Exploring Data Structures
 

@@ -9,7 +9,7 @@ editor_options:
 ---
 
 
-# Causal Inference, SEMs, Summary {#causal_inference}
+# Summary and advanced topics {#advanced_topics}
 
 ```{=html}
 <!-- Put this here (right after the first markdown headline) and only here for each document! -->
@@ -459,4 +459,93 @@ lavaanPlot(model = fit)
 library(semPlot)
 semPaths(fit)
 ```
+
+## Intro Bayes
+
+Intro Bayes will be done via a <a href="https://www.dropbox.com/s/27zp86y2wnxpdp7/1.1-FlorianHartig_Intro-Bayes.pdf?dl=0" target="_blank" rel="noopener">lecture</a> Code for the lecture <a href="https://www.dropbox.com/s/xjpvdsygy12sffu/1.1-practical.R?dl=0" target="_blank" rel="noopener">here</a>.
+
+To fit Bayesian models, for full flexibility, most people use **Stan**. Stan is a completely new modelling specification language, therefore we won't do this here.
+
+However, there is the `brms`{.R} package. `brms`{.R} allows you to specify regression models in the same syntax as `lme4`{.R} / `glmmTMB`{.R}, but translates then to Stan code and fits them. Here a comparison:
+
+*Non-Bayesian (GLMM) with* `lme4`{.R}:
+
+```{r chunk_chapter6_chunk16, echo=TRUE, eval=FALSE, purl=FALSE}
+library(lme4)
+
+mod0 = glmer(real ~ corpus + (1 | sound) + (1 | id),
+             data = df, family = "binomial")
+```
+
+*Bayesian with* `brms`{.R}:
+
+```{r chunk_chapter6_chunk17, echo=TRUE, eval=FALSE, purl=FALSE}
+library(brms)
+
+mod1 = brm(real ~ corpus + (1 | sound) + (1 | id),
+           data = df, family = "bernoulli", ...)
+```
+
+**Extended syntax:**
+
+*Non-Bayesian (GLMM) with* `lme4`{.R}:
+
+```{r chunk_chapter6_chunk18, echo=TRUE, eval=FALSE, purl=FALSE}
+library(lme4)
+
+mod0 = glmer(real ~ corpus + (1 | sound) + (1 | id),
+             data = df, family = "binomial")
+# Running time: 6 s.
+```
+
+*Bayesian with* `brms`{.R}:
+
+```{r chunk_chapter6_chunk19, echo=TRUE, eval=FALSE, purl=FALSE}
+library(brms)
+
+mod1 = brm(real ~ corpus + (1 | sound) + (1 | id),
+           data = df, family = "bernoulli",
+           prior = set_prior("normal(0, 3)"),
+           iter = 1000, chains = 4, cores = 4)
+# Running time: 40 s compilation + 50 s sampling = 1.5 min.
+```
+
+```{=html}
+  <hr/>
+  <strong><span style="color: #0011AA; font-size:25px;">Task</span></strong><br/>
+```
+
+Take any of our simpler models, and run them with `brms`{.R}!
+
+```{=html}
+  <details>
+    <summary>
+      <strong><span style="color: #0011AA; font-size:25px;">Solution</span></strong>
+    </summary>
+    <p>
+```
+
+```{r chunk_chapter6_task_1, message=FALSE, warning=FALSE}
+library(brms)
+
+```
+
+```{=html}
+    </p>
+  </details>
+  <br/><hr/>
+```
+
+
+
+***Bayesian model comparison:***
+
+In Bayesian stats, there is no p-value. So, how do we know if something has an effect? There are two options:
+
+* Just look at the effect size and its uncertainties.
+* Compare the simpler with the more complex model, and calculate which has a higher posterior probability
+
+The latter is called **posterior weights**, and they are based on the so-called **Bayes factor**. For simple tests, e.g. t-test or lm, the Bayes factor is implemented in the BayesFactor package in R. Look at the examples <a href="https://cran.r-project.org/web/packages/BayesFactor/vignettes/manual.html" target="_blank" rel="noopener">here</a>.
+
+
 

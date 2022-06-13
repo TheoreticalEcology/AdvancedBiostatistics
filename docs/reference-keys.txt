@@ -68,11 +68,11 @@ general-idea
 temporal-and-spatial-correlation-structures
 phylogenetic-structures-pgls
 exercices
-intro-bayes
-causal_inference
+advanced_topics
 reminder-modelling-strategy
 thoughts-about-the-analysis-pipeline
 bootstrap
 cross-validation
 null-models
 structural-equation-models-sems
+intro-bayes
