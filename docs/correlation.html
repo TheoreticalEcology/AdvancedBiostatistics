@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>6 Correlation structures | Advanced Biostatistics with R</title>
+  <meta name="description" content="6 Correlation structures | Advanced Biostatistics with R" />
+  <meta name="generator" content="bookdown 0.26 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="6 Correlation structures | Advanced Biostatistics with R" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="6 Correlation structures | Advanced Biostatistics with R" />
+  <meta name="github-repo" content="rstudio/bookdown-demo" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="6 Correlation structures | Advanced Biostatistics with R" />
+  
+  <meta name="twitter:description" content="6 Correlation structures | Advanced Biostatistics with R" />
+  
+
+<meta name="author" content="Florian Hartig" />
+
+
+<meta name="date" content="2022-06-11" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="GLMMs.html"/>
+<link rel="next" href="causal_inference.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+<script src="libs/htmlwidgets-1.5.3/htmlwidgets.js"></script>
+<script src="libs/viz-1.8.2/viz.js"></script>
+<link href="libs/DiagrammeR-styles-0.2/styles.css" rel="stylesheet" />
+<script src="libs/grViz-binding-1.0.9/grViz.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    background-color: #ffffff;
+    color: #a0a0a0;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #a0a0a0;  padding-left: 4px; }
+div.sourceCode
+  { color: #1f1c1b; background-color: #ffffff; }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span { color: #1f1c1b; } /* Normal */
+code span.al { color: #bf0303; background-color: #f7e6e6; font-weight: bold; } /* Alert */
+code span.an { color: #ca60ca; } /* Annotation */
+code span.at { color: #0057ae; } /* Attribute */
+code span.bn { color: #b08000; } /* BaseN */
+code span.bu { color: #644a9b; font-weight: bold; } /* BuiltIn */
+code span.cf { color: #1f1c1b; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #924c9d; } /* Char */
+code span.cn { color: #aa5500; } /* Constant */
+code span.co { color: #898887; } /* Comment */
+code span.cv { color: #0095ff; } /* CommentVar */
+code span.do { color: #607880; } /* Documentation */
+code span.dt { color: #0057ae; } /* DataType */
+code span.dv { color: #b08000; } /* DecVal */
+code span.er { color: #bf0303; text-decoration: underline; } /* Error */
+code span.ex { color: #0095ff; font-weight: bold; } /* Extension */
+code span.fl { color: #b08000; } /* Float */
+code span.fu { color: #644a9b; } /* Function */
+code span.im { color: #ff5500; } /* Import */
+code span.in { color: #b08000; } /* Information */
+code span.kw { color: #1f1c1b; font-weight: bold; } /* Keyword */
+code span.op { color: #1f1c1b; } /* Operator */
+code span.ot { color: #006e28; } /* Other */
+code span.pp { color: #006e28; } /* Preprocessor */
+code span.re { color: #0057ae; background-color: #e0e9f8; } /* RegionMarker */
+code span.sc { color: #3daee9; } /* SpecialChar */
+code span.ss { color: #ff5500; } /* SpecialString */
+code span.st { color: #bf0303; } /* String */
+code span.va { color: #0057ae; } /* Variable */
+code span.vs { color: #bf0303; } /* VerbatimString */
+code span.wa { color: #bf0303; } /* Warning */
+</style>
+
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Preface</a></li>
+<li class="chapter" data-level="2" data-path="reminder.html"><a href="reminder.html"><i class="fa fa-check"></i><b>2</b> Reminder: R basics</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="reminder.html"><a href="reminder.html#your-r-system"><i class="fa fa-check"></i><b>2.1</b> Your R System</a>
+<ul>
+<li class="chapter" data-level="2.1.1" data-path="reminder.html"><a href="reminder.html#installing-libraries"><i class="fa fa-check"></i><b>2.1.1</b> Installing Libraries</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="reminder.html"><a href="reminder.html#operating-with-data-in-r"><i class="fa fa-check"></i><b>2.2</b> Operating with data in R</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="reminder.html"><a href="reminder.html#exploring-data-structures"><i class="fa fa-check"></i><b>2.2.1</b> Exploring Data Structures</a></li>
+<li class="chapter" data-level="2.2.2" data-path="reminder.html"><a href="reminder.html#dynamic-typing"><i class="fa fa-check"></i><b>2.2.2</b> Dynamic Typing</a></li>
+<li class="chapter" data-level="2.2.3" data-path="reminder.html"><a href="reminder.html#data-selection-slicing-and-subsetting"><i class="fa fa-check"></i><b>2.2.3</b> Data Selection, Slicing and Subsetting</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="reminder.html"><a href="reminder.html#applying-functions-and-aggregates-across-a-data-set"><i class="fa fa-check"></i><b>2.3</b> Applying Functions and Aggregates Across a Data Set</a>
+<ul>
+<li class="chapter" data-level="2.3.1" data-path="reminder.html"><a href="reminder.html#functions"><i class="fa fa-check"></i><b>2.3.1</b> Functions</a></li>
+<li class="chapter" data-level="2.3.2" data-path="reminder.html"><a href="reminder.html#the-apply-function"><i class="fa fa-check"></i><b>2.3.2</b> The apply() Function</a></li>
+<li class="chapter" data-level="2.3.3" data-path="reminder.html"><a href="reminder.html#the-aggregate-function"><i class="fa fa-check"></i><b>2.3.3</b> The aggregate() Function</a></li>
+</ul></li>
+<li class="chapter" data-level="2.4" data-path="reminder.html"><a href="reminder.html#plotting"><i class="fa fa-check"></i><b>2.4</b> Plotting</a></li>
+<li class="chapter" data-level="2.5" data-path="reminder.html"><a href="reminder.html#additional-resources"><i class="fa fa-check"></i><b>2.5</b> Additional Resources</a>
+<ul>
+<li class="chapter" data-level="2.5.1" data-path="reminder.html"><a href="reminder.html#books"><i class="fa fa-check"></i><b>2.5.1</b> Books</a></li>
+<li class="chapter" data-level="2.5.2" data-path="reminder.html"><a href="reminder.html#instructional-videos"><i class="fa fa-check"></i><b>2.5.2</b> Instructional Videos</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="recap.html"><a href="recap.html"><i class="fa fa-check"></i><b>3</b> Understanding linear regression</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="recap.html"><a href="recap.html#simple-linear-regression"><i class="fa fa-check"></i><b>3.1</b> Simple Linear Regression</a>
+<ul>
+<li class="chapter" data-level="3.1.1" data-path="recap.html"><a href="recap.html#fitting-and-interpreting-the-regression"><i class="fa fa-check"></i><b>3.1.1</b> Fitting and Interpreting the Regression</a></li>
+<li class="chapter" data-level="3.1.2" data-path="recap.html"><a href="recap.html#centering-of-predictors"><i class="fa fa-check"></i><b>3.1.2</b> Centering of Predictors</a></li>
+<li class="chapter" data-level="3.1.3" data-path="recap.html"><a href="recap.html#residual-checks"><i class="fa fa-check"></i><b>3.1.3</b> Residual Checks</a></li>
+<li class="chapter" data-level="3.1.4" data-path="recap.html"><a href="recap.html#categorical-predictors"><i class="fa fa-check"></i><b>3.1.4</b> Categorical Predictors</a></li>
+<li class="chapter" data-level="3.1.5" data-path="recap.html"><a href="recap.html#plantTrait1"><i class="fa fa-check"></i><b>3.1.5</b> Exercise: Global Plant Trait Analysis</a></li>
+</ul></li>
+<li class="chapter" data-level="3.2" data-path="recap.html"><a href="recap.html#multiple-regression"><i class="fa fa-check"></i><b>3.2</b> Multiple Regression</a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="recap.html"><a href="recap.html#getting-started"><i class="fa fa-check"></i><b>3.2.1</b> Getting Started</a></li>
+<li class="chapter" data-level="3.2.2" data-path="recap.html"><a href="recap.html#simulating-the-effect-of-collinearity"><i class="fa fa-check"></i><b>3.2.2</b> Simulating the Effect of Collinearity</a></li>
+<li class="chapter" data-level="3.2.3" data-path="recap.html"><a href="recap.html#scaling-variables"><i class="fa fa-check"></i><b>3.2.3</b> Scaling Variables</a></li>
+<li class="chapter" data-level="3.2.4" data-path="recap.html"><a href="recap.html#anova-for-multiple-regression"><i class="fa fa-check"></i><b>3.2.4</b> ANOVA for Multiple Regression</a></li>
+<li class="chapter" data-level="3.2.5" data-path="recap.html"><a href="recap.html#interactions"><i class="fa fa-check"></i><b>3.2.5</b> Interactions</a></li>
+<li class="chapter" data-level="3.2.6" data-path="recap.html"><a href="recap.html#plantTrait2"><i class="fa fa-check"></i><b>3.2.6</b> Exercise: Global Plant Trait Analysis #2</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="recap.html"><a href="recap.html#model-choice-and-causal-inference"><i class="fa fa-check"></i><b>3.3</b> Model Choice and Causal Inference</a>
+<ul>
+<li class="chapter" data-level="3.3.1" data-path="recap.html"><a href="recap.html#the-bias-variance-trade-off"><i class="fa fa-check"></i><b>3.3.1</b> The Bias-Variance Trade-off</a></li>
+<li class="chapter" data-level="3.3.2" data-path="recap.html"><a href="recap.html#causal-inference"><i class="fa fa-check"></i><b>3.3.2</b> Causal Inference</a></li>
+<li class="chapter" data-level="3.3.3" data-path="recap.html"><a href="recap.html#model-selection-methods"><i class="fa fa-check"></i><b>3.3.3</b> Model Selection Methods</a></li>
+<li class="chapter" data-level="3.3.4" data-path="recap.html"><a href="recap.html#pHacking"><i class="fa fa-check"></i><b>3.3.4</b> P-hacking</a></li>
+<li class="chapter" data-level="3.3.5" data-path="recap.html"><a href="recap.html#problems-of-stepwise-model-selection"><i class="fa fa-check"></i><b>3.3.5</b> Problems of Stepwise Model Selection</a></li>
+<li class="chapter" data-level="3.3.6" data-path="recap.html"><a href="recap.html#exercise-global-plant-trait-analysis-3"><i class="fa fa-check"></i><b>3.3.6</b> Exercise: Global Plant Trait Analysis #3</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="heteroskedasticity.html"><a href="heteroskedasticity.html"><i class="fa fa-check"></i><b>4</b> Heteroskedasticity and Grouped Data (Random Effects)</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="heteroskedasticity.html"><a href="heteroskedasticity.html#warm-up-exercise"><i class="fa fa-check"></i><b>4.1</b> Warm-up Exercise</a></li>
+<li class="chapter" data-level="4.2" data-path="heteroskedasticity.html"><a href="heteroskedasticity.html#general-modelling-strategy-for-lm-correction-of-residuals"><i class="fa fa-check"></i><b>4.2</b> General Modelling Strategy for lm() + Correction of Residuals</a>
+<ul>
+<li class="chapter" data-level="4.2.1" data-path="heteroskedasticity.html"><a href="heteroskedasticity.html#wrong-functional-form"><i class="fa fa-check"></i><b>4.2.1</b> Wrong Functional Form</a></li>
+<li class="chapter" data-level="4.2.2" data-path="heteroskedasticity.html"><a href="heteroskedasticity.html#modelling-variance-terms"><i class="fa fa-check"></i><b>4.2.2</b> Modelling Variance Terms</a></li>
+<li class="chapter" data-level="4.2.3" data-path="heteroskedasticity.html"><a href="heteroskedasticity.html#exercise"><i class="fa fa-check"></i><b>4.2.3</b> Exercise</a></li>
+<li class="chapter" data-level="4.2.4" data-path="heteroskedasticity.html"><a href="heteroskedasticity.html#non-normality-and-outliers"><i class="fa fa-check"></i><b>4.2.4</b> Non-normality and Outliers</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="heteroskedasticity.html"><a href="heteroskedasticity.html#random-and-mixed-effects---motivation"><i class="fa fa-check"></i><b>4.3</b> Random and Mixed Effects - Motivation</a>
+<ul>
+<li class="chapter" data-level="4.3.1" data-path="heteroskedasticity.html"><a href="heteroskedasticity.html#fitting-random-effects-models"><i class="fa fa-check"></i><b>4.3.1</b> Fitting Random Effects Models</a></li>
+<li class="chapter" data-level="4.3.2" data-path="heteroskedasticity.html"><a href="heteroskedasticity.html#case-study-1-college-student-performance-over-time"><i class="fa fa-check"></i><b>4.3.2</b> Case Study 1: College Student Performance Over Time</a></li>
+<li class="chapter" data-level="4.3.3" data-path="heteroskedasticity.html"><a href="heteroskedasticity.html#problems-with-mixed-models"><i class="fa fa-check"></i><b>4.3.3</b> Problems With Mixed Models</a></li>
+<li class="chapter" data-level="4.3.4" data-path="heteroskedasticity.html"><a href="heteroskedasticity.html#case-study-2---honeybee-data"><i class="fa fa-check"></i><b>4.3.4</b> Case Study 2 - Honeybee Data</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="GLMMs.html"><a href="GLMMs.html"><i class="fa fa-check"></i><b>5</b> GLMMs</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="GLMMs.html"><a href="GLMMs.html#basics"><i class="fa fa-check"></i><b>5.1</b> Basics</a>
+<ul>
+<li class="chapter" data-level="5.1.1" data-path="GLMMs.html"><a href="GLMMs.html#a-binomial-example"><i class="fa fa-check"></i><b>5.1.1</b> A Binomial Example</a></li>
+<li class="chapter" data-level="5.1.2" data-path="GLMMs.html"><a href="GLMMs.html#a-poisson-example"><i class="fa fa-check"></i><b>5.1.2</b> A Poisson Example</a></li>
+<li class="chapter" data-level="5.1.3" data-path="GLMMs.html"><a href="GLMMs.html#example---elk-data"><i class="fa fa-check"></i><b>5.1.3</b> Example - Elk Data</a></li>
+</ul></li>
+<li class="chapter" data-level="5.2" data-path="GLMMs.html"><a href="GLMMs.html#dispersion-problems-in-glms"><i class="fa fa-check"></i><b>5.2</b> Dispersion Problems in GLMs</a>
+<ul>
+<li class="chapter" data-level="5.2.1" data-path="GLMMs.html"><a href="GLMMs.html#heteroskedasticity-in-glmms"><i class="fa fa-check"></i><b>5.2.1</b> Heteroskedasticity in GLMMs</a></li>
+<li class="chapter" data-level="5.2.2" data-path="GLMMs.html"><a href="GLMMs.html#zero-inflation"><i class="fa fa-check"></i><b>5.2.2</b> Zero-inflation</a></li>
+<li class="chapter" data-level="5.2.3" data-path="GLMMs.html"><a href="GLMMs.html#p-hacking-link-collection"><i class="fa fa-check"></i><b>5.2.3</b> P-hacking Link Collection</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="GLMMs.html"><a href="GLMMs.html#protocol"><i class="fa fa-check"></i><b>5.3</b> Case Studies</a>
+<ul>
+<li class="chapter" data-level="5.3.1" data-path="GLMMs.html"><a href="GLMMs.html#owls"><i class="fa fa-check"></i><b>5.3.1</b> Owls</a></li>
+<li class="chapter" data-level="5.3.2" data-path="GLMMs.html"><a href="GLMMs.html#hurricanes"><i class="fa fa-check"></i><b>5.3.2</b> Hurricanes</a></li>
+<li class="chapter" data-level="5.3.3" data-path="GLMMs.html"><a href="GLMMs.html#researchers-degrees-of-freedom-skin-color-and-red-cards"><i class="fa fa-check"></i><b>5.3.3</b> Researchers Degrees of Freedom — Skin Color and Red Cards</a></li>
+<li class="chapter" data-level="5.3.4" data-path="GLMMs.html"><a href="GLMMs.html#marmots"><i class="fa fa-check"></i><b>5.3.4</b> Marmots</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="correlation.html"><a href="correlation.html"><i class="fa fa-check"></i><b>6</b> Correlation structures</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="correlation.html"><a href="correlation.html#general-idea"><i class="fa fa-check"></i><b>6.1</b> General Idea</a></li>
+<li class="chapter" data-level="6.2" data-path="correlation.html"><a href="correlation.html#temporal-and-spatial-correlation-structures"><i class="fa fa-check"></i><b>6.2</b> Temporal and Spatial Correlation Structures</a></li>
+<li class="chapter" data-level="6.3" data-path="correlation.html"><a href="correlation.html#phylogenetic-structures-pgls"><i class="fa fa-check"></i><b>6.3</b> Phylogenetic Structures (PGLS)</a></li>
+<li class="chapter" data-level="6.4" data-path="correlation.html"><a href="correlation.html#exercices"><i class="fa fa-check"></i><b>6.4</b> Exercices</a></li>
+<li class="chapter" data-level="6.5" data-path="correlation.html"><a href="correlation.html#intro-bayes"><i class="fa fa-check"></i><b>6.5</b> Intro Bayes</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="causal_inference.html"><a href="causal_inference.html"><i class="fa fa-check"></i><b>7</b> Causal Inference, SEMs, Summary</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="causal_inference.html"><a href="causal_inference.html#reminder-modelling-strategy"><i class="fa fa-check"></i><b>7.1</b> Reminder: Modelling Strategy</a></li>
+<li class="chapter" data-level="7.2" data-path="causal_inference.html"><a href="causal_inference.html#thoughts-about-the-analysis-pipeline"><i class="fa fa-check"></i><b>7.2</b> Thoughts About the Analysis Pipeline</a></li>
+<li class="chapter" data-level="7.3" data-path="causal_inference.html"><a href="causal_inference.html#bootstrap"><i class="fa fa-check"></i><b>7.3</b> Bootstrap</a></li>
+<li class="chapter" data-level="7.4" data-path="causal_inference.html"><a href="causal_inference.html#cross-validation"><i class="fa fa-check"></i><b>7.4</b> Cross-validation</a></li>
+<li class="chapter" data-level="7.5" data-path="causal_inference.html"><a href="causal_inference.html#null-models"><i class="fa fa-check"></i><b>7.5</b> Null Models</a></li>
+<li class="chapter" data-level="7.6" data-path="causal_inference.html"><a href="causal_inference.html#structural-equation-models-sems"><i class="fa fa-check"></i><b>7.6</b> Structural Equation Models (SEMs)</a></li>
+</ul></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Advanced Biostatistics with R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="correlation" class="section level1 hasAnchor" number="6">
+<h1><span class="header-section-number">6</span> Correlation structures<a href="correlation.html#correlation" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<!-- Put this here (right after the first markdown headline) and only here for each document! -->
+<script src="./scripts/multipleChoice.js"></script>
+<p>This chapter explains how to model correlation structures in the residuals.</p>
+<div id="general-idea" class="section level2 hasAnchor" number="6.1">
+<h2><span class="header-section-number">6.1</span> General Idea<a href="correlation.html#general-idea" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Except for the random effects, we have so far assumed that observations are independent. We will now relax this assumption. As a motivation, you can skim the following paper from <a href="https://onlinelibrary.wiley.com/doi/10.1111/ecog.02881" target="_blank" rel="noopener">Roberts et al., 2016</a>.</p>
+<p><img src="images/correlation.jpg" width="150%" height="150%" /></p>
+<p>We have already discussed random effects, which is a grouped correlation. All of the other three correlation structures discussed here are different. They are distance-based correlations between data points. Distance is expressed, e.g., by:</p>
+<ul>
+<li>Spatial distance.</li>
+<li>Temporal distance.</li>
+<li>Phylogenetic distance.</li>
+</ul>
+<p>For either of these structures, there can be two phenomena that lead to correlations:</p>
+<ol style="list-style-type: decimal">
+<li>There can be a <strong>trend</strong> in the given space (e.g. time, space), which we have to remove first.</li>
+<li>After accounting for the trend, there can be a so-called <strong>autocorrelation</strong> between data points.</li>
+</ol>
+<p>The idea of the so-called <strong>conditional autoregressive</strong> (CAR) structures is, that we make parametric assumptions for how the correlation between data points falls off with distance. Then, we fit the model with this structure.</p>
+<p>Similar as for the variance modelling, we can add this structures</p>
+<ul>
+<li>either in <code class="sourceCode r">nlme<span class="sc">::</span>gls</code>, see <a href="https://stat.ethz.ch/R-manual/R-devel/library/nlme/html/corClasses.html" target="_blank" rel="noopener">https://stat.ethz.ch/R-manual/R-devel/library/nlme/html/corClasses.html</a>,</li>
+<li>or in <code class="sourceCode r">glmmTMB</code>, see <a href="https://cran.r-project.org/web/packages/glmmTMB/vignettes/covstruct.html" target="_blank" rel="noopener">https://cran.r-project.org/web/packages/glmmTMB/vignettes/covstruct.html</a>.</li>
+</ul>
+<p>The following pages provide examples and further comments on how to do this.</p>
+</div>
+<div id="temporal-and-spatial-correlation-structures" class="section level2 hasAnchor" number="6.2">
+<h2><span class="header-section-number">6.2</span> Temporal and Spatial Correlation Structures<a href="correlation.html#temporal-and-spatial-correlation-structures" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>In principle, spatial and temporal correlation are quite similar, there are 2 options we can have:</p>
+<ol style="list-style-type: decimal">
+<li>There is a spatial trend in time / space, which creates a correlation in space / time.</li>
+<li>There truly is a spatial correlation, after accounting for the trend.</li>
+</ol>
+<p>Unfortunately, the distinction between a larger trend and a correlation is quite fluid. Nevertheless, one should always first check for and remove the trend, typically by including time/space as a predictor, potentially in a flexible way (GAMs come in handy). After this is done, we can fit a model with a temporally/spatially correlated error.</p>
+<p><strong><em>Temporal correlation</em></strong></p>
+<p>As our first example, I look at the hurricane study from yesterday, which is, after all, temporal data.</p>
+<div class="sourceCode" id="cb438"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb438-1"><a href="correlation.html#cb438-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(EcoData)</span>
+<span id="cb438-2"><a href="correlation.html#cb438-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glmmTMB)</span>
+<span id="cb438-3"><a href="correlation.html#cb438-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DHARMa)</span>
+<span id="cb438-4"><a href="correlation.html#cb438-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb438-5"><a href="correlation.html#cb438-5" aria-hidden="true" tabindex="-1"></a>originalModelGAM <span class="ot">=</span> <span class="fu">glmmTMB</span>(alldeaths <span class="sc">~</span> <span class="fu">scale</span>(MasFem) <span class="sc">*</span></span>
+<span id="cb438-6"><a href="correlation.html#cb438-6" aria-hidden="true" tabindex="-1"></a>                          (<span class="fu">scale</span>(Minpressure_Updated_2014) <span class="sc">+</span> <span class="fu">scale</span>(NDAM)),</span>
+<span id="cb438-7"><a href="correlation.html#cb438-7" aria-hidden="true" tabindex="-1"></a>                           <span class="at">data =</span> hurricanes, <span class="at">family =</span> nbinom2)</span>
+<span id="cb438-8"><a href="correlation.html#cb438-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb438-9"><a href="correlation.html#cb438-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Residual checks with DHARMa.</span></span>
+<span id="cb438-10"><a href="correlation.html#cb438-10" aria-hidden="true" tabindex="-1"></a>res <span class="ot">=</span> <span class="fu">simulateResiduals</span>(originalModelGAM)</span>
+<span id="cb438-11"><a href="correlation.html#cb438-11" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(res)</span>
+<span id="cb438-12"><a href="correlation.html#cb438-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb438-13"><a href="correlation.html#cb438-13" aria-hidden="true" tabindex="-1"></a><span class="co"># No significant deviation in the general plot, but try this, which was highlighted by</span></span>
+<span id="cb438-14"><a href="correlation.html#cb438-14" aria-hidden="true" tabindex="-1"></a><span class="co"># https://www.theguardian.com/science/grrlscientist/2014/jun/04/hurricane-gender-name-bias-sexism-statistics</span></span>
+<span id="cb438-15"><a href="correlation.html#cb438-15" aria-hidden="true" tabindex="-1"></a><span class="fu">plotResiduals</span>(res, hurricanes<span class="sc">$</span>NDAM)</span>
+<span id="cb438-16"><a href="correlation.html#cb438-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb438-17"><a href="correlation.html#cb438-17" aria-hidden="true" tabindex="-1"></a><span class="co"># We also find temporal autocorrelation.</span></span>
+<span id="cb438-18"><a href="correlation.html#cb438-18" aria-hidden="true" tabindex="-1"></a>res2 <span class="ot">=</span> <span class="fu">recalculateResiduals</span>(res, <span class="at">group =</span> hurricanes<span class="sc">$</span>Year)</span>
+<span id="cb438-19"><a href="correlation.html#cb438-19" aria-hidden="true" tabindex="-1"></a><span class="fu">testTemporalAutocorrelation</span>(res2, <span class="at">time =</span> <span class="fu">unique</span>(hurricanes<span class="sc">$</span>Year))</span></code></pre></div>
+<p>A second example from Pinheiro and Bates, pp. 255-258. The data originates from Vonesh and Carter (1992), who describe data measured on high-flux hemodialyzers to assess their in vivo ultrafiltration characteristics. The ultrafiltration rates (in mL/hr) of 20 high-flux dialyzers were measured at seven different transmembrane pressures (in dmHg). The in vitro evaluation of the dialyzers used bovine blood at flow rates of either 200~dl/min or 300~dl/min. The data, are also analyzed in Littell, Milliken, Stroup and Wolfinger (1996).</p>
+<p>See <code class="sourceCode r">?Dialyzer</code> for explanation of the variables (data comes with the package <code>nlme</code>.{R}).</p>
+<p>The data highlights the flexibility of gls for structured <code class="sourceCode r">( <span class="dv">1</span><span class="sc">|</span> subject)</code> temporal data. Unfortunately, <code>nlme</code>.{R} does not interface with <code>DHARMa</code>.{R}.</p>
+<div class="sourceCode" id="cb439"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb439-1"><a href="correlation.html#cb439-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(nlme)</span>
+<span id="cb439-2"><a href="correlation.html#cb439-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb439-3"><a href="correlation.html#cb439-3" aria-hidden="true" tabindex="-1"></a>fm1Dial.gls <span class="ot">=</span> <span class="fu">gls</span>(rate <span class="sc">~</span>(pressure <span class="sc">+</span> <span class="fu">I</span>(pressure<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fu">I</span>(pressure<span class="sc">^</span><span class="dv">3</span>) <span class="sc">+</span> <span class="fu">I</span>(pressure<span class="sc">^</span><span class="dv">4</span>))<span class="sc">*</span>QB,</span>
+<span id="cb439-4"><a href="correlation.html#cb439-4" aria-hidden="true" tabindex="-1"></a>                  <span class="at">data =</span> Dialyzer)</span>
+<span id="cb439-5"><a href="correlation.html#cb439-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fm1Dial.gls)</span></code></pre></div>
+<p><img src="_main_files/figure-html/chunk_chapter6_chunk2-1.png" width="672" /></p>
+<div class="sourceCode" id="cb440"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb440-1"><a href="correlation.html#cb440-1" aria-hidden="true" tabindex="-1"></a>fm2Dial.gls <span class="ot">=</span> <span class="fu">update</span>(fm1Dial.gls, <span class="at">weights =</span> <span class="fu">varPower</span>(<span class="at">form =</span> <span class="sc">~</span> pressure))</span>
+<span id="cb440-2"><a href="correlation.html#cb440-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fm2Dial.gls)</span></code></pre></div>
+<p><img src="_main_files/figure-html/chunk_chapter6_chunk2-2.png" width="672" /></p>
+<div class="sourceCode" id="cb441"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb441-1"><a href="correlation.html#cb441-1" aria-hidden="true" tabindex="-1"></a>fm3Dial.gls <span class="ot">=</span> <span class="fu">update</span>(fm2Dial.gls, <span class="at">corr =</span> <span class="fu">corAR1</span>(<span class="fl">0.771</span>, <span class="at">form =</span> <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> Subject))</span>
+<span id="cb441-2"><a href="correlation.html#cb441-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fm3Dial.gls)</span></code></pre></div>
+<pre><code>## Generalized least squares fit by REML
+##   Model: rate ~ (pressure + I(pressure^2) + I(pressure^3) + I(pressure^4)) *      QB 
+##   Data: Dialyzer 
+##        AIC      BIC    logLik
+##   642.6746 679.9526 -308.3373
+## 
+## Correlation Structure: AR(1)
+##  Formula: ~1 | Subject 
+##  Parameter estimate(s):
+##       Phi 
+## 0.7526038 
+## Variance function:
+##  Structure: Power of variance covariate
+##  Formula: ~pressure 
+##  Parameter estimates:
+##     power 
+## 0.5182386 
+## 
+## Coefficients:
+##                         Value Std.Error    t-value p-value
+## (Intercept)         -16.81845  1.050536 -16.009405  0.0000
+## pressure             92.33424  5.266862  17.531167  0.0000
+## I(pressure^2)       -49.26516  6.995059  -7.042851  0.0000
+## I(pressure^3)        11.39968  3.454779   3.299683  0.0012
+## I(pressure^4)        -1.01964  0.558637  -1.825226  0.0703
+## QB300                -1.59419  1.598447  -0.997336  0.3205
+## pressure:QB300        1.70543  7.757062   0.219855  0.8263
+## I(pressure^2):QB300   2.12680 10.147281   0.209593  0.8343
+## I(pressure^3):QB300   0.47971  4.968707   0.096547  0.9232
+## I(pressure^4):QB300  -0.22064  0.799379  -0.276019  0.7830
+## 
+##  Correlation: 
+##                     (Intr) pressr I(p^2) I(p^3) I(p^4) QB300  p:QB30 I(^2):
+## pressure            -0.891                                                 
+## I(pressure^2)        0.837 -0.959                                          
+## I(pressure^3)       -0.773  0.895 -0.981                                   
+## I(pressure^4)        0.718 -0.838  0.946 -0.990                            
+## QB300               -0.657  0.585 -0.550  0.508 -0.472                     
+## pressure:QB300       0.605 -0.679  0.651 -0.608  0.569 -0.900              
+## I(pressure^2):QB300 -0.577  0.661 -0.689  0.676 -0.652  0.845 -0.960       
+## I(pressure^3):QB300  0.538 -0.622  0.682 -0.695  0.688 -0.780  0.898 -0.982
+## I(pressure^4):QB300 -0.502  0.586 -0.661  0.692 -0.699  0.724 -0.840  0.947
+##                     I(^3):
+## pressure                  
+## I(pressure^2)             
+## I(pressure^3)             
+## I(pressure^4)             
+## QB300                     
+## pressure:QB300            
+## I(pressure^2):QB300       
+## I(pressure^3):QB300       
+## I(pressure^4):QB300 -0.990
+## 
+## Standardized residuals:
+##         Min          Q1         Med          Q3         Max 
+## -2.44570115 -0.67381573  0.07715872  0.68039816  2.21585297 
+## 
+## Residual standard error: 3.046316 
+## Degrees of freedom: 140 total; 130 residual</code></pre>
+<p><strong><em>Spatial models</em></strong></p>
+<p>We will use a data set with thick densities and a spatial (soil) predictor. Read in data</p>
+<div class="sourceCode" id="cb443"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb443-1"><a href="correlation.html#cb443-1" aria-hidden="true" tabindex="-1"></a>spdata <span class="ot">=</span> <span class="fu">read.table</span>(<span class="st">&quot;https://stats.idre.ucla.edu/stat/r/faq/thick.csv&quot;</span>,</span>
+<span id="cb443-2"><a href="correlation.html#cb443-2" aria-hidden="true" tabindex="-1"></a>                     <span class="at">header =</span> T, <span class="at">sep =</span> <span class="st">&quot;,&quot;</span>, <span class="at">row.names =</span> <span class="dv">1</span>)</span></code></pre></div>
+<p>Fit the model:</p>
+<div class="sourceCode" id="cb444"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb444-1"><a href="correlation.html#cb444-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DHARMa)</span>
+<span id="cb444-2"><a href="correlation.html#cb444-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gstat)</span>
+<span id="cb444-3"><a href="correlation.html#cb444-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb444-4"><a href="correlation.html#cb444-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(thick <span class="sc">~</span> soil, <span class="at">data =</span> spdata)</span></code></pre></div>
+<p><img src="_main_files/figure-html/chunk_chapter6_chunk4-1.png" width="672" /></p>
+<div class="sourceCode" id="cb445"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb445-1"><a href="correlation.html#cb445-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">lm</span>(thick <span class="sc">~</span> soil, <span class="at">data =</span> spdata)</span>
+<span id="cb445-2"><a href="correlation.html#cb445-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = thick ~ soil, data = spdata)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -6.0414 -1.1975  0.0876  1.4836  4.9584 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  31.9420     3.1570  10.118 1.54e-15 ***
+## soil          2.2552     0.8656   2.605   0.0111 *  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 2.278 on 73 degrees of freedom
+## Multiple R-squared:  0.08508,    Adjusted R-squared:  0.07254 
+## F-statistic: 6.788 on 1 and 73 DF,  p-value: 0.01111</code></pre>
+<div class="sourceCode" id="cb447"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb447-1"><a href="correlation.html#cb447-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Quantile residuals are not actually needed in this case but</span></span>
+<span id="cb447-2"><a href="correlation.html#cb447-2" aria-hidden="true" tabindex="-1"></a><span class="co"># DHARMa includes a test for spatial autocorrelation which</span></span>
+<span id="cb447-3"><a href="correlation.html#cb447-3" aria-hidden="true" tabindex="-1"></a><span class="co"># will save us coding time</span></span>
+<span id="cb447-4"><a href="correlation.html#cb447-4" aria-hidden="true" tabindex="-1"></a>res <span class="ot">=</span> <span class="fu">simulateResiduals</span>(fit)</span>
+<span id="cb447-5"><a href="correlation.html#cb447-5" aria-hidden="true" tabindex="-1"></a><span class="fu">testSpatialAutocorrelation</span>(res, <span class="at">x =</span> spdata<span class="sc">$</span>north, <span class="at">y =</span> spdata<span class="sc">$</span>east)</span></code></pre></div>
+<p><img src="_main_files/figure-html/chunk_chapter6_chunk4-2.png" width="672" /></p>
+<pre><code>## 
+##  DHARMa Moran&#39;s I test for distance-based autocorrelation
+## 
+## data:  res
+## observed = 0.210870, expected = -0.013514, sd = 0.021940, p-value &lt;
+## 2.2e-16
+## alternative hypothesis: Distance-based autocorrelation</code></pre>
+<div class="sourceCode" id="cb449"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb449-1"><a href="correlation.html#cb449-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Looking also at the directional variogram</span></span>
+<span id="cb449-2"><a href="correlation.html#cb449-2" aria-hidden="true" tabindex="-1"></a>tann.dir.vgm <span class="ot">=</span> <span class="fu">variogram</span>(<span class="fu">residuals</span>(fit) <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb449-3"><a href="correlation.html#cb449-3" aria-hidden="true" tabindex="-1"></a>                         <span class="at">loc =</span><span class="sc">~</span> east <span class="sc">+</span> north, <span class="at">data =</span> spdata,</span>
+<span id="cb449-4"><a href="correlation.html#cb449-4" aria-hidden="true" tabindex="-1"></a>                         <span class="at">alpha =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">45</span>, <span class="dv">90</span>, <span class="dv">135</span>))</span>
+<span id="cb449-5"><a href="correlation.html#cb449-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(tann.dir.vgm)</span></code></pre></div>
+<p><img src="_main_files/figure-html/chunk_chapter6_chunk4-3.png" width="672" /></p>
+<p>Remove trend via a GAM:</p>
+<div class="sourceCode" id="cb450"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb450-1"><a href="correlation.html#cb450-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mgcv)</span>
+<span id="cb450-2"><a href="correlation.html#cb450-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(modEvA)</span>
+<span id="cb450-3"><a href="correlation.html#cb450-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb450-4"><a href="correlation.html#cb450-4" aria-hidden="true" tabindex="-1"></a>fit1 <span class="ot">=</span> <span class="fu">gam</span>(thick <span class="sc">~</span> soil <span class="sc">+</span> <span class="fu">te</span>(east, north) , <span class="at">data =</span> spdata)</span>
+<span id="cb450-5"><a href="correlation.html#cb450-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit1)</span></code></pre></div>
+<pre><code>## 
+## Family: gaussian 
+## Link function: identity 
+## 
+## Formula:
+## thick ~ soil + te(east, north)
+## 
+## Parametric coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) 39.68933    0.26498 149.780   &lt;2e-16 ***
+## soil         0.12363    0.07275   1.699   0.0952 .  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Approximate significance of smooth terms:
+##                  edf Ref.df     F p-value    
+## te(east,north) 21.09  22.77 721.3  &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## R-sq.(adj) =  0.996   Deviance explained = 99.7%
+## GCV = 0.033201  Scale est. = 0.022981  n = 75</code></pre>
+<div class="sourceCode" id="cb452"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb452-1"><a href="correlation.html#cb452-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fit1, <span class="at">pages =</span> <span class="dv">0</span>, <span class="at">lwd =</span> <span class="dv">2</span>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/chunk_chapter6_chunk5-1.png" width="672" /></p>
+<div class="sourceCode" id="cb453"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb453-1"><a href="correlation.html#cb453-1" aria-hidden="true" tabindex="-1"></a>col <span class="ot">=</span> <span class="fu">colorRamp</span>(<span class="fu">c</span>(<span class="st">&quot;red&quot;</span>, <span class="st">&quot;white&quot;</span>, <span class="st">&quot;blue&quot;</span>))(<span class="fu">range01</span>(<span class="fu">residuals</span>(fit1)))</span>
+<span id="cb453-2"><a href="correlation.html#cb453-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb453-3"><a href="correlation.html#cb453-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(spdata<span class="sc">$</span>east, spdata<span class="sc">$</span>north, <span class="at">col =</span> <span class="fu">rgb</span>(col, <span class="at">maxColorValue =</span> <span class="dv">255</span>) )</span></code></pre></div>
+<p><img src="_main_files/figure-html/chunk_chapter6_chunk5-2.png" width="672" /></p>
+<p>Almost the same, but simpler:</p>
+<div class="sourceCode" id="cb454"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb454-1"><a href="correlation.html#cb454-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">lm</span>(thick <span class="sc">~</span> soil <span class="sc">+</span> north <span class="sc">+</span> <span class="fu">I</span>(north<span class="sc">^</span><span class="dv">2</span>), <span class="at">data =</span> spdata)</span></code></pre></div>
+<p>Alternatively, fit an autoregressive model. Of course, both options can be combined.</p>
+<div class="sourceCode" id="cb455"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb455-1"><a href="correlation.html#cb455-1" aria-hidden="true" tabindex="-1"></a>fit2 <span class="ot">=</span> <span class="fu">gls</span>(thick <span class="sc">~</span> soil , <span class="at">correlation =</span> <span class="fu">corExp</span>(<span class="at">form =</span><span class="sc">~</span> east <span class="sc">+</span> north) , <span class="at">data =</span> spdata)</span>
+<span id="cb455-2"><a href="correlation.html#cb455-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit2)</span></code></pre></div>
+<pre><code>## Generalized least squares fit by REML
+##   Model: thick ~ soil 
+##   Data: spdata 
+##        AIC      BIC    logLik
+##   164.3474 173.5092 -78.17368
+## 
+## Correlation Structure: Exponential spatial correlation
+##  Formula: ~east + north 
+##  Parameter estimate(s):
+##    range 
+## 719.4121 
+## 
+## Coefficients:
+##                Value Std.Error  t-value p-value
+## (Intercept) 42.81488  5.314541 8.056176  0.0000
+## soil         0.02662  0.199737 0.133289  0.8943
+## 
+##  Correlation: 
+##      (Intr)
+## soil -0.12 
+## 
+## Standardized residuals:
+##        Min         Q1        Med         Q3        Max 
+## -1.5811122 -0.7276873 -0.5028102 -0.2092991  0.3217326 
+## 
+## Residual standard error: 5.573087 
+## Degrees of freedom: 75 total; 73 residual</code></pre>
+<div class="sourceCode" id="cb457"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb457-1"><a href="correlation.html#cb457-1" aria-hidden="true" tabindex="-1"></a>fit1 <span class="ot">=</span> <span class="fu">gls</span>(thick <span class="sc">~</span> soil <span class="sc">+</span> north <span class="sc">+</span> <span class="fu">I</span>(north<span class="sc">^</span><span class="dv">2</span>), <span class="at">data =</span> spdata)</span>
+<span id="cb457-2"><a href="correlation.html#cb457-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb457-3"><a href="correlation.html#cb457-3" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(fit1, fit2)</span></code></pre></div>
+<pre><code>##      Model df      AIC      BIC     logLik   Test  L.Ratio p-value
+## fit1     1  5 278.7468 290.0602 -134.37340                        
+## fit2     2  4 164.3474 173.5092  -78.17368 1 vs 2 112.3994  &lt;.0001</code></pre>
+</div>
+<div id="phylogenetic-structures-pgls" class="section level2 hasAnchor" number="6.3">
+<h2><span class="header-section-number">6.3</span> Phylogenetic Structures (PGLS)<a href="correlation.html#phylogenetic-structures-pgls" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>This is mostly taken from <a href="https://lukejharmon.github.io/ilhabela/instruction/2015/07/03/PGLS/" target="_blank" rel="noopener">https://lukejharmon.github.io/ilhabela/instruction/2015/07/03/PGLS/</a>. The two datasets associated with this example are in the EcoData package.</p>
+<p>Perform analysis:</p>
+<div class="sourceCode" id="cb459"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb459-1"><a href="correlation.html#cb459-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(EcoData)</span>
+<span id="cb459-2"><a href="correlation.html#cb459-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ape)</span>
+<span id="cb459-3"><a href="correlation.html#cb459-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(geiger)</span>
+<span id="cb459-4"><a href="correlation.html#cb459-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(nlme)</span>
+<span id="cb459-5"><a href="correlation.html#cb459-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(phytools)</span>
+<span id="cb459-6"><a href="correlation.html#cb459-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DHARMa)</span></code></pre></div>
+<p>To plot the phylogenetic tree, use</p>
+<div class="sourceCode" id="cb460"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb460-1"><a href="correlation.html#cb460-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(anolisTree)</span></code></pre></div>
+<pre><code>## $tree_not_data
+##   [1] &quot;ahli&quot;            &quot;alayoni&quot;         &quot;alfaroi&quot;         &quot;aliniger&quot;       
+##   [5] &quot;allisoni&quot;        &quot;allogus&quot;         &quot;altitudinalis&quot;   &quot;alumina&quot;        
+##   [9] &quot;alutaceus&quot;       &quot;angusticeps&quot;     &quot;argenteolus&quot;     &quot;argillaceus&quot;    
+##  [13] &quot;armouri&quot;         &quot;bahorucoensis&quot;   &quot;baleatus&quot;        &quot;baracoae&quot;       
+##  [17] &quot;barahonae&quot;       &quot;barbatus&quot;        &quot;barbouri&quot;        &quot;bartschi&quot;       
+##  [21] &quot;bremeri&quot;         &quot;breslini&quot;        &quot;brevirostris&quot;    &quot;caudalis&quot;       
+##  [25] &quot;centralis&quot;       &quot;chamaeleonides&quot;  &quot;chlorocyanus&quot;    &quot;christophei&quot;    
+##  [29] &quot;clivicola&quot;       &quot;coelestinus&quot;     &quot;confusus&quot;        &quot;cooki&quot;          
+##  [33] &quot;cristatellus&quot;    &quot;cupeyalensis&quot;    &quot;cuvieri&quot;         &quot;cyanopleurus&quot;   
+##  [37] &quot;cybotes&quot;         &quot;darlingtoni&quot;     &quot;distichus&quot;       &quot;dolichocephalus&quot;
+##  [41] &quot;equestris&quot;       &quot;etheridgei&quot;      &quot;eugenegrahami&quot;   &quot;evermanni&quot;      
+##  [45] &quot;fowleri&quot;         &quot;garmani&quot;         &quot;grahami&quot;         &quot;guafe&quot;          
+##  [49] &quot;guamuhaya&quot;       &quot;guazuma&quot;         &quot;gundlachi&quot;       &quot;haetianus&quot;      
+##  [53] &quot;hendersoni&quot;      &quot;homolechis&quot;      &quot;imias&quot;           &quot;inexpectatus&quot;   
+##  [57] &quot;insolitus&quot;       &quot;isolepis&quot;        &quot;jubar&quot;           &quot;krugi&quot;          
+##  [61] &quot;lineatopus&quot;      &quot;longitibialis&quot;   &quot;loysiana&quot;        &quot;lucius&quot;         
+##  [65] &quot;luteogularis&quot;    &quot;macilentus&quot;      &quot;marcanoi&quot;        &quot;marron&quot;         
+##  [69] &quot;mestrei&quot;         &quot;monticola&quot;       &quot;noblei&quot;          &quot;occultus&quot;       
+##  [73] &quot;olssoni&quot;         &quot;opalinus&quot;        &quot;ophiolepis&quot;      &quot;oporinus&quot;       
+##  [77] &quot;paternus&quot;        &quot;placidus&quot;        &quot;poncensis&quot;       &quot;porcatus&quot;       
+##  [81] &quot;porcus&quot;          &quot;pulchellus&quot;      &quot;pumilis&quot;         &quot;quadriocellifer&quot;
+##  [85] &quot;reconditus&quot;      &quot;ricordii&quot;        &quot;rubribarbus&quot;     &quot;sagrei&quot;         
+##  [89] &quot;semilineatus&quot;    &quot;sheplani&quot;        &quot;shrevei&quot;         &quot;singularis&quot;     
+##  [93] &quot;smallwoodi&quot;      &quot;strahmi&quot;         &quot;stratulus&quot;       &quot;valencienni&quot;    
+##  [97] &quot;vanidicus&quot;       &quot;vermiculatus&quot;    &quot;websteri&quot;        &quot;whitemani&quot;      
+## 
+## $data_not_tree
+##   [1] &quot;1&quot;   &quot;10&quot;  &quot;100&quot; &quot;11&quot;  &quot;12&quot;  &quot;13&quot;  &quot;14&quot;  &quot;15&quot;  &quot;16&quot;  &quot;17&quot;  &quot;18&quot;  &quot;19&quot; 
+##  [13] &quot;2&quot;   &quot;20&quot;  &quot;21&quot;  &quot;22&quot;  &quot;23&quot;  &quot;24&quot;  &quot;25&quot;  &quot;26&quot;  &quot;27&quot;  &quot;28&quot;  &quot;29&quot;  &quot;3&quot;  
+##  [25] &quot;30&quot;  &quot;31&quot;  &quot;32&quot;  &quot;33&quot;  &quot;34&quot;  &quot;35&quot;  &quot;36&quot;  &quot;37&quot;  &quot;38&quot;  &quot;39&quot;  &quot;4&quot;   &quot;40&quot; 
+##  [37] &quot;41&quot;  &quot;42&quot;  &quot;43&quot;  &quot;44&quot;  &quot;45&quot;  &quot;46&quot;  &quot;47&quot;  &quot;48&quot;  &quot;49&quot;  &quot;5&quot;   &quot;50&quot;  &quot;51&quot; 
+##  [49] &quot;52&quot;  &quot;53&quot;  &quot;54&quot;  &quot;55&quot;  &quot;56&quot;  &quot;57&quot;  &quot;58&quot;  &quot;59&quot;  &quot;6&quot;   &quot;60&quot;  &quot;61&quot;  &quot;62&quot; 
+##  [61] &quot;63&quot;  &quot;64&quot;  &quot;65&quot;  &quot;66&quot;  &quot;67&quot;  &quot;68&quot;  &quot;69&quot;  &quot;7&quot;   &quot;70&quot;  &quot;71&quot;  &quot;72&quot;  &quot;73&quot; 
+##  [73] &quot;74&quot;  &quot;75&quot;  &quot;76&quot;  &quot;77&quot;  &quot;78&quot;  &quot;79&quot;  &quot;8&quot;   &quot;80&quot;  &quot;81&quot;  &quot;82&quot;  &quot;83&quot;  &quot;84&quot; 
+##  [85] &quot;85&quot;  &quot;86&quot;  &quot;87&quot;  &quot;88&quot;  &quot;89&quot;  &quot;9&quot;   &quot;90&quot;  &quot;91&quot;  &quot;92&quot;  &quot;93&quot;  &quot;94&quot;  &quot;95&quot; 
+##  [97] &quot;96&quot;  &quot;97&quot;  &quot;98&quot;  &quot;99&quot;</code></pre>
+<p><img src="_main_files/figure-html/chunk_chapter6_chunk10-1.png" width="672" /></p>
+<pre><code>## 
+## Call:
+## lm(formula = hostility ~ awesomeness, data = anolisData)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -0.7035 -0.3065 -0.0416  0.2440  0.7884 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  0.10843    0.03953   2.743  0.00724 ** 
+## awesomeness -0.88116    0.03658 -24.091  &lt; 2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.3807 on 98 degrees of freedom
+## Multiple R-squared:  0.8555, Adjusted R-squared:  0.8541 
+## F-statistic: 580.4 on 1 and 98 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p><img src="_main_files/figure-html/chunk_chapter6_chunk10-2.png" width="672" /></p>
+<pre><code>## $observed
+## [1] 0.04121925
+## 
+## $expected
+## [1] -0.01010101
+## 
+## $sd
+## [1] 0.009665021
+## 
+## $p.value
+## [1] 1.096872e-07</code></pre>
+<pre><code>## $observed
+## [1] 0.05067625
+## 
+## $expected
+## [1] -0.01010101
+## 
+## $sd
+## [1] 0.00970256
+## 
+## $p.value
+## [1] 3.751199e-10</code></pre>
+<pre><code>## 
+##  DHARMa Moran&#39;s I test for distance-based autocorrelation
+## 
+## data:  res
+## observed = 0.0509093, expected = -0.0101010, sd = 0.0097304, p-value =
+## 3.609e-10
+## alternative hypothesis: Distance-based autocorrelation</code></pre>
+<p>An old-school method to deal with the problem are the so-called <strong>Phylogenetically Independent Contrasts</strong> (PICs) (Felsenstein, J. (1985) “Phylogenies and the comparative method”. American Naturalist, 125, 1–15.). The idea here is to transform your data in a way that an lm is still appropriate. For completeness, I show the method here.</p>
+<div class="sourceCode" id="cb466"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb466-1"><a href="correlation.html#cb466-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract columns.</span></span>
+<span id="cb466-2"><a href="correlation.html#cb466-2" aria-hidden="true" tabindex="-1"></a>host <span class="ot">=</span> anolisData[, <span class="st">&quot;hostility&quot;</span>]</span>
+<span id="cb466-3"><a href="correlation.html#cb466-3" aria-hidden="true" tabindex="-1"></a>awe <span class="ot">=</span> anolisData[, <span class="st">&quot;awesomeness&quot;</span>]</span>
+<span id="cb466-4"><a href="correlation.html#cb466-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb466-5"><a href="correlation.html#cb466-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Give them names.</span></span>
+<span id="cb466-6"><a href="correlation.html#cb466-6" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(host) <span class="ot">=</span> <span class="fu">names</span>(awe) <span class="ot">=</span> <span class="fu">rownames</span>(anolisData)</span>
+<span id="cb466-7"><a href="correlation.html#cb466-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb466-8"><a href="correlation.html#cb466-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate PICs.</span></span>
+<span id="cb466-9"><a href="correlation.html#cb466-9" aria-hidden="true" tabindex="-1"></a>hPic <span class="ot">=</span> <span class="fu">pic</span>(host, anolisTree)</span></code></pre></div>
+<pre><code>## Warning in pic(host, anolisTree): the names of argument &#39;x&#39; and the tip labels
+## of the tree did not match: the former were ignored in the analysis.</code></pre>
+<div class="sourceCode" id="cb468"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb468-1"><a href="correlation.html#cb468-1" aria-hidden="true" tabindex="-1"></a>aPic <span class="ot">=</span> <span class="fu">pic</span>(awe, anolisTree)</span></code></pre></div>
+<pre><code>## Warning in pic(awe, anolisTree): the names of argument &#39;x&#39; and the tip labels of
+## the tree did not match: the former were ignored in the analysis.</code></pre>
+<div class="sourceCode" id="cb470"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb470-1"><a href="correlation.html#cb470-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Make a model.</span></span>
+<span id="cb470-2"><a href="correlation.html#cb470-2" aria-hidden="true" tabindex="-1"></a>picModel <span class="ot">=</span> <span class="fu">lm</span>(hPic <span class="sc">~</span> aPic <span class="sc">-</span> <span class="dv">1</span>)</span>
+<span id="cb470-3"><a href="correlation.html#cb470-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb470-4"><a href="correlation.html#cb470-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(picModel) <span class="co"># Yes, significant.</span></span></code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = hPic ~ aPic - 1)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -1.30230 -0.23485  0.06003  0.34772  0.92222 
+## 
+## Coefficients:
+##      Estimate Std. Error t value Pr(&gt;|t|)    
+## aPic -0.91964    0.03887  -23.66   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.4263 on 98 degrees of freedom
+## Multiple R-squared:  0.851,  Adjusted R-squared:  0.8495 
+## F-statistic: 559.9 on 1 and 98 DF,  p-value: &lt; 2.2e-16</code></pre>
+<div class="sourceCode" id="cb472"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb472-1"><a href="correlation.html#cb472-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot results.</span></span>
+<span id="cb472-2"><a href="correlation.html#cb472-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(hPic <span class="sc">~</span> aPic)</span>
+<span id="cb472-3"><a href="correlation.html#cb472-3" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">a =</span> <span class="dv">0</span>, <span class="at">b =</span> <span class="fu">coef</span>(picModel))</span></code></pre></div>
+<p><img src="_main_files/figure-html/chunk_chapter6_chunk12-1.png" width="672" /></p>
+<p>Now, new school, with a PGLS</p>
+<div class="sourceCode" id="cb473"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb473-1"><a href="correlation.html#cb473-1" aria-hidden="true" tabindex="-1"></a>pglsModel <span class="ot">=</span> <span class="fu">gls</span>(hostility <span class="sc">~</span> awesomeness,</span>
+<span id="cb473-2"><a href="correlation.html#cb473-2" aria-hidden="true" tabindex="-1"></a>                 <span class="at">correlation =</span> <span class="fu">corBrownian</span>(<span class="at">phy =</span> anolisTree, <span class="at">form=</span><span class="sc">~</span>species),</span>
+<span id="cb473-3"><a href="correlation.html#cb473-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">data =</span> anolisData, <span class="at">method =</span> <span class="st">&quot;ML&quot;</span>)</span>
+<span id="cb473-4"><a href="correlation.html#cb473-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(pglsModel)</span></code></pre></div>
+<pre><code>## Generalized least squares fit by maximum likelihood
+##   Model: hostility ~ awesomeness 
+##   Data: anolisData 
+##        AIC      BIC    logLik
+##   42.26092 50.07643 -18.13046
+## 
+## Correlation Structure: corBrownian
+##  Formula: ~species 
+##  Parameter estimate(s):
+## numeric(0)
+## 
+## Coefficients:
+##                  Value  Std.Error    t-value p-value
+## (Intercept)  0.1158895 0.12500397   0.927087  0.3562
+## awesomeness -0.9196414 0.03886501 -23.662451  0.0000
+## 
+##  Correlation: 
+##             (Intr)
+## awesomeness -0.065
+## 
+## Standardized residuals:
+##         Min          Q1         Med          Q3         Max 
+## -1.49512017 -0.75193433 -0.06672209  0.56527753  2.04613817 
+## 
+## Residual standard error: 0.4220369 
+## Degrees of freedom: 100 total; 98 residual</code></pre>
+<div class="sourceCode" id="cb475"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb475-1"><a href="correlation.html#cb475-1" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(pglsModel)</span></code></pre></div>
+<pre><code>## (Intercept) awesomeness 
+##   0.1158895  -0.9196414</code></pre>
+<div class="sourceCode" id="cb477"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb477-1"><a href="correlation.html#cb477-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(hostility <span class="sc">~</span> awesomeness, <span class="at">data =</span> anolisData)</span>
+<span id="cb477-2"><a href="correlation.html#cb477-2" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(pglsModel, <span class="at">col =</span> <span class="st">&quot;red&quot;</span>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/chunk_chapter6_chunk13-1.png" width="672" /></p>
+<p>OK, same result, but PGLS is WAY more flexible than PICs.
+For example, we can include a discrete predictor:</p>
+<div class="sourceCode" id="cb478"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb478-1"><a href="correlation.html#cb478-1" aria-hidden="true" tabindex="-1"></a>pglsModel2 <span class="ot">=</span> <span class="fu">gls</span>(hostility <span class="sc">~</span> ecomorph,</span>
+<span id="cb478-2"><a href="correlation.html#cb478-2" aria-hidden="true" tabindex="-1"></a>                    <span class="at">correlation =</span> <span class="fu">corBrownian</span>(<span class="at">phy =</span> anolisTree, <span class="at">form=</span><span class="sc">~</span>species),</span>
+<span id="cb478-3"><a href="correlation.html#cb478-3" aria-hidden="true" tabindex="-1"></a>                    <span class="at">data =</span> anolisData, <span class="at">method =</span> <span class="st">&quot;ML&quot;</span>)</span>
+<span id="cb478-4"><a href="correlation.html#cb478-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(pglsModel2)</span></code></pre></div>
+<pre><code>## Generalized least squares fit by maximum likelihood
+##   Model: hostility ~ ecomorph 
+##   Data: anolisData 
+##        AIC     BIC    logLik
+##   235.1126 255.954 -109.5563
+## 
+## Correlation Structure: corBrownian
+##  Formula: ~species 
+##  Parameter estimate(s):
+## numeric(0)
+## 
+## Coefficients:
+##                  Value Std.Error    t-value p-value
+## (Intercept)  0.2280018 0.3630767  0.6279713  0.5316
+## ecomorphGB  -0.2737370 0.2128984 -1.2857635  0.2017
+## ecomorphT   -0.2773801 0.3872137 -0.7163490  0.4756
+## ecomorphTC  -0.5457771 0.2449466 -2.2281475  0.0283
+## ecomorphTG  -0.2645627 0.2084928 -1.2689297  0.2076
+## ecomorphTW  -0.5388436 0.2370223 -2.2733878  0.0253
+## ecomorphU   -0.3013944 0.2264264 -1.3310922  0.1864
+## 
+##  Correlation: 
+##            (Intr) ecmrGB ecmrpT ecmrTC ecmrTG ecmrTW
+## ecomorphGB -0.385                                   
+## ecomorphT  -0.276  0.360                            
+## ecomorphTC -0.369  0.626  0.349                     
+## ecomorphTG -0.426  0.638  0.431  0.608              
+## ecomorphTW -0.372  0.626  0.377  0.588  0.641       
+## ecomorphU  -0.395  0.597  0.394  0.587  0.647  0.666
+## 
+## Standardized residuals:
+##         Min          Q1         Med          Q3         Max 
+## -2.57909973 -0.62394508  0.03716963  0.49997446  2.33859983 
+## 
+## Residual standard error: 1.05295 
+## Degrees of freedom: 100 total; 93 residual</code></pre>
+<div class="sourceCode" id="cb480"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb480-1"><a href="correlation.html#cb480-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(pglsModel2)</span></code></pre></div>
+<pre><code>## Denom. DF: 93 
+##             numDF   F-value p-value
+## (Intercept)     1 0.0555807  0.8141
+## ecomorph        6 1.2170027  0.3046</code></pre>
+<div class="sourceCode" id="cb482"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb482-1"><a href="correlation.html#cb482-1" aria-hidden="true" tabindex="-1"></a><span class="co"># We can even include multiple predictors:</span></span>
+<span id="cb482-2"><a href="correlation.html#cb482-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb482-3"><a href="correlation.html#cb482-3" aria-hidden="true" tabindex="-1"></a>pglsModel3 <span class="ot">=</span> <span class="fu">gls</span>(hostility <span class="sc">~</span> ecomorph <span class="sc">*</span> awesomeness,</span>
+<span id="cb482-4"><a href="correlation.html#cb482-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">correlation =</span> <span class="fu">corBrownian</span>(<span class="at">phy =</span> anolisTree, <span class="at">form=</span><span class="sc">~</span>species),</span>
+<span id="cb482-5"><a href="correlation.html#cb482-5" aria-hidden="true" tabindex="-1"></a>                <span class="at">data =</span> anolisData, <span class="at">method =</span> <span class="st">&quot;ML&quot;</span>)</span>
+<span id="cb482-6"><a href="correlation.html#cb482-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(pglsModel3)</span></code></pre></div>
+<pre><code>## Generalized least squares fit by maximum likelihood
+##   Model: hostility ~ ecomorph * awesomeness 
+##   Data: anolisData 
+##        AIC      BIC    logLik
+##   53.36917 92.44673 -11.68459
+## 
+## Correlation Structure: corBrownian
+##  Formula: ~species 
+##  Parameter estimate(s):
+## numeric(0)
+## 
+## Coefficients:
+##                             Value  Std.Error    t-value p-value
+## (Intercept)             0.2740102 0.14336154   1.911323  0.0593
+## ecomorphGB             -0.2079698 0.08757937  -2.374644  0.0198
+## ecomorphT              -0.1751884 0.15478802  -1.131795  0.2609
+## ecomorphTC             -0.2030466 0.10752002  -1.888454  0.0623
+## ecomorphTG             -0.1260964 0.08339737  -1.511994  0.1342
+## ecomorphTW             -0.1600076 0.09700188  -1.649531  0.1027
+## ecomorphU              -0.1244498 0.09457082  -1.315943  0.1917
+## awesomeness            -1.0131496 0.08971063 -11.293529  0.0000
+## ecomorphGB:awesomeness  0.0750120 0.08289316   0.904924  0.3680
+## ecomorphT:awesomeness   0.1373797 0.11770513   1.167152  0.2464
+## ecomorphTC:awesomeness  0.1161086 0.11490811   1.010447  0.3151
+## ecomorphTG:awesomeness  0.1666831 0.09824670   1.696577  0.0934
+## ecomorphTW:awesomeness  0.0120495 0.11532810   0.104480  0.9170
+## ecomorphU:awesomeness   0.0283477 0.10510376   0.269711  0.7880
+## 
+##  Correlation: 
+##                        (Intr) ecmrGB ecmrpT ecmrTC ecmrTG ecmrTW ecmrpU awsmns
+## ecomorphGB             -0.398                                                 
+## ecomorphT              -0.289  0.372                                          
+## ecomorphTC             -0.361  0.598  0.357                                   
+## ecomorphTG             -0.435  0.647  0.447  0.579                            
+## ecomorphTW             -0.377  0.644  0.391  0.579  0.657                     
+## ecomorphU              -0.403  0.589  0.424  0.546  0.658  0.666              
+## awesomeness            -0.104  0.123  0.045  0.078  0.046  0.005  0.108       
+## ecomorphGB:awesomeness  0.129 -0.280 -0.095 -0.171 -0.151 -0.191 -0.184 -0.682
+## ecomorphT:awesomeness   0.082 -0.085 -0.074 -0.071 -0.036 -0.011 -0.111 -0.716
+## ecomorphTC:awesomeness  0.102 -0.120 -0.092 -0.359 -0.079 -0.091 -0.136 -0.695
+## ecomorphTG:awesomeness  0.090 -0.073 -0.023 -0.058 -0.056 -0.036 -0.140 -0.811
+## ecomorphTW:awesomeness  0.051 -0.124  0.029 -0.054 -0.023 -0.052 -0.006 -0.666
+## ecomorphU:awesomeness   0.101 -0.129 -0.129 -0.143 -0.133 -0.122 -0.283 -0.672
+##                        ecmGB: ecmrT: ecmTC: ecmTG: ecmTW:
+## ecomorphGB                                               
+## ecomorphT                                                
+## ecomorphTC                                               
+## ecomorphTG                                               
+## ecomorphTW                                               
+## ecomorphU                                                
+## awesomeness                                              
+## ecomorphGB:awesomeness                                   
+## ecomorphT:awesomeness   0.516                            
+## ecomorphTC:awesomeness  0.519  0.530                     
+## ecomorphTG:awesomeness  0.611  0.684  0.609              
+## ecomorphTW:awesomeness  0.535  0.536  0.482  0.569       
+## ecomorphU:awesomeness   0.515  0.535  0.644  0.626  0.480
+## 
+## Standardized residuals:
+##        Min         Q1        Med         Q3        Max 
+## -1.6656909 -0.7164061 -0.1305515  0.6718348  1.7699106 
+## 
+## Residual standard error: 0.3956912 
+## Degrees of freedom: 100 total; 86 residual</code></pre>
+<div class="sourceCode" id="cb484"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb484-1"><a href="correlation.html#cb484-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(pglsModel3)</span></code></pre></div>
+<pre><code>## Denom. DF: 86 
+##                      numDF  F-value p-value
+## (Intercept)              1   0.3640  0.5479
+## ecomorph                 6   7.9691  &lt;.0001
+## awesomeness              1 517.8319  &lt;.0001
+## ecomorph:awesomeness     6   0.8576  0.5295</code></pre>
+<p>We can also assume that the error structure follows an <strong>Ornstein-Uhlenbeck</strong> model rather than <strong>Brownian motion</strong>. When trying this, however, I noted that the model does not converge due to a scaling problem. We can do a quick fix by making the branch lengths longer. This will not affect the analysis other than rescaling a nuisance parameter.</p>
+<div class="sourceCode" id="cb486"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb486-1"><a href="correlation.html#cb486-1" aria-hidden="true" tabindex="-1"></a>tempTree <span class="ot">=</span> anolisTree</span>
+<span id="cb486-2"><a href="correlation.html#cb486-2" aria-hidden="true" tabindex="-1"></a>tempTree<span class="sc">$</span>edge.length <span class="ot">=</span> tempTree<span class="sc">$</span>edge.length <span class="sc">*</span> <span class="dv">100</span></span>
+<span id="cb486-3"><a href="correlation.html#cb486-3" aria-hidden="true" tabindex="-1"></a>pglsModelLambda <span class="ot">=</span> <span class="fu">gls</span>(hostility <span class="sc">~</span> awesomeness,</span>
+<span id="cb486-4"><a href="correlation.html#cb486-4" aria-hidden="true" tabindex="-1"></a>                      <span class="at">correlation =</span> <span class="fu">corPagel</span>(<span class="dv">1</span>, <span class="at">phy =</span> tempTree, <span class="at">fixed =</span> <span class="cn">FALSE</span>, <span class="at">form=</span><span class="sc">~</span>species),</span>
+<span id="cb486-5"><a href="correlation.html#cb486-5" aria-hidden="true" tabindex="-1"></a>                      <span class="at">data =</span> anolisData, <span class="at">method =</span> <span class="st">&quot;ML&quot;</span>)</span>
+<span id="cb486-6"><a href="correlation.html#cb486-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(pglsModelLambda)</span></code></pre></div>
+<pre><code>## Generalized least squares fit by maximum likelihood
+##   Model: hostility ~ awesomeness 
+##   Data: anolisData 
+##        AIC      BIC    logLik
+##   43.64714 54.06782 -17.82357
+## 
+## Correlation Structure: corPagel
+##  Formula: ~species 
+##  Parameter estimate(s):
+##  lambda 
+## 1.01521 
+## 
+## Coefficients:
+##                  Value  Std.Error    t-value p-value
+## (Intercept)  0.1170472 0.12862370   0.909997  0.3651
+## awesomeness -0.9248858 0.03870928 -23.893129  0.0000
+## 
+##  Correlation: 
+##             (Intr)
+## awesomeness -0.062
+## 
+## Standardized residuals:
+##         Min          Q1         Med          Q3         Max 
+## -1.46625592 -0.74557818 -0.06456682  0.54645141  2.02371257 
+## 
+## Residual standard error: 0.4317018 
+## Degrees of freedom: 100 total; 98 residual</code></pre>
+<div class="sourceCode" id="cb488"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb488-1"><a href="correlation.html#cb488-1" aria-hidden="true" tabindex="-1"></a>pglsModelOU <span class="ot">=</span> <span class="fu">gls</span>(hostility <span class="sc">~</span> awesomeness,</span>
+<span id="cb488-2"><a href="correlation.html#cb488-2" aria-hidden="true" tabindex="-1"></a>                   <span class="at">correlation =</span> <span class="fu">corMartins</span>(<span class="dv">1</span>, <span class="at">phy =</span> tempTree, <span class="at">form=</span><span class="sc">~</span>species),</span>
+<span id="cb488-3"><a href="correlation.html#cb488-3" aria-hidden="true" tabindex="-1"></a>                   <span class="at">data =</span> anolisData)</span>
+<span id="cb488-4"><a href="correlation.html#cb488-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(pglsModelOU)</span></code></pre></div>
+<pre><code>## Generalized least squares fit by REML
+##   Model: hostility ~ awesomeness 
+##   Data: anolisData 
+##       AIC      BIC    logLik
+##   50.7625 61.10237 -21.38125
+## 
+## Correlation Structure: corMartins
+##  Formula: ~species 
+##  Parameter estimate(s):
+##       alpha 
+## 0.003194918 
+## 
+## Coefficients:
+##                  Value Std.Error    t-value p-value
+## (Intercept)  0.1179388 0.4300640   0.274236  0.7845
+## awesomeness -0.9148437 0.0384949 -23.765320  0.0000
+## 
+##  Correlation: 
+##             (Intr)
+## awesomeness -0.02 
+## 
+## Standardized residuals:
+##         Min          Q1         Med          Q3         Max 
+## -1.11558554 -0.54574106 -0.05696661  0.40461428  1.48285459 
+## 
+## Residual standard error: 0.5740297 
+## Degrees of freedom: 100 total; 98 residual</code></pre>
+<p>Other example: <a href="http://schmitzlab.info/pgls.htmla" target="_blank" rel="noopener">http://schmitzlab.info/pgls.html</a>.</p>
+<p>For fitting PGLS with various models, you should also consider the <code class="sourceCode r">caper</code> package.</p>
+</div>
+<div id="exercices" class="section level2 hasAnchor" number="6.4">
+<h2><span class="header-section-number">6.4</span> Exercices<a href="correlation.html#exercices" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+  <hr/>
+  <strong><span style="color: #0011AA; font-size:25px;">Task</span></strong><br/>
+<p>Fit either</p>
+<ul>
+<li>snouter</li>
+<li>plantcounts</li>
+</ul>
+<p>from package EcoData, and check for spatial dependencies in the residuals. See the data set’s help for details on the variables.</p>
+  <details>
+    <summary>
+      <strong><span style="color: #0011AA; font-size:25px;">Solution</span></strong>
+    </summary>
+    <p>
+    </p>
+  </details>
+  <br/><hr/>
+</div>
+<div id="intro-bayes" class="section level2 hasAnchor" number="6.5">
+<h2><span class="header-section-number">6.5</span> Intro Bayes<a href="correlation.html#intro-bayes" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Intro Bayes will be done via a <a href="https://www.dropbox.com/s/27zp86y2wnxpdp7/1.1-FlorianHartig_Intro-Bayes.pdf?dl=0" target="_blank" rel="noopener">lecture</a> Code for the lecture <a href="https://www.dropbox.com/s/xjpvdsygy12sffu/1.1-practical.R?dl=0" target="_blank" rel="noopener">here</a>.</p>
+<p>To fit Bayesian models, for full flexibility, most people use <strong>Stan</strong>. Stan is a completely new modelling specification language, therefore we won’t do this here.</p>
+<p>However, there is the <code class="sourceCode r">brms</code> package. <code class="sourceCode r">brms</code> allows you to specify regression models in the same syntax as <code class="sourceCode r">lme4</code> / <code class="sourceCode r">glmmTMB</code>, but translates then to Stan code and fits them. Here a comparison:</p>
+<p><img src="images/STAN1.jpg" width="150%" height="150%" /></p>
+<p>Extended syntax:</p>
+<p><img src="images/STAN2.jpg" width="150%" height="150%" /></p>
+  <hr/>
+  <strong><span style="color: #0011AA; font-size:25px;">Task</span></strong><br/>
+<p>Take any of our simpler models, and run them with <code class="sourceCode r">brms</code>!</p>
+  <details>
+    <summary>
+      <strong><span style="color: #0011AA; font-size:25px;">Solution</span></strong>
+    </summary>
+    <p>
+<div class="sourceCode" id="cb490"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb490-1"><a href="correlation.html#cb490-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(brms)</span></code></pre></div>
+    </p>
+  </details>
+  <br/><hr/>
+<p><strong><em>Bayesian model comparison:</em></strong></p>
+<p>In Bayesian stats, there is no p-value. So, how do we know if something has an effect? There are two options:</p>
+<ul>
+<li>Just look at the effect size and its uncertainties.</li>
+<li>Compare the simpler with the more complex model, and calculate which has a higher posterior probability</li>
+</ul>
+<p>The latter is called <strong>posterior weights</strong>, and they are based on the so-called <strong>Bayes factor</strong>. For simple tests, e.g. t-test or lm, the Bayes factor is implemented in the BayesFactor package in R. Look at the examples <a href="https://cran.r-project.org/web/packages/BayesFactor/vignettes/manual.html" target="_blank" rel="noopener">here</a>.</p>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="GLMMs.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="causal_inference.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

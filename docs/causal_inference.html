@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>7 Causal Inference, SEMs, Summary | Advanced Biostatistics with R</title>
+  <meta name="description" content="7 Causal Inference, SEMs, Summary | Advanced Biostatistics with R" />
+  <meta name="generator" content="bookdown 0.26 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="7 Causal Inference, SEMs, Summary | Advanced Biostatistics with R" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="7 Causal Inference, SEMs, Summary | Advanced Biostatistics with R" />
+  <meta name="github-repo" content="rstudio/bookdown-demo" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="7 Causal Inference, SEMs, Summary | Advanced Biostatistics with R" />
+  
+  <meta name="twitter:description" content="7 Causal Inference, SEMs, Summary | Advanced Biostatistics with R" />
+  
+
+<meta name="author" content="Florian Hartig" />
+
+
+<meta name="date" content="2022-06-11" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="correlation.html"/>
+
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+<script src="libs/htmlwidgets-1.5.3/htmlwidgets.js"></script>
+<script src="libs/viz-1.8.2/viz.js"></script>
+<link href="libs/DiagrammeR-styles-0.2/styles.css" rel="stylesheet" />
+<script src="libs/grViz-binding-1.0.9/grViz.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    background-color: #ffffff;
+    color: #a0a0a0;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #a0a0a0;  padding-left: 4px; }
+div.sourceCode
+  { color: #1f1c1b; background-color: #ffffff; }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span { color: #1f1c1b; } /* Normal */
+code span.al { color: #bf0303; background-color: #f7e6e6; font-weight: bold; } /* Alert */
+code span.an { color: #ca60ca; } /* Annotation */
+code span.at { color: #0057ae; } /* Attribute */
+code span.bn { color: #b08000; } /* BaseN */
+code span.bu { color: #644a9b; font-weight: bold; } /* BuiltIn */
+code span.cf { color: #1f1c1b; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #924c9d; } /* Char */
+code span.cn { color: #aa5500; } /* Constant */
+code span.co { color: #898887; } /* Comment */
+code span.cv { color: #0095ff; } /* CommentVar */
+code span.do { color: #607880; } /* Documentation */
+code span.dt { color: #0057ae; } /* DataType */
+code span.dv { color: #b08000; } /* DecVal */
+code span.er { color: #bf0303; text-decoration: underline; } /* Error */
+code span.ex { color: #0095ff; font-weight: bold; } /* Extension */
+code span.fl { color: #b08000; } /* Float */
+code span.fu { color: #644a9b; } /* Function */
+code span.im { color: #ff5500; } /* Import */
+code span.in { color: #b08000; } /* Information */
+code span.kw { color: #1f1c1b; font-weight: bold; } /* Keyword */
+code span.op { color: #1f1c1b; } /* Operator */
+code span.ot { color: #006e28; } /* Other */
+code span.pp { color: #006e28; } /* Preprocessor */
+code span.re { color: #0057ae; background-color: #e0e9f8; } /* RegionMarker */
+code span.sc { color: #3daee9; } /* SpecialChar */
+code span.ss { color: #ff5500; } /* SpecialString */
+code span.st { color: #bf0303; } /* String */
+code span.va { color: #0057ae; } /* Variable */
+code span.vs { color: #bf0303; } /* VerbatimString */
+code span.wa { color: #bf0303; } /* Warning */
+</style>
+
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Preface</a></li>
+<li class="chapter" data-level="2" data-path="reminder.html"><a href="reminder.html"><i class="fa fa-check"></i><b>2</b> Reminder: R basics</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="reminder.html"><a href="reminder.html#your-r-system"><i class="fa fa-check"></i><b>2.1</b> Your R System</a>
+<ul>
+<li class="chapter" data-level="2.1.1" data-path="reminder.html"><a href="reminder.html#installing-libraries"><i class="fa fa-check"></i><b>2.1.1</b> Installing Libraries</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="reminder.html"><a href="reminder.html#operating-with-data-in-r"><i class="fa fa-check"></i><b>2.2</b> Operating with data in R</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="reminder.html"><a href="reminder.html#exploring-data-structures"><i class="fa fa-check"></i><b>2.2.1</b> Exploring Data Structures</a></li>
+<li class="chapter" data-level="2.2.2" data-path="reminder.html"><a href="reminder.html#dynamic-typing"><i class="fa fa-check"></i><b>2.2.2</b> Dynamic Typing</a></li>
+<li class="chapter" data-level="2.2.3" data-path="reminder.html"><a href="reminder.html#data-selection-slicing-and-subsetting"><i class="fa fa-check"></i><b>2.2.3</b> Data Selection, Slicing and Subsetting</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="reminder.html"><a href="reminder.html#applying-functions-and-aggregates-across-a-data-set"><i class="fa fa-check"></i><b>2.3</b> Applying Functions and Aggregates Across a Data Set</a>
+<ul>
+<li class="chapter" data-level="2.3.1" data-path="reminder.html"><a href="reminder.html#functions"><i class="fa fa-check"></i><b>2.3.1</b> Functions</a></li>
+<li class="chapter" data-level="2.3.2" data-path="reminder.html"><a href="reminder.html#the-apply-function"><i class="fa fa-check"></i><b>2.3.2</b> The apply() Function</a></li>
+<li class="chapter" data-level="2.3.3" data-path="reminder.html"><a href="reminder.html#the-aggregate-function"><i class="fa fa-check"></i><b>2.3.3</b> The aggregate() Function</a></li>
+</ul></li>
+<li class="chapter" data-level="2.4" data-path="reminder.html"><a href="reminder.html#plotting"><i class="fa fa-check"></i><b>2.4</b> Plotting</a></li>
+<li class="chapter" data-level="2.5" data-path="reminder.html"><a href="reminder.html#additional-resources"><i class="fa fa-check"></i><b>2.5</b> Additional Resources</a>
+<ul>
+<li class="chapter" data-level="2.5.1" data-path="reminder.html"><a href="reminder.html#books"><i class="fa fa-check"></i><b>2.5.1</b> Books</a></li>
+<li class="chapter" data-level="2.5.2" data-path="reminder.html"><a href="reminder.html#instructional-videos"><i class="fa fa-check"></i><b>2.5.2</b> Instructional Videos</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="recap.html"><a href="recap.html"><i class="fa fa-check"></i><b>3</b> Understanding linear regression</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="recap.html"><a href="recap.html#simple-linear-regression"><i class="fa fa-check"></i><b>3.1</b> Simple Linear Regression</a>
+<ul>
+<li class="chapter" data-level="3.1.1" data-path="recap.html"><a href="recap.html#fitting-and-interpreting-the-regression"><i class="fa fa-check"></i><b>3.1.1</b> Fitting and Interpreting the Regression</a></li>
+<li class="chapter" data-level="3.1.2" data-path="recap.html"><a href="recap.html#centering-of-predictors"><i class="fa fa-check"></i><b>3.1.2</b> Centering of Predictors</a></li>
+<li class="chapter" data-level="3.1.3" data-path="recap.html"><a href="recap.html#residual-checks"><i class="fa fa-check"></i><b>3.1.3</b> Residual Checks</a></li>
+<li class="chapter" data-level="3.1.4" data-path="recap.html"><a href="recap.html#categorical-predictors"><i class="fa fa-check"></i><b>3.1.4</b> Categorical Predictors</a></li>
+<li class="chapter" data-level="3.1.5" data-path="recap.html"><a href="recap.html#plantTrait1"><i class="fa fa-check"></i><b>3.1.5</b> Exercise: Global Plant Trait Analysis</a></li>
+</ul></li>
+<li class="chapter" data-level="3.2" data-path="recap.html"><a href="recap.html#multiple-regression"><i class="fa fa-check"></i><b>3.2</b> Multiple Regression</a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="recap.html"><a href="recap.html#getting-started"><i class="fa fa-check"></i><b>3.2.1</b> Getting Started</a></li>
+<li class="chapter" data-level="3.2.2" data-path="recap.html"><a href="recap.html#simulating-the-effect-of-collinearity"><i class="fa fa-check"></i><b>3.2.2</b> Simulating the Effect of Collinearity</a></li>
+<li class="chapter" data-level="3.2.3" data-path="recap.html"><a href="recap.html#scaling-variables"><i class="fa fa-check"></i><b>3.2.3</b> Scaling Variables</a></li>
+<li class="chapter" data-level="3.2.4" data-path="recap.html"><a href="recap.html#anova-for-multiple-regression"><i class="fa fa-check"></i><b>3.2.4</b> ANOVA for Multiple Regression</a></li>
+<li class="chapter" data-level="3.2.5" data-path="recap.html"><a href="recap.html#interactions"><i class="fa fa-check"></i><b>3.2.5</b> Interactions</a></li>
+<li class="chapter" data-level="3.2.6" data-path="recap.html"><a href="recap.html#plantTrait2"><i class="fa fa-check"></i><b>3.2.6</b> Exercise: Global Plant Trait Analysis #2</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="recap.html"><a href="recap.html#model-choice-and-causal-inference"><i class="fa fa-check"></i><b>3.3</b> Model Choice and Causal Inference</a>
+<ul>
+<li class="chapter" data-level="3.3.1" data-path="recap.html"><a href="recap.html#the-bias-variance-trade-off"><i class="fa fa-check"></i><b>3.3.1</b> The Bias-Variance Trade-off</a></li>
+<li class="chapter" data-level="3.3.2" data-path="recap.html"><a href="recap.html#causal-inference"><i class="fa fa-check"></i><b>3.3.2</b> Causal Inference</a></li>
+<li class="chapter" data-level="3.3.3" data-path="recap.html"><a href="recap.html#model-selection-methods"><i class="fa fa-check"></i><b>3.3.3</b> Model Selection Methods</a></li>
+<li class="chapter" data-level="3.3.4" data-path="recap.html"><a href="recap.html#pHacking"><i class="fa fa-check"></i><b>3.3.4</b> P-hacking</a></li>
+<li class="chapter" data-level="3.3.5" data-path="recap.html"><a href="recap.html#problems-of-stepwise-model-selection"><i class="fa fa-check"></i><b>3.3.5</b> Problems of Stepwise Model Selection</a></li>
+<li class="chapter" data-level="3.3.6" data-path="recap.html"><a href="recap.html#exercise-global-plant-trait-analysis-3"><i class="fa fa-check"></i><b>3.3.6</b> Exercise: Global Plant Trait Analysis #3</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="heteroskedasticity.html"><a href="heteroskedasticity.html"><i class="fa fa-check"></i><b>4</b> Heteroskedasticity and Grouped Data (Random Effects)</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="heteroskedasticity.html"><a href="heteroskedasticity.html#warm-up-exercise"><i class="fa fa-check"></i><b>4.1</b> Warm-up Exercise</a></li>
+<li class="chapter" data-level="4.2" data-path="heteroskedasticity.html"><a href="heteroskedasticity.html#general-modelling-strategy-for-lm-correction-of-residuals"><i class="fa fa-check"></i><b>4.2</b> General Modelling Strategy for lm() + Correction of Residuals</a>
+<ul>
+<li class="chapter" data-level="4.2.1" data-path="heteroskedasticity.html"><a href="heteroskedasticity.html#wrong-functional-form"><i class="fa fa-check"></i><b>4.2.1</b> Wrong Functional Form</a></li>
+<li class="chapter" data-level="4.2.2" data-path="heteroskedasticity.html"><a href="heteroskedasticity.html#modelling-variance-terms"><i class="fa fa-check"></i><b>4.2.2</b> Modelling Variance Terms</a></li>
+<li class="chapter" data-level="4.2.3" data-path="heteroskedasticity.html"><a href="heteroskedasticity.html#exercise"><i class="fa fa-check"></i><b>4.2.3</b> Exercise</a></li>
+<li class="chapter" data-level="4.2.4" data-path="heteroskedasticity.html"><a href="heteroskedasticity.html#non-normality-and-outliers"><i class="fa fa-check"></i><b>4.2.4</b> Non-normality and Outliers</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="heteroskedasticity.html"><a href="heteroskedasticity.html#random-and-mixed-effects---motivation"><i class="fa fa-check"></i><b>4.3</b> Random and Mixed Effects - Motivation</a>
+<ul>
+<li class="chapter" data-level="4.3.1" data-path="heteroskedasticity.html"><a href="heteroskedasticity.html#fitting-random-effects-models"><i class="fa fa-check"></i><b>4.3.1</b> Fitting Random Effects Models</a></li>
+<li class="chapter" data-level="4.3.2" data-path="heteroskedasticity.html"><a href="heteroskedasticity.html#case-study-1-college-student-performance-over-time"><i class="fa fa-check"></i><b>4.3.2</b> Case Study 1: College Student Performance Over Time</a></li>
+<li class="chapter" data-level="4.3.3" data-path="heteroskedasticity.html"><a href="heteroskedasticity.html#problems-with-mixed-models"><i class="fa fa-check"></i><b>4.3.3</b> Problems With Mixed Models</a></li>
+<li class="chapter" data-level="4.3.4" data-path="heteroskedasticity.html"><a href="heteroskedasticity.html#case-study-2---honeybee-data"><i class="fa fa-check"></i><b>4.3.4</b> Case Study 2 - Honeybee Data</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="GLMMs.html"><a href="GLMMs.html"><i class="fa fa-check"></i><b>5</b> GLMMs</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="GLMMs.html"><a href="GLMMs.html#basics"><i class="fa fa-check"></i><b>5.1</b> Basics</a>
+<ul>
+<li class="chapter" data-level="5.1.1" data-path="GLMMs.html"><a href="GLMMs.html#a-binomial-example"><i class="fa fa-check"></i><b>5.1.1</b> A Binomial Example</a></li>
+<li class="chapter" data-level="5.1.2" data-path="GLMMs.html"><a href="GLMMs.html#a-poisson-example"><i class="fa fa-check"></i><b>5.1.2</b> A Poisson Example</a></li>
+<li class="chapter" data-level="5.1.3" data-path="GLMMs.html"><a href="GLMMs.html#example---elk-data"><i class="fa fa-check"></i><b>5.1.3</b> Example - Elk Data</a></li>
+</ul></li>
+<li class="chapter" data-level="5.2" data-path="GLMMs.html"><a href="GLMMs.html#dispersion-problems-in-glms"><i class="fa fa-check"></i><b>5.2</b> Dispersion Problems in GLMs</a>
+<ul>
+<li class="chapter" data-level="5.2.1" data-path="GLMMs.html"><a href="GLMMs.html#heteroskedasticity-in-glmms"><i class="fa fa-check"></i><b>5.2.1</b> Heteroskedasticity in GLMMs</a></li>
+<li class="chapter" data-level="5.2.2" data-path="GLMMs.html"><a href="GLMMs.html#zero-inflation"><i class="fa fa-check"></i><b>5.2.2</b> Zero-inflation</a></li>
+<li class="chapter" data-level="5.2.3" data-path="GLMMs.html"><a href="GLMMs.html#p-hacking-link-collection"><i class="fa fa-check"></i><b>5.2.3</b> P-hacking Link Collection</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="GLMMs.html"><a href="GLMMs.html#protocol"><i class="fa fa-check"></i><b>5.3</b> Case Studies</a>
+<ul>
+<li class="chapter" data-level="5.3.1" data-path="GLMMs.html"><a href="GLMMs.html#owls"><i class="fa fa-check"></i><b>5.3.1</b> Owls</a></li>
+<li class="chapter" data-level="5.3.2" data-path="GLMMs.html"><a href="GLMMs.html#hurricanes"><i class="fa fa-check"></i><b>5.3.2</b> Hurricanes</a></li>
+<li class="chapter" data-level="5.3.3" data-path="GLMMs.html"><a href="GLMMs.html#researchers-degrees-of-freedom-skin-color-and-red-cards"><i class="fa fa-check"></i><b>5.3.3</b> Researchers Degrees of Freedom — Skin Color and Red Cards</a></li>
+<li class="chapter" data-level="5.3.4" data-path="GLMMs.html"><a href="GLMMs.html#marmots"><i class="fa fa-check"></i><b>5.3.4</b> Marmots</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="correlation.html"><a href="correlation.html"><i class="fa fa-check"></i><b>6</b> Correlation structures</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="correlation.html"><a href="correlation.html#general-idea"><i class="fa fa-check"></i><b>6.1</b> General Idea</a></li>
+<li class="chapter" data-level="6.2" data-path="correlation.html"><a href="correlation.html#temporal-and-spatial-correlation-structures"><i class="fa fa-check"></i><b>6.2</b> Temporal and Spatial Correlation Structures</a></li>
+<li class="chapter" data-level="6.3" data-path="correlation.html"><a href="correlation.html#phylogenetic-structures-pgls"><i class="fa fa-check"></i><b>6.3</b> Phylogenetic Structures (PGLS)</a></li>
+<li class="chapter" data-level="6.4" data-path="correlation.html"><a href="correlation.html#exercices"><i class="fa fa-check"></i><b>6.4</b> Exercices</a></li>
+<li class="chapter" data-level="6.5" data-path="correlation.html"><a href="correlation.html#intro-bayes"><i class="fa fa-check"></i><b>6.5</b> Intro Bayes</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="causal_inference.html"><a href="causal_inference.html"><i class="fa fa-check"></i><b>7</b> Causal Inference, SEMs, Summary</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="causal_inference.html"><a href="causal_inference.html#reminder-modelling-strategy"><i class="fa fa-check"></i><b>7.1</b> Reminder: Modelling Strategy</a></li>
+<li class="chapter" data-level="7.2" data-path="causal_inference.html"><a href="causal_inference.html#thoughts-about-the-analysis-pipeline"><i class="fa fa-check"></i><b>7.2</b> Thoughts About the Analysis Pipeline</a></li>
+<li class="chapter" data-level="7.3" data-path="causal_inference.html"><a href="causal_inference.html#bootstrap"><i class="fa fa-check"></i><b>7.3</b> Bootstrap</a></li>
+<li class="chapter" data-level="7.4" data-path="causal_inference.html"><a href="causal_inference.html#cross-validation"><i class="fa fa-check"></i><b>7.4</b> Cross-validation</a></li>
+<li class="chapter" data-level="7.5" data-path="causal_inference.html"><a href="causal_inference.html#null-models"><i class="fa fa-check"></i><b>7.5</b> Null Models</a></li>
+<li class="chapter" data-level="7.6" data-path="causal_inference.html"><a href="causal_inference.html#structural-equation-models-sems"><i class="fa fa-check"></i><b>7.6</b> Structural Equation Models (SEMs)</a></li>
+</ul></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Advanced Biostatistics with R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="causal_inference" class="section level1 hasAnchor" number="7">
+<h1><span class="header-section-number">7</span> Causal Inference, SEMs, Summary<a href="causal_inference.html#causal_inference" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<!-- Put this here (right after the first markdown headline) and only here for each document! -->
+<script src="./scripts/multipleChoice.js"></script>
+<div id="reminder-modelling-strategy" class="section level2 hasAnchor" number="7.1">
+<h2><span class="header-section-number">7.1</span> Reminder: Modelling Strategy<a href="causal_inference.html#reminder-modelling-strategy" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p><img src="images/reminder.jpg" width="150%" height="150%" /></p>
+<p>Strategy for analysis:</p>
+<ol style="list-style-type: decimal">
+<li>Define formula via scientific questions + confounders.</li>
+<li>Define type of GLM (lm, logistic, Poisson).</li>
+<li>Blocks in data -&gt; Random effects, start with random intercept.</li>
+</ol>
+<p>Fit this base model, then do residual checks for</p>
+<ul>
+<li>Wrong functional form -&gt; Change fitted function.</li>
+<li>Wrong distribution-&gt; Transformation or GLM adjustment.</li>
+<li>(Over)dispersion -&gt; Variable dispersion GLM.</li>
+<li>Heteroskedasticity -&gt; Model dispersion.</li>
+<li>Zero-inflation -&gt; Add ZIP term.</li>
+<li>Correlation -&gt; Add correlation structure.</li>
+</ul>
+<p>And adjust the model accordingly.</p>
+<p>Packages:</p>
+<ul>
+<li><code>baseR</code>.{R}: <code>lm</code>.{R}, <code>glm</code>.{R}.</li>
+<li><code>lme4</code>.{R}: mixed models, <code>lmer</code>.{R}, <code>glmer</code>.{R}.</li>
+<li><code>mgcv</code>.{R}: GAM.</li>
+<li><code>nlme</code>.{R}: Variance and correlations structure modelling for linear (mixed) models, using <code>gls</code>.{R} + <code>lme</code>.{R}.</li>
+<li><code>glmmTMB</code>.{R}: Generalized linear mixed models with variance / correlation modelling and zip term.</li>
+</ul>
+</div>
+<div id="thoughts-about-the-analysis-pipeline" class="section level2 hasAnchor" number="7.2">
+<h2><span class="header-section-number">7.2</span> Thoughts About the Analysis Pipeline<a href="causal_inference.html#thoughts-about-the-analysis-pipeline" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>In statistics, we rarely use a simple analysis. We often use an entire pipeline, consisting, for example, of the protocol that I sketched in chapter <a href="GLMMs.html#protocol">5.3</a>. What we should constantly ask ourselves: Is our pipeline good? By “good”, we typically mean: If 1000 analyses are run in that way:</p>
+<ul>
+<li>What is the typical error of the estimate?</li>
+<li>What is the Type I error (false positives)?</li>
+<li>Are the confidence intervals correctly calculated?</li>
+<li>…</li>
+</ul>
+<p>The way to check this is to run simulations. For example, the following function creates data that follows the assumptions of a linear regression with slope 0.5, then fits a linear regression, and returns the estimate</p>
+<div class="sourceCode" id="cb491"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb491-1"><a href="causal_inference.html#cb491-1" aria-hidden="true" tabindex="-1"></a>getEstimate <span class="ot">=</span> <span class="cf">function</span>(<span class="at">n =</span> <span class="dv">100</span>){</span>
+<span id="cb491-2"><a href="causal_inference.html#cb491-2" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">=</span> <span class="fu">runif</span>(n)</span>
+<span id="cb491-3"><a href="causal_inference.html#cb491-3" aria-hidden="true" tabindex="-1"></a>  y <span class="ot">=</span> <span class="fl">0.5</span> <span class="sc">*</span> x <span class="sc">+</span> <span class="fu">rnorm</span>(n)</span>
+<span id="cb491-4"><a href="causal_inference.html#cb491-4" aria-hidden="true" tabindex="-1"></a>  fit <span class="ot">=</span> <span class="fu">lm</span>(y <span class="sc">~</span> x)</span>
+<span id="cb491-5"><a href="causal_inference.html#cb491-5" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">=</span> <span class="fu">summary</span>(fit)</span>
+<span id="cb491-6"><a href="causal_inference.html#cb491-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(x<span class="sc">$</span>coefficients[<span class="dv">2</span>, <span class="dv">1</span>])  <span class="co"># Get fitted x weight (should be ~0.5).</span></span>
+<span id="cb491-7"><a href="causal_inference.html#cb491-7" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>The replicate function allows us to execute this 1000 times:</p>
+<div class="sourceCode" id="cb492"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb492-1"><a href="causal_inference.html#cb492-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">543210</span>)</span>
+<span id="cb492-2"><a href="causal_inference.html#cb492-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb492-3"><a href="causal_inference.html#cb492-3" aria-hidden="true" tabindex="-1"></a>out <span class="ot">=</span> <span class="fu">replicate</span>(<span class="dv">1000</span>, <span class="fu">getEstimate</span>())</span></code></pre></div>
+<p>Plotting the result, we can check whether the linear regression is an unbiased estimator for the slope.</p>
+<div class="sourceCode" id="cb493"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb493-1"><a href="causal_inference.html#cb493-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(out, <span class="at">breaks =</span> <span class="dv">50</span>)</span>
+<span id="cb493-2"><a href="causal_inference.html#cb493-2" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> <span class="fl">0.5</span>, <span class="at">col =</span> <span class="st">&quot;red&quot;</span>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/chunk_chapter7_chunk3-1.png" width="672" /></p>
+<p>“Unbiased” means that, while each single estimate will have some error, the mean of many estimates will spread around the true value.</p>
+<p><strong><em>Explicitly calculating these values</em></strong></p>
+<p><strong>Bias</strong></p>
+<div class="sourceCode" id="cb494"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb494-1"><a href="causal_inference.html#cb494-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(out) <span class="sc">-</span> <span class="fl">0.5</span> <span class="co"># Should be ~0.</span></span></code></pre></div>
+<pre><code>## [1] -0.001826401</code></pre>
+<p><strong>Variance / standard deviation of the estimator</strong></p>
+<div class="sourceCode" id="cb496"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb496-1"><a href="causal_inference.html#cb496-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sd</span>(out)</span></code></pre></div>
+<pre><code>## [1] 0.3587717</code></pre>
+<p>To check p-values, we could run:</p>
+<div class="sourceCode" id="cb498"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb498-1"><a href="causal_inference.html#cb498-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">12345</span>)</span>
+<span id="cb498-2"><a href="causal_inference.html#cb498-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb498-3"><a href="causal_inference.html#cb498-3" aria-hidden="true" tabindex="-1"></a>getEstimate <span class="ot">=</span> <span class="cf">function</span>(<span class="at">n =</span> <span class="dv">100</span>){  <span class="co"># Mind: Function has changed!</span></span>
+<span id="cb498-4"><a href="causal_inference.html#cb498-4" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">=</span> <span class="fu">runif</span>(n)</span>
+<span id="cb498-5"><a href="causal_inference.html#cb498-5" aria-hidden="true" tabindex="-1"></a>  y <span class="ot">=</span> <span class="fu">rnorm</span>(n)  <span class="co"># No dependence of x! Identical: y = 0 * x + rnorm(100).</span></span>
+<span id="cb498-6"><a href="causal_inference.html#cb498-6" aria-hidden="true" tabindex="-1"></a>  fit <span class="ot">=</span> <span class="fu">lm</span>(y <span class="sc">~</span> x)</span>
+<span id="cb498-7"><a href="causal_inference.html#cb498-7" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">=</span> <span class="fu">summary</span>(fit)</span>
+<span id="cb498-8"><a href="causal_inference.html#cb498-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(x<span class="sc">$</span>coefficients[<span class="dv">2</span>, <span class="dv">4</span>])  <span class="co"># P-value for H0: Weight of x = 0.</span></span>
+<span id="cb498-9"><a href="causal_inference.html#cb498-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb498-10"><a href="causal_inference.html#cb498-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb498-11"><a href="causal_inference.html#cb498-11" aria-hidden="true" tabindex="-1"></a>out <span class="ot">=</span> <span class="fu">replicate</span>(<span class="dv">2000</span>, <span class="fu">getEstimate</span>())</span>
+<span id="cb498-12"><a href="causal_inference.html#cb498-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb498-13"><a href="causal_inference.html#cb498-13" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(out) <span class="co"># Expected: Uniformly distributed p-values. -&gt; Check.</span></span></code></pre></div>
+<p><img src="_main_files/figure-html/chunk_chapter7_chunk6-1.png" width="672" /></p>
+<div class="sourceCode" id="cb499"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb499-1"><a href="causal_inference.html#cb499-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(out <span class="sc">&lt;</span> <span class="fl">0.05</span>) <span class="co"># Expected: ~0.05. But this is NO p-value... Check H0/H1!</span></span></code></pre></div>
+<pre><code>## [1] 0.0515</code></pre>
+<div class="sourceCode" id="cb501"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb501-1"><a href="causal_inference.html#cb501-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Explanation of syntax: Logical vectors are interpreted as vectors of 0s and 1s.</span></span></code></pre></div>
+<p>To check the properties of other, possibly more complicated pipelines, statisticians will typically use the same technique. I recommend doing this! For example, you could modify the function above to have a non-normal error. How much difference does that make? Simulating often beats recommendations in the books!</p>
+</div>
+<div id="bootstrap" class="section level2 hasAnchor" number="7.3">
+<h2><span class="header-section-number">7.3</span> Bootstrap<a href="causal_inference.html#bootstrap" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p><strong><em>Standard (non-parametric) bootstrap</em></strong></p>
+<p>The <strong>bootstrap</strong> is a method to generate approximate confidence intervals based on resampling the data. Imagine you have some kind of weird data distribution:</p>
+<div class="sourceCode" id="cb502"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb502-1"><a href="causal_inference.html#cb502-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb502-2"><a href="causal_inference.html#cb502-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb502-3"><a href="causal_inference.html#cb502-3" aria-hidden="true" tabindex="-1"></a>data <span class="ot">=</span> <span class="fu">ifelse</span>(<span class="fu">rbinom</span>(<span class="dv">100</span>, <span class="dv">1</span>, <span class="fl">0.5</span>) <span class="sc">==</span> <span class="dv">1</span>, <span class="fu">rexp</span>(<span class="dv">100</span>, <span class="dv">4</span>) , <span class="fu">rnorm</span>(<span class="dv">100</span>, <span class="sc">-</span><span class="dv">2</span>))</span>
+<span id="cb502-4"><a href="causal_inference.html#cb502-4" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(data)</span></code></pre></div>
+<p><img src="_main_files/figure-html/chunk_chapter7_chunk7-1.png" width="672" /></p>
+<p>We want to calculate the mean and it’s uncertainty. The mean is simple, but what is the uncertainty of the mean? The standard error can’t be used, because this is not a normal distribution. If we don’t know the distribution, we can’t use a parametric method to calculate the confidence interval.</p>
+<p>The solution is the bootstrap. The idea is the following: We re-sample from the data to generate an estimation of the uncertainty of the mean. Let’s first do this by hand:</p>
+<div class="sourceCode" id="cb503"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb503-1"><a href="causal_inference.html#cb503-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb503-2"><a href="causal_inference.html#cb503-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb503-3"><a href="causal_inference.html#cb503-3" aria-hidden="true" tabindex="-1"></a>performBootstrap <span class="ot">=</span> <span class="cf">function</span>(){</span>
+<span id="cb503-4"><a href="causal_inference.html#cb503-4" aria-hidden="true" tabindex="-1"></a>  resampledData <span class="ot">=</span> <span class="fu">sample</span>(data, <span class="at">size =</span> <span class="fu">length</span>(data), <span class="at">replace =</span> T) </span>
+<span id="cb503-5"><a href="causal_inference.html#cb503-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">mean</span>(resampledData))</span>
+<span id="cb503-6"><a href="causal_inference.html#cb503-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb503-7"><a href="causal_inference.html#cb503-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb503-8"><a href="causal_inference.html#cb503-8" aria-hidden="true" tabindex="-1"></a>bootstrappedMean <span class="ot">=</span> <span class="fu">replicate</span>(<span class="dv">500</span>, <span class="fu">performBootstrap</span>())</span>
+<span id="cb503-9"><a href="causal_inference.html#cb503-9" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(bootstrappedMean, <span class="at">breaks =</span> <span class="dv">50</span>)</span>
+<span id="cb503-10"><a href="causal_inference.html#cb503-10" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> <span class="fu">mean</span>(data), <span class="at">col =</span> <span class="st">&quot;red&quot;</span>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/chunk_chapter7_chunk8-1.png" width="672" /></p>
+<p>Roughly, this distribution is the confidence interval for the mean for this particular distribution.</p>
+<p>In detail, there are a few tricks to correct confidence intervals for the bootstrap, which are implemented in the <code>boot</code>.{R} package. Here is how you would do a boostrap with the boot package. The trick here is to implement the function <code>f()</code>.{R}, which must take the data as well as a selection of data points “k” (for example <code class="sourceCode r"><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>,<span class="dv">8</span>,<span class="dv">9</span>)</code>, or <code class="sourceCode r"><span class="dv">1</span><span class="sc">:</span><span class="dv">20</span></code>, etc.) as input, and calculate the desired statistics.</p>
+<div class="sourceCode" id="cb504"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb504-1"><a href="causal_inference.html#cb504-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(boot)</span>
+<span id="cb504-2"><a href="causal_inference.html#cb504-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb504-3"><a href="causal_inference.html#cb504-3" aria-hidden="true" tabindex="-1"></a>f <span class="ot">=</span> <span class="cf">function</span>(d, k){ <span class="fu">mean</span>(d[k]) }</span>
+<span id="cb504-4"><a href="causal_inference.html#cb504-4" aria-hidden="true" tabindex="-1"></a>out <span class="ot">=</span> <span class="fu">boot</span>(data, f, <span class="dv">500</span>)</span>
+<span id="cb504-5"><a href="causal_inference.html#cb504-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(out)</span></code></pre></div>
+<p><img src="_main_files/figure-html/chunk_chapter7_chunk9-1.png" width="672" /></p>
+<div class="sourceCode" id="cb505"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb505-1"><a href="causal_inference.html#cb505-1" aria-hidden="true" tabindex="-1"></a><span class="fu">boot.ci</span>(out)</span></code></pre></div>
+<pre><code>## BOOTSTRAP CONFIDENCE INTERVAL CALCULATIONS
+## Based on 500 bootstrap replicates
+## 
+## CALL : 
+## boot.ci(boot.out = out)
+## 
+## Intervals : 
+## Level      Normal              Basic         
+## 95%   (-1.2730, -0.7144 )   (-1.2755, -0.7177 )  
+## 
+## Level     Percentile            BCa          
+## 95%   (-1.2427, -0.6849 )   (-1.2699, -0.7177 )  
+## Calculations and Intervals on Original Scale
+## Some BCa intervals may be unstable</code></pre>
+  <hr/>
+  <strong><span style="color: #0011AA; font-size:25px;">Task</span></strong><br/>
+<p>Calculate a bootstrapped confidence interval for the mean of this exponential distribution. Compare it to the naive standard error:</p>
+<div class="sourceCode" id="cb507"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb507-1"><a href="causal_inference.html#cb507-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb507-2"><a href="causal_inference.html#cb507-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb507-3"><a href="causal_inference.html#cb507-3" aria-hidden="true" tabindex="-1"></a>data <span class="ot">=</span> <span class="fu">rexp</span>(<span class="dv">500</span>)</span></code></pre></div>
+  <details>
+    <summary>
+      <strong><span style="color: #0011AA; font-size:25px;">Solution</span></strong>
+    </summary>
+    <p>
+    </p>
+  </details>
+  <br/><hr/>
+<p><strong><em>Jacknife</em></strong></p>
+<p>An alternative to the bootstrap is the <strong>jacknife</strong>.</p>
+<p>From Wikipedia:</p>
+<blockquote>
+<p>In statistics, the jackknife is a resampling technique especially useful for variance and bias estimation. The jackknife predates other common resampling methods such as the bootstrap. The jackknife estimator of a parameter is found by systematically leaving out each observation from a data set and calculating the estimate and then finding the average of these calculations. Given a sample of size N, the jackknife estimate is found by aggregating the estimates of each N-1-sized sub-sample.</p>
+</blockquote>
+<blockquote>
+<p>The jackknife technique was developed by Maurice Quenouille (1949, 1956). John Tukey (1958) expanded on the technique and proposed the name “jackknife” since, like a physical jack-knife (a compact folding knife), it is a rough-and-ready tool that can improvise a solution for a variety of problems even though specific problems may be more efficiently solved with a purpose-designed tool.</p>
+</blockquote>
+<blockquote>
+<p>The jackknife is a linear approximation of the bootstrap.</p>
+</blockquote>
+<div class="sourceCode" id="cb508"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb508-1"><a href="causal_inference.html#cb508-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(bootstrap)</span>
+<span id="cb508-2"><a href="causal_inference.html#cb508-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb508-3"><a href="causal_inference.html#cb508-3" aria-hidden="true" tabindex="-1"></a>theta <span class="ot">=</span> <span class="cf">function</span>(x){ <span class="fu">mean</span>(x) }</span>
+<span id="cb508-4"><a href="causal_inference.html#cb508-4" aria-hidden="true" tabindex="-1"></a>results <span class="ot">=</span> <span class="fu">jackknife</span>(data, theta)</span>
+<span id="cb508-5"><a href="causal_inference.html#cb508-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb508-6"><a href="causal_inference.html#cb508-6" aria-hidden="true" tabindex="-1"></a>results<span class="sc">$</span>jack.se</span></code></pre></div>
+<pre><code>## [1] 0.04727612</code></pre>
+<div class="sourceCode" id="cb510"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb510-1"><a href="causal_inference.html#cb510-1" aria-hidden="true" tabindex="-1"></a>results<span class="sc">$</span>jack.bias</span></code></pre></div>
+<pre><code>## [1] 0</code></pre>
+<p><strong><em>Parametric bootstrap</em></strong></p>
+<p>We call it a <strong>parametric bootstrap</strong> if we don’t re-sample the data to generate new data, but simulate from the fitted model. Simple example with a linear model:</p>
+<div class="sourceCode" id="cb512"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb512-1"><a href="causal_inference.html#cb512-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb512-2"><a href="causal_inference.html#cb512-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb512-3"><a href="causal_inference.html#cb512-3" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> <span class="fu">runif</span>(<span class="dv">100</span>, <span class="sc">-</span><span class="dv">2</span>, <span class="dv">2</span>)</span>
+<span id="cb512-4"><a href="causal_inference.html#cb512-4" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> <span class="fu">rnorm</span>(<span class="dv">100</span>, <span class="dv">1</span> <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span>x, <span class="dv">1</span>)</span>
+<span id="cb512-5"><a href="causal_inference.html#cb512-5" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">=</span> <span class="fu">data.frame</span>(<span class="at">x =</span> x, <span class="at">y =</span> y)</span>
+<span id="cb512-6"><a href="causal_inference.html#cb512-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb512-7"><a href="causal_inference.html#cb512-7" aria-hidden="true" tabindex="-1"></a>m <span class="ot">=</span> <span class="fu">lm</span>(y <span class="sc">~</span> x)</span>
+<span id="cb512-8"><a href="causal_inference.html#cb512-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb512-9"><a href="causal_inference.html#cb512-9" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m)</span></code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = y ~ x)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -2.23797 -0.61323 -0.01973  0.59633  2.21723 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  0.94612    0.09693   9.761    4e-16 ***
+## x            1.97754    0.08546  23.141   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.9693 on 98 degrees of freedom
+## Multiple R-squared:  0.8453, Adjusted R-squared:  0.8437 
+## F-statistic: 535.5 on 1 and 98 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>We are interested in getting the confidence intervals for the coefficients of the model:</p>
+<div class="sourceCode" id="cb514"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb514-1"><a href="causal_inference.html#cb514-1" aria-hidden="true" tabindex="-1"></a>resampledParameters <span class="ot">=</span> <span class="cf">function</span>(){</span>
+<span id="cb514-2"><a href="causal_inference.html#cb514-2" aria-hidden="true" tabindex="-1"></a>  newData <span class="ot">=</span> dat</span>
+<span id="cb514-3"><a href="causal_inference.html#cb514-3" aria-hidden="true" tabindex="-1"></a>  newData<span class="sc">$</span>y <span class="ot">=</span> <span class="fu">unlist</span>(<span class="fu">simulate</span>(m))</span>
+<span id="cb514-4"><a href="causal_inference.html#cb514-4" aria-hidden="true" tabindex="-1"></a>  mNew <span class="ot">=</span> <span class="fu">lm</span>(y <span class="sc">~</span> x, newData)</span>
+<span id="cb514-5"><a href="causal_inference.html#cb514-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">coef</span>(mNew)[<span class="dv">1</span>])</span>
+<span id="cb514-6"><a href="causal_inference.html#cb514-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb514-7"><a href="causal_inference.html#cb514-7" aria-hidden="true" tabindex="-1"></a>bootstrappedIntercept <span class="ot">=</span> <span class="fu">replicate</span>(<span class="dv">500</span>, <span class="fu">resampledParameters</span>())</span>
+<span id="cb514-8"><a href="causal_inference.html#cb514-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb514-9"><a href="causal_inference.html#cb514-9" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(bootstrappedIntercept, <span class="at">breaks =</span> <span class="dv">50</span>)</span>
+<span id="cb514-10"><a href="causal_inference.html#cb514-10" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> <span class="fu">coef</span>(m)[<span class="dv">1</span>], <span class="at">col =</span> <span class="st">&quot;red&quot;</span>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/chunk_chapter7_chunk12-1.png" width="672" /></p>
+<p>The same with the <code>boot</code>.{R} package. We need a statistics:</p>
+<div class="sourceCode" id="cb515"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb515-1"><a href="causal_inference.html#cb515-1" aria-hidden="true" tabindex="-1"></a>foo <span class="ot">=</span> <span class="cf">function</span>(out){</span>
+<span id="cb515-2"><a href="causal_inference.html#cb515-2" aria-hidden="true" tabindex="-1"></a>  m <span class="ot">=</span> <span class="fu">lm</span>(y <span class="sc">~</span> x, out)</span>
+<span id="cb515-3"><a href="causal_inference.html#cb515-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">coef</span>(m))</span>
+<span id="cb515-4"><a href="causal_inference.html#cb515-4" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>and a function to create new data</p>
+<div class="sourceCode" id="cb516"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb516-1"><a href="causal_inference.html#cb516-1" aria-hidden="true" tabindex="-1"></a>rgen <span class="ot">=</span> <span class="cf">function</span>(dat, mle){</span>
+<span id="cb516-2"><a href="causal_inference.html#cb516-2" aria-hidden="true" tabindex="-1"></a>  out <span class="ot">=</span> dat</span>
+<span id="cb516-3"><a href="causal_inference.html#cb516-3" aria-hidden="true" tabindex="-1"></a>  out<span class="sc">$</span>y <span class="ot">=</span> <span class="fu">unlist</span>(<span class="fu">simulate</span>(mle))</span>
+<span id="cb516-4"><a href="causal_inference.html#cb516-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(out)</span>
+<span id="cb516-5"><a href="causal_inference.html#cb516-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb516-6"><a href="causal_inference.html#cb516-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb516-7"><a href="causal_inference.html#cb516-7" aria-hidden="true" tabindex="-1"></a>b2 <span class="ot">=</span> <span class="fu">boot</span>(dat, foo, <span class="at">R =</span> <span class="dv">1000</span>, <span class="at">sim =</span> <span class="st">&quot;parametric&quot;</span>, <span class="at">ran.gen =</span> rgen, <span class="at">mle =</span> m)</span>
+<span id="cb516-8"><a href="causal_inference.html#cb516-8" aria-hidden="true" tabindex="-1"></a><span class="fu">boot.ci</span>(b2, <span class="at">type =</span> <span class="st">&quot;perc&quot;</span>, <span class="at">index =</span> <span class="dv">1</span>)</span></code></pre></div>
+<pre><code>## BOOTSTRAP CONFIDENCE INTERVAL CALCULATIONS
+## Based on 1000 bootstrap replicates
+## 
+## CALL : 
+## boot.ci(boot.out = b2, type = &quot;perc&quot;, index = 1)
+## 
+## Intervals : 
+## Level     Percentile     
+## 95%   ( 0.7534,  1.1287 )  
+## Calculations and Intervals on Original Scale</code></pre>
+<p><strong><em>Application: Simulated likelihood ratio test</em></strong></p>
+<p>The parametric bootstrap can be used to generate simulated likelihood ratio tests for mixed models. This allows us to test for the significance of variance components without specifying degrees of freedom. We could program this ourselves, but here is a package:</p>
+<div class="sourceCode" id="cb518"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb518-1"><a href="causal_inference.html#cb518-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(pbkrtest)</span>
+<span id="cb518-2"><a href="causal_inference.html#cb518-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb518-3"><a href="causal_inference.html#cb518-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(beets, <span class="at">package =</span> <span class="st">&quot;pbkrtest&quot;</span>)</span>
+<span id="cb518-4"><a href="causal_inference.html#cb518-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(beets)</span></code></pre></div>
+<pre><code>##   harvest  block  sow yield sugpct
+## 1   harv1 block1 sow3 128.0   17.1
+## 2   harv1 block1 sow4 118.0   16.9
+## 3   harv1 block1 sow5  95.0   16.6
+## 4   harv1 block1 sow2 131.0   17.0
+## 5   harv1 block1 sow1 136.5   17.0
+## 6   harv2 block2 sow3 136.5   17.0</code></pre>
+<div class="sourceCode" id="cb520"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb520-1"><a href="causal_inference.html#cb520-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Linear mixed effects model:</span></span>
+<span id="cb520-2"><a href="causal_inference.html#cb520-2" aria-hidden="true" tabindex="-1"></a>sug <span class="ot">=</span> <span class="fu">lmer</span>(sugpct <span class="sc">~</span> block <span class="sc">+</span> sow <span class="sc">+</span> harvest <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> block<span class="sc">:</span>harvest), <span class="at">data =</span> beets,</span>
+<span id="cb520-3"><a href="causal_inference.html#cb520-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">REML =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb520-4"><a href="causal_inference.html#cb520-4" aria-hidden="true" tabindex="-1"></a>sug.h <span class="ot">=</span> <span class="fu">update</span>(sug, .<span class="sc">~</span>. <span class="sc">-</span>harvest)</span>
+<span id="cb520-5"><a href="causal_inference.html#cb520-5" aria-hidden="true" tabindex="-1"></a>sug.s <span class="ot">=</span> <span class="fu">update</span>(sug, .<span class="sc">~</span>. <span class="sc">-</span>sow)</span>
+<span id="cb520-6"><a href="causal_inference.html#cb520-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb520-7"><a href="causal_inference.html#cb520-7" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(sug, sug.h)</span></code></pre></div>
+<pre><code>## Data: beets
+## Models:
+## sug.h: sugpct ~ block + sow + (1 | block:harvest)
+## sug: sugpct ~ block + sow + harvest + (1 | block:harvest)
+##       npar     AIC     BIC logLik deviance  Chisq Df Pr(&gt;Chisq)    
+## sug.h    9 -69.084 -56.473 43.542  -87.084                         
+## sug     10 -79.998 -65.986 49.999  -99.998 12.914  1  0.0003261 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<div class="sourceCode" id="cb522"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb522-1"><a href="causal_inference.html#cb522-1" aria-hidden="true" tabindex="-1"></a><span class="fu">PBmodcomp</span>(sug, sug.h, <span class="at">nsim =</span> <span class="dv">50</span>)</span></code></pre></div>
+<pre><code>## Bootstrap test; time: 0.45 sec; samples: 50; extremes: 5;
+## large : sugpct ~ block + sow + harvest + (1 | block:harvest)
+## sugpct ~ block + sow + (1 | block:harvest)
+##          stat df   p.value    
+## LRT    12.914  1 0.0003261 ***
+## PBtest 12.914    0.1176471    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<div class="sourceCode" id="cb524"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb524-1"><a href="causal_inference.html#cb524-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(sug, sug.s)</span></code></pre></div>
+<pre><code>## Data: beets
+## Models:
+## sug.s: sugpct ~ block + harvest + (1 | block:harvest)
+## sug: sugpct ~ block + sow + harvest + (1 | block:harvest)
+##       npar     AIC     BIC logLik deviance  Chisq Df Pr(&gt;Chisq)    
+## sug.s    6  -2.795   5.612  7.398  -14.795                         
+## sug     10 -79.998 -65.986 49.999  -99.998 85.203  4  &lt; 2.2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<div class="sourceCode" id="cb526"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb526-1"><a href="causal_inference.html#cb526-1" aria-hidden="true" tabindex="-1"></a><span class="fu">PBmodcomp</span>(sug, sug.s, <span class="at">nsim =</span> <span class="dv">50</span>)</span></code></pre></div>
+<pre><code>## Bootstrap test; time: 0.38 sec; samples: 50; extremes: 0;
+## large : sugpct ~ block + sow + harvest + (1 | block:harvest)
+## sugpct ~ block + harvest + (1 | block:harvest)
+##          stat df p.value    
+## LRT    85.203  4 &lt; 2e-16 ***
+## PBtest 85.203    0.01961 *  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>A similar approach is taken in <code class="sourceCode r">RLRsim</code>:</p>
+<div class="sourceCode" id="cb528"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb528-1"><a href="causal_inference.html#cb528-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(RLRsim)</span>
+<span id="cb528-2"><a href="causal_inference.html#cb528-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lme4)</span>
+<span id="cb528-3"><a href="causal_inference.html#cb528-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb528-4"><a href="causal_inference.html#cb528-4" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb528-5"><a href="causal_inference.html#cb528-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb528-6"><a href="causal_inference.html#cb528-6" aria-hidden="true" tabindex="-1"></a>g <span class="ot">=</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, <span class="at">e =</span> <span class="dv">10</span>)</span>
+<span id="cb528-7"><a href="causal_inference.html#cb528-7" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> <span class="fu">rnorm</span>(<span class="dv">100</span>)</span>
+<span id="cb528-8"><a href="causal_inference.html#cb528-8" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> <span class="fl">0.1</span> <span class="sc">*</span> x <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">100</span>)</span>
+<span id="cb528-9"><a href="causal_inference.html#cb528-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb528-10"><a href="causal_inference.html#cb528-10" aria-hidden="true" tabindex="-1"></a>m <span class="ot">=</span> <span class="fu">lmer</span>(y <span class="sc">~</span> x <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>g), <span class="at">REML =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb528-11"><a href="causal_inference.html#cb528-11" aria-hidden="true" tabindex="-1"></a>m0 <span class="ot">=</span> <span class="fu">lm</span>(y <span class="sc">~</span> <span class="dv">1</span>)</span>
+<span id="cb528-12"><a href="causal_inference.html#cb528-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb528-13"><a href="causal_inference.html#cb528-13" aria-hidden="true" tabindex="-1"></a>obs.LRT <span class="ot">=</span> <span class="dv">2</span><span class="sc">*</span>(<span class="fu">logLik</span>(m) <span class="sc">-</span> <span class="fu">logLik</span>(m0))</span>
+<span id="cb528-14"><a href="causal_inference.html#cb528-14" aria-hidden="true" tabindex="-1"></a>X <span class="ot">=</span> <span class="fu">getME</span>(m, <span class="st">&quot;X&quot;</span>)</span>
+<span id="cb528-15"><a href="causal_inference.html#cb528-15" aria-hidden="true" tabindex="-1"></a>Z <span class="ot">=</span> <span class="fu">t</span>(<span class="fu">as.matrix</span>(<span class="fu">getME</span>(m, <span class="st">&quot;Zt&quot;</span>)))</span>
+<span id="cb528-16"><a href="causal_inference.html#cb528-16" aria-hidden="true" tabindex="-1"></a>sim.LRT <span class="ot">=</span> <span class="fu">LRTSim</span>(X, Z, <span class="dv">1</span>, <span class="fu">diag</span>(<span class="dv">10</span>))</span>
+<span id="cb528-17"><a href="causal_inference.html#cb528-17" aria-hidden="true" tabindex="-1"></a>pval <span class="ot">=</span> <span class="fu">mean</span>(sim.LRT <span class="sc">&gt;</span> obs.LRT)</span></code></pre></div>
+</div>
+<div id="cross-validation" class="section level2 hasAnchor" number="7.4">
+<h2><span class="header-section-number">7.4</span> Cross-validation<a href="causal_inference.html#cross-validation" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Cross-validation is the non-parametric alternative to AIC. Note that AIC is asymptotically equal to leave-one-out cross-validation.</p>
+<p>For most advanced models, you will have to program the cross-validation by hand, but here an example for <code>glm</code>.{R}, using the <code class="sourceCode r">cv.glm</code> function:</p>
+<div class="sourceCode" id="cb529"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb529-1"><a href="causal_inference.html#cb529-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(boot)</span>
+<span id="cb529-2"><a href="causal_inference.html#cb529-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb529-3"><a href="causal_inference.html#cb529-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Leave-one-out and 6-fold cross-validation prediction error for the mammals data set.</span></span>
+<span id="cb529-4"><a href="causal_inference.html#cb529-4" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(mammals, <span class="at">package=</span><span class="st">&quot;MASS&quot;</span>)</span>
+<span id="cb529-5"><a href="causal_inference.html#cb529-5" aria-hidden="true" tabindex="-1"></a>mammals.glm <span class="ot">=</span> <span class="fu">glm</span>(<span class="fu">log</span>(brain) <span class="sc">~</span> <span class="fu">log</span>(body), <span class="at">data =</span> mammals)</span>
+<span id="cb529-6"><a href="causal_inference.html#cb529-6" aria-hidden="true" tabindex="-1"></a>(<span class="at">cv.err =</span> <span class="fu">cv.glm</span>(mammals, mammals.glm)<span class="sc">$</span>delta)</span></code></pre></div>
+<pre><code>## [1] 0.4918650 0.4916571</code></pre>
+<div class="sourceCode" id="cb531"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb531-1"><a href="causal_inference.html#cb531-1" aria-hidden="true" tabindex="-1"></a>(<span class="at">cv.err.6 =</span> <span class="fu">cv.glm</span>(mammals, mammals.glm, <span class="at">K =</span> <span class="dv">6</span>)<span class="sc">$</span>delta)</span></code></pre></div>
+<pre><code>## [1] 0.4787539 0.4776334</code></pre>
+<div class="sourceCode" id="cb533"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb533-1"><a href="causal_inference.html#cb533-1" aria-hidden="true" tabindex="-1"></a><span class="co"># As this is a linear model we could calculate the leave-one-out </span></span>
+<span id="cb533-2"><a href="causal_inference.html#cb533-2" aria-hidden="true" tabindex="-1"></a><span class="co"># cross-validation estimate without any extra model-fitting.</span></span>
+<span id="cb533-3"><a href="causal_inference.html#cb533-3" aria-hidden="true" tabindex="-1"></a>muhat <span class="ot">=</span> <span class="fu">fitted</span>(mammals.glm)</span>
+<span id="cb533-4"><a href="causal_inference.html#cb533-4" aria-hidden="true" tabindex="-1"></a>mammals.diag <span class="ot">=</span> <span class="fu">glm.diag</span>(mammals.glm)</span>
+<span id="cb533-5"><a href="causal_inference.html#cb533-5" aria-hidden="true" tabindex="-1"></a>(<span class="at">cv.err =</span> <span class="fu">mean</span>((mammals.glm<span class="sc">$</span>y <span class="sc">-</span> muhat)<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span>(<span class="dv">1</span> <span class="sc">-</span> mammals.diag<span class="sc">$</span>h)<span class="sc">^</span><span class="dv">2</span>))</span></code></pre></div>
+<pre><code>## [1] 0.491865</code></pre>
+<div class="sourceCode" id="cb535"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb535-1"><a href="causal_inference.html#cb535-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Leave-one-out and 11-fold cross-validation prediction error for </span></span>
+<span id="cb535-2"><a href="causal_inference.html#cb535-2" aria-hidden="true" tabindex="-1"></a><span class="co"># the nodal data set.  Since the response is a binary variable an</span></span>
+<span id="cb535-3"><a href="causal_inference.html#cb535-3" aria-hidden="true" tabindex="-1"></a><span class="co"># appropriate cost function is</span></span>
+<span id="cb535-4"><a href="causal_inference.html#cb535-4" aria-hidden="true" tabindex="-1"></a>cost <span class="ot">=</span> <span class="cf">function</span>(r, <span class="at">pi =</span> <span class="dv">0</span>){ <span class="fu">mean</span>(<span class="fu">abs</span>(r <span class="sc">-</span> pi) <span class="sc">&gt;</span> <span class="fl">0.5</span>) }</span>
+<span id="cb535-5"><a href="causal_inference.html#cb535-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb535-6"><a href="causal_inference.html#cb535-6" aria-hidden="true" tabindex="-1"></a>nodal.glm <span class="ot">=</span> <span class="fu">glm</span>(r <span class="sc">~</span> stage<span class="sc">+</span>xray<span class="sc">+</span>acid, binomial, <span class="at">data =</span> nodal)</span>
+<span id="cb535-7"><a href="causal_inference.html#cb535-7" aria-hidden="true" tabindex="-1"></a>(<span class="at">cv.err =</span> <span class="fu">cv.glm</span>(nodal, nodal.glm, cost, <span class="at">K =</span> <span class="fu">nrow</span>(nodal))<span class="sc">$</span>delta)</span></code></pre></div>
+<pre><code>## [1] 0.1886792 0.1886792</code></pre>
+<div class="sourceCode" id="cb537"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb537-1"><a href="causal_inference.html#cb537-1" aria-hidden="true" tabindex="-1"></a>(<span class="at">cv.11.err =</span> <span class="fu">cv.glm</span>(nodal, nodal.glm, cost, <span class="at">K =</span> <span class="dv">11</span>)<span class="sc">$</span>delta)</span></code></pre></div>
+<pre><code>## [1] 0.2264151 0.2228551</code></pre>
+<p>Note that cross-validation requires independence of data points. For non-independent data, it is possible to block the cross-validation, see Roberts, David R., et al. “Cross‐validation strategies for data with temporal, spatial, hierarchical, or phylogenetic structure.” <em>Ecography</em> 40.8 (2017): 913-929., methods implemented in package <code class="sourceCode r">blockCV</code>, see <a href="https://cran.r-project.org/web/packages/blockCV/vignettes/BlockCV_for_SDM.html" target="_blank" rel="noopener">https://cran.r-project.org/web/packages/blockCV/vignettes/BlockCV_for_SDM.html</a>.</p>
+</div>
+<div id="null-models" class="section level2 hasAnchor" number="7.5">
+<h2><span class="header-section-number">7.5</span> Null Models<a href="causal_inference.html#null-models" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Parametric hypothesis tests usually make a fixed assumption about H0. A non-parametric method to get around this that is used for complicated situations are <strong>randomization null models</strong>. The idea of these is to shuffle around the data, and thus generate a null distribution</p>
+<div class="sourceCode" id="cb539"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb539-1"><a href="causal_inference.html#cb539-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1337</span>)</span>
+<span id="cb539-2"><a href="causal_inference.html#cb539-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb539-3"><a href="causal_inference.html#cb539-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Permutation t-test.</span></span>
+<span id="cb539-4"><a href="causal_inference.html#cb539-4" aria-hidden="true" tabindex="-1"></a><span class="co"># A hand-coded randomization test for comparing two groups with arbitrary distribution.</span></span>
+<span id="cb539-5"><a href="causal_inference.html#cb539-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb539-6"><a href="causal_inference.html#cb539-6" aria-hidden="true" tabindex="-1"></a>groupA <span class="ot">=</span> <span class="fu">rnorm</span>(<span class="dv">50</span>)</span>
+<span id="cb539-7"><a href="causal_inference.html#cb539-7" aria-hidden="true" tabindex="-1"></a>groupB <span class="ot">=</span> <span class="fu">rlnorm</span>(<span class="dv">50</span>)</span>
+<span id="cb539-8"><a href="causal_inference.html#cb539-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb539-9"><a href="causal_inference.html#cb539-9" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">=</span> <span class="fu">data.frame</span>(<span class="at">value =</span> <span class="fu">c</span>(groupA, groupB), <span class="at">group =</span> <span class="fu">factor</span>(<span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">&quot;A&quot;</span>, <span class="st">&quot;B&quot;</span>), <span class="at">each =</span> <span class="dv">50</span>)))</span>
+<span id="cb539-10"><a href="causal_inference.html#cb539-10" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(value <span class="sc">~</span> group, <span class="at">data =</span> dat)</span></code></pre></div>
+<p><img src="_main_files/figure-html/chunk_chapter7_chunk19-1.png" width="672" /></p>
+<div class="sourceCode" id="cb540"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb540-1"><a href="causal_inference.html#cb540-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Point here is that we can&#39;t do a t-test, because groups are not normal. We could do</span></span>
+<span id="cb540-2"><a href="causal_inference.html#cb540-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb540-3"><a href="causal_inference.html#cb540-3" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(dat<span class="sc">$</span>value, <span class="at">breaks =</span> <span class="dv">40</span>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/chunk_chapter7_chunk19-2.png" width="672" /></p>
+<div class="sourceCode" id="cb541"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb541-1"><a href="causal_inference.html#cb541-1" aria-hidden="true" tabindex="-1"></a>reference <span class="ot">=</span> <span class="fu">mean</span>(groupA) <span class="sc">-</span> <span class="fu">mean</span>(groupB)</span>
+<span id="cb541-2"><a href="causal_inference.html#cb541-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb541-3"><a href="causal_inference.html#cb541-3" aria-hidden="true" tabindex="-1"></a>nSim <span class="ot">=</span> <span class="dv">5000</span></span>
+<span id="cb541-4"><a href="causal_inference.html#cb541-4" aria-hidden="true" tabindex="-1"></a>nullDistribution <span class="ot">=</span> <span class="fu">rep</span>(<span class="cn">NA</span>, nSim)</span>
+<span id="cb541-5"><a href="causal_inference.html#cb541-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb541-6"><a href="causal_inference.html#cb541-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>nSim){</span>
+<span id="cb541-7"><a href="causal_inference.html#cb541-7" aria-hidden="true" tabindex="-1"></a>  sel <span class="ot">=</span> dat<span class="sc">$</span>value[<span class="fu">sample.int</span>(<span class="dv">100</span>, <span class="at">size =</span> <span class="dv">100</span>)]</span>
+<span id="cb541-8"><a href="causal_inference.html#cb541-8" aria-hidden="true" tabindex="-1"></a>  nullDistribution[i] <span class="ot">=</span> <span class="fu">mean</span>(sel[<span class="dv">1</span><span class="sc">:</span><span class="dv">50</span>]) <span class="sc">-</span> <span class="fu">mean</span>(sel[<span class="dv">51</span><span class="sc">:</span><span class="dv">100</span>])</span>
+<span id="cb541-9"><a href="causal_inference.html#cb541-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb541-10"><a href="causal_inference.html#cb541-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb541-11"><a href="causal_inference.html#cb541-11" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(nullDistribution, <span class="at">xlim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">2</span>,<span class="dv">2</span>))</span>
+<span id="cb541-12"><a href="causal_inference.html#cb541-12" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> reference, <span class="at">col =</span> <span class="st">&quot;red&quot;</span>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/chunk_chapter7_chunk19-3.png" width="672" /></p>
+<div class="sourceCode" id="cb542"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb542-1"><a href="causal_inference.html#cb542-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ecdf</span>(nullDistribution)(reference)</span></code></pre></div>
+<pre><code>## [1] 0</code></pre>
+<p>Null models are used abundant, e.g., in packages:</p>
+<ul>
+<li><code>library(vegan)</code>.{R}</li>
+<li><code>library(bipartide)</code>.{R}</li>
+</ul>
+</div>
+<div id="structural-equation-models-sems" class="section level2 hasAnchor" number="7.6">
+<h2><span class="header-section-number">7.6</span> Structural Equation Models (SEMs)<a href="causal_inference.html#structural-equation-models-sems" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Structural equation models (SEMs) are models that are designed to estimate entire causal diagrams. For GLMs responses, you will currently have to estimate the DAG (directed acyclic graph) piece-wise, e.g. with <a href="https://cran.r-project.org/web/packages/piecewiseSEM/vignettes/piecewiseSEM.html" target="_blank" rel="noopener">https://cran.r-project.org/web/packages/piecewiseSEM/vignettes/piecewiseSEM.html</a>.</p>
+<div class="sourceCode" id="cb544"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb544-1"><a href="causal_inference.html#cb544-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(piecewiseSEM)</span>
+<span id="cb544-2"><a href="causal_inference.html#cb544-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb544-3"><a href="causal_inference.html#cb544-3" aria-hidden="true" tabindex="-1"></a>mod <span class="ot">=</span> <span class="fu">psem</span>(</span>
+<span id="cb544-4"><a href="causal_inference.html#cb544-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lm</span>(rich <span class="sc">~</span> distance <span class="sc">+</span> elev <span class="sc">+</span> abiotic <span class="sc">+</span> age <span class="sc">+</span> hetero <span class="sc">+</span> firesev <span class="sc">+</span> cover, <span class="at">data =</span> keeley),</span>
+<span id="cb544-5"><a href="causal_inference.html#cb544-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lm</span>(firesev <span class="sc">~</span> elev <span class="sc">+</span> age <span class="sc">+</span> cover, <span class="at">data =</span> keeley), </span>
+<span id="cb544-6"><a href="causal_inference.html#cb544-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lm</span>(cover <span class="sc">~</span> age <span class="sc">+</span> elev <span class="sc">+</span> hetero <span class="sc">+</span> abiotic, <span class="at">data =</span> keeley)</span>
+<span id="cb544-7"><a href="causal_inference.html#cb544-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb544-8"><a href="causal_inference.html#cb544-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb544-9"><a href="causal_inference.html#cb544-9" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod)</span></code></pre></div>
+<pre><code>## 
+  |                                                                            
+  |                                                                      |   0%
+  |                                                                            
+  |==================                                                    |  25%
+  |                                                                            
+  |===================================                                   |  50%
+  |                                                                            
+  |====================================================                  |  75%
+  |                                                                            
+  |======================================================================| 100%</code></pre>
+<pre><code>## 
+## Structural Equation Model of mod 
+## 
+## Call:
+##   rich ~ distance + elev + abiotic + age + hetero + firesev + cover
+##   firesev ~ elev + age + cover
+##   cover ~ age + elev + hetero + abiotic
+## 
+##     AIC      BIC
+##  46.543   96.539
+## 
+## ---
+## Tests of directed separation:
+## 
+##             Independ.Claim Test.Type DF Crit.Value P.Value 
+##     cover ~ distance + ...      coef 84     0.4201  0.6755 
+##   firesev ~ distance + ...      coef 85    -0.8264  0.4109 
+##    firesev ~ abiotic + ...      coef 85    -1.1799  0.2413 
+##     firesev ~ hetero + ...      coef 85    -0.5755  0.5665 
+## 
+## Global goodness-of-fit:
+## 
+##   Fisher&#39;s C = 6.543 with P-value = 0.587 and on 8 degrees of freedom
+## 
+## ---
+## Coefficients:
+## 
+##   Response Predictor Estimate Std.Error DF Crit.Value P.Value Std.Estimate    
+##       rich  distance   0.6157    0.1855 82     3.3195  0.0013       0.3599  **
+##       rich      elev  -0.0092    0.0059 82    -1.5663  0.1211      -0.1569    
+##       rich   abiotic   0.4881    0.1641 82     2.9741  0.0039       0.2482  **
+##       rich       age   0.0241    0.1097 82     0.2199  0.8265       0.0201    
+##       rich    hetero  44.4135   10.8093 82     4.1088  0.0001       0.3376 ***
+##       rich   firesev  -1.0181    0.8031 82    -1.2677  0.2085      -0.1114    
+##       rich     cover  12.3998    4.2206 82     2.9379  0.0043       0.2604  **
+##    firesev      elev  -0.0006    0.0006 86    -0.9298  0.3551      -0.0874    
+##    firesev       age   0.0473    0.0129 86     3.6722  0.0004       0.3597 ***
+##    firesev     cover  -1.5214    0.5204 86    -2.9236  0.0044      -0.2921  **
+##      cover       age  -0.0101    0.0024 85    -4.1757  0.0001      -0.3991 ***
+##      cover      elev   0.0004    0.0001 85     2.9688  0.0039       0.2999  **
+##      cover    hetero  -0.7875    0.2719 85    -2.8960  0.0048      -0.2850  **
+##      cover   abiotic   0.0021    0.0042 85     0.4855  0.6286       0.0498    
+## 
+##   Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05
+## 
+## ---
+## Individual R-squared:
+## 
+##   Response method R.squared
+##       rich   none      0.57
+##    firesev   none      0.30
+##      cover   none      0.26</code></pre>
+<div class="sourceCode" id="cb547"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb547-1"><a href="causal_inference.html#cb547-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod)</span></code></pre></div>
+<div id="htmlwidget-65da3a7014464ac4908f" style="width:672px;height:480px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-65da3a7014464ac4908f">{"x":{"diagram":"digraph {\n\ngraph [layout = \"neato\",\n       outputorder = \"edgesfirst\",\n       bgcolor = \"white\"]\n\nnode [fontname = \"Helvetica\",\n      fontsize = \"10\",\n      shape = \"circle\",\n      fixedsize = \"true\",\n      width = \"0.5\",\n      style = \"filled\",\n      fillcolor = \"aliceblue\",\n      color = \"gray70\",\n      fontcolor = \"gray50\"]\n\nedge [fontname = \"Helvetica\",\n     fontsize = \"8\",\n     len = \"1.5\",\n     color = \"gray80\",\n     arrowsize = \"0.5\"]\n\n  \"1\" [label = \"rich\", shape = \"rectangle\", color = \"black\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"2\" [label = \"firesev\", shape = \"rectangle\", color = \"black\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"3\" [label = \"cover\", shape = \"rectangle\", color = \"black\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"4\" [label = \"distance\", shape = \"rectangle\", color = \"black\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"5\" [label = \"elev\", shape = \"rectangle\", color = \"black\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"6\" [label = \"abiotic\", shape = \"rectangle\", color = \"black\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"7\" [label = \"age\", shape = \"rectangle\", color = \"black\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"8\" [label = \"hetero\", shape = \"rectangle\", color = \"black\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n\"4\"->\"1\" [style = \"solid\", color = \"black\", label = \" 0.36 \"] \n\"5\"->\"1\" [style = \"dashed\", color = \"black\", label = \" -0.157 \"] \n\"6\"->\"1\" [style = \"solid\", color = \"black\", label = \" 0.248 \"] \n\"7\"->\"1\" [style = \"dashed\", color = \"black\", label = \" 0.02 \"] \n\"8\"->\"1\" [style = \"solid\", color = \"black\", label = \" 0.338 \"] \n\"2\"->\"1\" [style = \"dashed\", color = \"black\", label = \" -0.111 \"] \n\"3\"->\"1\" [style = \"solid\", color = \"black\", label = \" 0.26 \"] \n\"5\"->\"2\" [style = \"dashed\", color = \"black\", label = \" -0.087 \"] \n\"7\"->\"2\" [style = \"solid\", color = \"black\", label = \" 0.36 \"] \n\"3\"->\"2\" [style = \"solid\", color = \"black\", label = \" -0.292 \"] \n\"7\"->\"3\" [style = \"solid\", color = \"black\", label = \" -0.399 \"] \n\"5\"->\"3\" [style = \"solid\", color = \"black\", label = \" 0.3 \"] \n\"8\"->\"3\" [style = \"solid\", color = \"black\", label = \" -0.285 \"] \n\"6\"->\"3\" [style = \"dashed\", color = \"black\", label = \" 0.05 \"] \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<p>For linear SEMs, we can estimate the entire DAG in one go. This also allows to have unobserved variables in the DAG. One of the most popular packages for this is <code>lavaan</code>.{R}:</p>
+<div class="sourceCode" id="cb548"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb548-1"><a href="causal_inference.html#cb548-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lavaan)</span>
+<span id="cb548-2"><a href="causal_inference.html#cb548-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb548-3"><a href="causal_inference.html#cb548-3" aria-hidden="true" tabindex="-1"></a>mod <span class="ot">=</span> <span class="st">&quot;</span></span>
+<span id="cb548-4"><a href="causal_inference.html#cb548-4" aria-hidden="true" tabindex="-1"></a><span class="st">  rich ~ distance + elev + abiotic + age + hetero + firesev + cover</span></span>
+<span id="cb548-5"><a href="causal_inference.html#cb548-5" aria-hidden="true" tabindex="-1"></a><span class="st">  firesev ~ elev + age + cover</span></span>
+<span id="cb548-6"><a href="causal_inference.html#cb548-6" aria-hidden="true" tabindex="-1"></a><span class="st">  cover ~ age + elev + abiotic </span></span>
+<span id="cb548-7"><a href="causal_inference.html#cb548-7" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;</span></span>
+<span id="cb548-8"><a href="causal_inference.html#cb548-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb548-9"><a href="causal_inference.html#cb548-9" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">sem</span>(mod, <span class="at">data =</span> keeley)</span>
+<span id="cb548-10"><a href="causal_inference.html#cb548-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb548-11"><a href="causal_inference.html#cb548-11" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code></pre></div>
+<pre><code>## lavaan 0.6-11 ended normally after 1 iterations
+## 
+##   Estimator                                         ML
+##   Optimization method                           NLMINB
+##   Number of model parameters                        16
+##                                                       
+##   Number of observations                            90
+##                                                       
+## Model Test User Model:
+##                                                       
+##   Test statistic                                10.437
+##   Degrees of freedom                                 5
+##   P-value (Chi-square)                           0.064
+## 
+## Parameter Estimates:
+## 
+##   Standard errors                             Standard
+##   Information                                 Expected
+##   Information saturated (h1) model          Structured
+## 
+## Regressions:
+##                    Estimate   Std.Err  z-value  P(&gt;|z|)
+##   rich ~                                               
+##     distance           0.616    0.177    3.485    0.000
+##     elev              -0.009    0.006   -1.644    0.100
+##     abiotic            0.488    0.156    3.134    0.002
+##     age                0.024    0.105    0.229    0.819
+##     hetero            44.414    9.831    4.517    0.000
+##     firesev           -1.018    0.759   -1.341    0.180
+##     cover             12.400    3.841    3.228    0.001
+##   firesev ~                                            
+##     elev              -0.001    0.001   -0.951    0.342
+##     age                0.047    0.013    3.757    0.000
+##     cover             -1.521    0.509   -2.991    0.003
+##   cover ~                                              
+##     age               -0.009    0.002   -3.875    0.000
+##     elev               0.000    0.000    2.520    0.012
+##     abiotic           -0.000    0.004   -0.115    0.909
+## 
+## Variances:
+##                    Estimate   Std.Err  z-value  P(&gt;|z|)
+##    .rich              97.844   14.586    6.708    0.000
+##    .firesev            1.887    0.281    6.708    0.000
+##    .cover              0.081    0.012    6.708    0.000</code></pre>
+<p>Plot options … not so nice as before.</p>
+<div class="sourceCode" id="cb550"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb550-1"><a href="causal_inference.html#cb550-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lavaanPlot)</span></code></pre></div>
+<pre><code>## Warning: package &#39;lavaanPlot&#39; was built under R version 4.1.1</code></pre>
+<div class="sourceCode" id="cb552"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb552-1"><a href="causal_inference.html#cb552-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lavaanPlot</span>(<span class="at">model =</span> fit)</span></code></pre></div>
+<div id="htmlwidget-19b491392b565770f3c0" style="width:672px;height:480px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-19b491392b565770f3c0">{"x":{"diagram":" digraph plot { \n graph [ overlap = true, fontsize = 10 ] \n node [ shape = box ] \n node [shape = box] \n distance; elev; abiotic; age; hetero; firesev; cover; rich \n node [shape = oval] \n  \n \n edge [ color = black ] \n distance->rich elev->rich abiotic->rich age->rich hetero->rich firesev->rich cover->rich elev->firesev age->firesev cover->firesev age->cover elev->cover abiotic->cover  \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div class="sourceCode" id="cb553"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb553-1"><a href="causal_inference.html#cb553-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(semPlot)</span></code></pre></div>
+<pre><code>## Warning: package &#39;semPlot&#39; was built under R version 4.1.1</code></pre>
+<div class="sourceCode" id="cb555"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb555-1"><a href="causal_inference.html#cb555-1" aria-hidden="true" tabindex="-1"></a><span class="fu">semPaths</span>(fit)</span></code></pre></div>
+<p><img src="_main_files/figure-html/chunk_chapter7_chunk22-2.png" width="672" /></p>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="correlation.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

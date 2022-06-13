@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Advanced Biostatistics with R</title>
+  <meta name="description" content="Advanced Biostatistics with R" />
+  <meta name="generator" content="bookdown 0.26 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Advanced Biostatistics with R" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="Advanced Biostatistics with R" />
+  <meta name="github-repo" content="rstudio/bookdown-demo" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Advanced Biostatistics with R" />
+  
+  <meta name="twitter:description" content="Advanced Biostatistics with R" />
+  
+
+<meta name="author" content="Florian Hartig" />
+
+
+<meta name="date" content="2022-06-11" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+
+<link rel="next" href="reminder.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+<script src="libs/htmlwidgets-1.5.3/htmlwidgets.js"></script>
+<script src="libs/viz-1.8.2/viz.js"></script>
+<link href="libs/DiagrammeR-styles-0.2/styles.css" rel="stylesheet" />
+<script src="libs/grViz-binding-1.0.9/grViz.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    background-color: #ffffff;
+    color: #a0a0a0;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #a0a0a0;  padding-left: 4px; }
+div.sourceCode
+  { color: #1f1c1b; background-color: #ffffff; }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span { color: #1f1c1b; } /* Normal */
+code span.al { color: #bf0303; background-color: #f7e6e6; font-weight: bold; } /* Alert */
+code span.an { color: #ca60ca; } /* Annotation */
+code span.at { color: #0057ae; } /* Attribute */
+code span.bn { color: #b08000; } /* BaseN */
+code span.bu { color: #644a9b; font-weight: bold; } /* BuiltIn */
+code span.cf { color: #1f1c1b; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #924c9d; } /* Char */
+code span.cn { color: #aa5500; } /* Constant */
+code span.co { color: #898887; } /* Comment */
+code span.cv { color: #0095ff; } /* CommentVar */
+code span.do { color: #607880; } /* Documentation */
+code span.dt { color: #0057ae; } /* DataType */
+code span.dv { color: #b08000; } /* DecVal */
+code span.er { color: #bf0303; text-decoration: underline; } /* Error */
+code span.ex { color: #0095ff; font-weight: bold; } /* Extension */
+code span.fl { color: #b08000; } /* Float */
+code span.fu { color: #644a9b; } /* Function */
+code span.im { color: #ff5500; } /* Import */
+code span.in { color: #b08000; } /* Information */
+code span.kw { color: #1f1c1b; font-weight: bold; } /* Keyword */
+code span.op { color: #1f1c1b; } /* Operator */
+code span.ot { color: #006e28; } /* Other */
+code span.pp { color: #006e28; } /* Preprocessor */
+code span.re { color: #0057ae; background-color: #e0e9f8; } /* RegionMarker */
+code span.sc { color: #3daee9; } /* SpecialChar */
+code span.ss { color: #ff5500; } /* SpecialString */
+code span.st { color: #bf0303; } /* String */
+code span.va { color: #0057ae; } /* Variable */
+code span.vs { color: #bf0303; } /* VerbatimString */
+code span.wa { color: #bf0303; } /* Warning */
+</style>
+
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Preface</a></li>
+<li class="chapter" data-level="2" data-path="reminder.html"><a href="reminder.html"><i class="fa fa-check"></i><b>2</b> Reminder: R basics</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="reminder.html"><a href="reminder.html#your-r-system"><i class="fa fa-check"></i><b>2.1</b> Your R System</a>
+<ul>
+<li class="chapter" data-level="2.1.1" data-path="reminder.html"><a href="reminder.html#installing-libraries"><i class="fa fa-check"></i><b>2.1.1</b> Installing Libraries</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="reminder.html"><a href="reminder.html#operating-with-data-in-r"><i class="fa fa-check"></i><b>2.2</b> Operating with data in R</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="reminder.html"><a href="reminder.html#exploring-data-structures"><i class="fa fa-check"></i><b>2.2.1</b> Exploring Data Structures</a></li>
+<li class="chapter" data-level="2.2.2" data-path="reminder.html"><a href="reminder.html#dynamic-typing"><i class="fa fa-check"></i><b>2.2.2</b> Dynamic Typing</a></li>
+<li class="chapter" data-level="2.2.3" data-path="reminder.html"><a href="reminder.html#data-selection-slicing-and-subsetting"><i class="fa fa-check"></i><b>2.2.3</b> Data Selection, Slicing and Subsetting</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="reminder.html"><a href="reminder.html#applying-functions-and-aggregates-across-a-data-set"><i class="fa fa-check"></i><b>2.3</b> Applying Functions and Aggregates Across a Data Set</a>
+<ul>
+<li class="chapter" data-level="2.3.1" data-path="reminder.html"><a href="reminder.html#functions"><i class="fa fa-check"></i><b>2.3.1</b> Functions</a></li>
+<li class="chapter" data-level="2.3.2" data-path="reminder.html"><a href="reminder.html#the-apply-function"><i class="fa fa-check"></i><b>2.3.2</b> The apply() Function</a></li>
+<li class="chapter" data-level="2.3.3" data-path="reminder.html"><a href="reminder.html#the-aggregate-function"><i class="fa fa-check"></i><b>2.3.3</b> The aggregate() Function</a></li>
+</ul></li>
+<li class="chapter" data-level="2.4" data-path="reminder.html"><a href="reminder.html#plotting"><i class="fa fa-check"></i><b>2.4</b> Plotting</a></li>
+<li class="chapter" data-level="2.5" data-path="reminder.html"><a href="reminder.html#additional-resources"><i class="fa fa-check"></i><b>2.5</b> Additional Resources</a>
+<ul>
+<li class="chapter" data-level="2.5.1" data-path="reminder.html"><a href="reminder.html#books"><i class="fa fa-check"></i><b>2.5.1</b> Books</a></li>
+<li class="chapter" data-level="2.5.2" data-path="reminder.html"><a href="reminder.html#instructional-videos"><i class="fa fa-check"></i><b>2.5.2</b> Instructional Videos</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="recap.html"><a href="recap.html"><i class="fa fa-check"></i><b>3</b> Understanding linear regression</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="recap.html"><a href="recap.html#simple-linear-regression"><i class="fa fa-check"></i><b>3.1</b> Simple Linear Regression</a>
+<ul>
+<li class="chapter" data-level="3.1.1" data-path="recap.html"><a href="recap.html#fitting-and-interpreting-the-regression"><i class="fa fa-check"></i><b>3.1.1</b> Fitting and Interpreting the Regression</a></li>
+<li class="chapter" data-level="3.1.2" data-path="recap.html"><a href="recap.html#centering-of-predictors"><i class="fa fa-check"></i><b>3.1.2</b> Centering of Predictors</a></li>
+<li class="chapter" data-level="3.1.3" data-path="recap.html"><a href="recap.html#residual-checks"><i class="fa fa-check"></i><b>3.1.3</b> Residual Checks</a></li>
+<li class="chapter" data-level="3.1.4" data-path="recap.html"><a href="recap.html#categorical-predictors"><i class="fa fa-check"></i><b>3.1.4</b> Categorical Predictors</a></li>
+<li class="chapter" data-level="3.1.5" data-path="recap.html"><a href="recap.html#plantTrait1"><i class="fa fa-check"></i><b>3.1.5</b> Exercise: Global Plant Trait Analysis</a></li>
+</ul></li>
+<li class="chapter" data-level="3.2" data-path="recap.html"><a href="recap.html#multiple-regression"><i class="fa fa-check"></i><b>3.2</b> Multiple Regression</a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="recap.html"><a href="recap.html#getting-started"><i class="fa fa-check"></i><b>3.2.1</b> Getting Started</a></li>
+<li class="chapter" data-level="3.2.2" data-path="recap.html"><a href="recap.html#simulating-the-effect-of-collinearity"><i class="fa fa-check"></i><b>3.2.2</b> Simulating the Effect of Collinearity</a></li>
+<li class="chapter" data-level="3.2.3" data-path="recap.html"><a href="recap.html#scaling-variables"><i class="fa fa-check"></i><b>3.2.3</b> Scaling Variables</a></li>
+<li class="chapter" data-level="3.2.4" data-path="recap.html"><a href="recap.html#anova-for-multiple-regression"><i class="fa fa-check"></i><b>3.2.4</b> ANOVA for Multiple Regression</a></li>
+<li class="chapter" data-level="3.2.5" data-path="recap.html"><a href="recap.html#interactions"><i class="fa fa-check"></i><b>3.2.5</b> Interactions</a></li>
+<li class="chapter" data-level="3.2.6" data-path="recap.html"><a href="recap.html#plantTrait2"><i class="fa fa-check"></i><b>3.2.6</b> Exercise: Global Plant Trait Analysis #2</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="recap.html"><a href="recap.html#model-choice-and-causal-inference"><i class="fa fa-check"></i><b>3.3</b> Model Choice and Causal Inference</a>
+<ul>
+<li class="chapter" data-level="3.3.1" data-path="recap.html"><a href="recap.html#the-bias-variance-trade-off"><i class="fa fa-check"></i><b>3.3.1</b> The Bias-Variance Trade-off</a></li>
+<li class="chapter" data-level="3.3.2" data-path="recap.html"><a href="recap.html#causal-inference"><i class="fa fa-check"></i><b>3.3.2</b> Causal Inference</a></li>
+<li class="chapter" data-level="3.3.3" data-path="recap.html"><a href="recap.html#model-selection-methods"><i class="fa fa-check"></i><b>3.3.3</b> Model Selection Methods</a></li>
+<li class="chapter" data-level="3.3.4" data-path="recap.html"><a href="recap.html#pHacking"><i class="fa fa-check"></i><b>3.3.4</b> P-hacking</a></li>
+<li class="chapter" data-level="3.3.5" data-path="recap.html"><a href="recap.html#problems-of-stepwise-model-selection"><i class="fa fa-check"></i><b>3.3.5</b> Problems of Stepwise Model Selection</a></li>
+<li class="chapter" data-level="3.3.6" data-path="recap.html"><a href="recap.html#exercise-global-plant-trait-analysis-3"><i class="fa fa-check"></i><b>3.3.6</b> Exercise: Global Plant Trait Analysis #3</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="heteroskedasticity.html"><a href="heteroskedasticity.html"><i class="fa fa-check"></i><b>4</b> Heteroskedasticity and Grouped Data (Random Effects)</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="heteroskedasticity.html"><a href="heteroskedasticity.html#warm-up-exercise"><i class="fa fa-check"></i><b>4.1</b> Warm-up Exercise</a></li>
+<li class="chapter" data-level="4.2" data-path="heteroskedasticity.html"><a href="heteroskedasticity.html#general-modelling-strategy-for-lm-correction-of-residuals"><i class="fa fa-check"></i><b>4.2</b> General Modelling Strategy for lm() + Correction of Residuals</a>
+<ul>
+<li class="chapter" data-level="4.2.1" data-path="heteroskedasticity.html"><a href="heteroskedasticity.html#wrong-functional-form"><i class="fa fa-check"></i><b>4.2.1</b> Wrong Functional Form</a></li>
+<li class="chapter" data-level="4.2.2" data-path="heteroskedasticity.html"><a href="heteroskedasticity.html#modelling-variance-terms"><i class="fa fa-check"></i><b>4.2.2</b> Modelling Variance Terms</a></li>
+<li class="chapter" data-level="4.2.3" data-path="heteroskedasticity.html"><a href="heteroskedasticity.html#exercise"><i class="fa fa-check"></i><b>4.2.3</b> Exercise</a></li>
+<li class="chapter" data-level="4.2.4" data-path="heteroskedasticity.html"><a href="heteroskedasticity.html#non-normality-and-outliers"><i class="fa fa-check"></i><b>4.2.4</b> Non-normality and Outliers</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="heteroskedasticity.html"><a href="heteroskedasticity.html#random-and-mixed-effects---motivation"><i class="fa fa-check"></i><b>4.3</b> Random and Mixed Effects - Motivation</a>
+<ul>
+<li class="chapter" data-level="4.3.1" data-path="heteroskedasticity.html"><a href="heteroskedasticity.html#fitting-random-effects-models"><i class="fa fa-check"></i><b>4.3.1</b> Fitting Random Effects Models</a></li>
+<li class="chapter" data-level="4.3.2" data-path="heteroskedasticity.html"><a href="heteroskedasticity.html#case-study-1-college-student-performance-over-time"><i class="fa fa-check"></i><b>4.3.2</b> Case Study 1: College Student Performance Over Time</a></li>
+<li class="chapter" data-level="4.3.3" data-path="heteroskedasticity.html"><a href="heteroskedasticity.html#problems-with-mixed-models"><i class="fa fa-check"></i><b>4.3.3</b> Problems With Mixed Models</a></li>
+<li class="chapter" data-level="4.3.4" data-path="heteroskedasticity.html"><a href="heteroskedasticity.html#case-study-2---honeybee-data"><i class="fa fa-check"></i><b>4.3.4</b> Case Study 2 - Honeybee Data</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="GLMMs.html"><a href="GLMMs.html"><i class="fa fa-check"></i><b>5</b> GLMMs</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="GLMMs.html"><a href="GLMMs.html#basics"><i class="fa fa-check"></i><b>5.1</b> Basics</a>
+<ul>
+<li class="chapter" data-level="5.1.1" data-path="GLMMs.html"><a href="GLMMs.html#a-binomial-example"><i class="fa fa-check"></i><b>5.1.1</b> A Binomial Example</a></li>
+<li class="chapter" data-level="5.1.2" data-path="GLMMs.html"><a href="GLMMs.html#a-poisson-example"><i class="fa fa-check"></i><b>5.1.2</b> A Poisson Example</a></li>
+<li class="chapter" data-level="5.1.3" data-path="GLMMs.html"><a href="GLMMs.html#example---elk-data"><i class="fa fa-check"></i><b>5.1.3</b> Example - Elk Data</a></li>
+</ul></li>
+<li class="chapter" data-level="5.2" data-path="GLMMs.html"><a href="GLMMs.html#dispersion-problems-in-glms"><i class="fa fa-check"></i><b>5.2</b> Dispersion Problems in GLMs</a>
+<ul>
+<li class="chapter" data-level="5.2.1" data-path="GLMMs.html"><a href="GLMMs.html#heteroskedasticity-in-glmms"><i class="fa fa-check"></i><b>5.2.1</b> Heteroskedasticity in GLMMs</a></li>
+<li class="chapter" data-level="5.2.2" data-path="GLMMs.html"><a href="GLMMs.html#zero-inflation"><i class="fa fa-check"></i><b>5.2.2</b> Zero-inflation</a></li>
+<li class="chapter" data-level="5.2.3" data-path="GLMMs.html"><a href="GLMMs.html#p-hacking-link-collection"><i class="fa fa-check"></i><b>5.2.3</b> P-hacking Link Collection</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="GLMMs.html"><a href="GLMMs.html#protocol"><i class="fa fa-check"></i><b>5.3</b> Case Studies</a>
+<ul>
+<li class="chapter" data-level="5.3.1" data-path="GLMMs.html"><a href="GLMMs.html#owls"><i class="fa fa-check"></i><b>5.3.1</b> Owls</a></li>
+<li class="chapter" data-level="5.3.2" data-path="GLMMs.html"><a href="GLMMs.html#hurricanes"><i class="fa fa-check"></i><b>5.3.2</b> Hurricanes</a></li>
+<li class="chapter" data-level="5.3.3" data-path="GLMMs.html"><a href="GLMMs.html#researchers-degrees-of-freedom-skin-color-and-red-cards"><i class="fa fa-check"></i><b>5.3.3</b> Researchers Degrees of Freedom — Skin Color and Red Cards</a></li>
+<li class="chapter" data-level="5.3.4" data-path="GLMMs.html"><a href="GLMMs.html#marmots"><i class="fa fa-check"></i><b>5.3.4</b> Marmots</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="correlation.html"><a href="correlation.html"><i class="fa fa-check"></i><b>6</b> Correlation structures</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="correlation.html"><a href="correlation.html#general-idea"><i class="fa fa-check"></i><b>6.1</b> General Idea</a></li>
+<li class="chapter" data-level="6.2" data-path="correlation.html"><a href="correlation.html#temporal-and-spatial-correlation-structures"><i class="fa fa-check"></i><b>6.2</b> Temporal and Spatial Correlation Structures</a></li>
+<li class="chapter" data-level="6.3" data-path="correlation.html"><a href="correlation.html#phylogenetic-structures-pgls"><i class="fa fa-check"></i><b>6.3</b> Phylogenetic Structures (PGLS)</a></li>
+<li class="chapter" data-level="6.4" data-path="correlation.html"><a href="correlation.html#exercices"><i class="fa fa-check"></i><b>6.4</b> Exercices</a></li>
+<li class="chapter" data-level="6.5" data-path="correlation.html"><a href="correlation.html#intro-bayes"><i class="fa fa-check"></i><b>6.5</b> Intro Bayes</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="causal_inference.html"><a href="causal_inference.html"><i class="fa fa-check"></i><b>7</b> Causal Inference, SEMs, Summary</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="causal_inference.html"><a href="causal_inference.html#reminder-modelling-strategy"><i class="fa fa-check"></i><b>7.1</b> Reminder: Modelling Strategy</a></li>
+<li class="chapter" data-level="7.2" data-path="causal_inference.html"><a href="causal_inference.html#thoughts-about-the-analysis-pipeline"><i class="fa fa-check"></i><b>7.2</b> Thoughts About the Analysis Pipeline</a></li>
+<li class="chapter" data-level="7.3" data-path="causal_inference.html"><a href="causal_inference.html#bootstrap"><i class="fa fa-check"></i><b>7.3</b> Bootstrap</a></li>
+<li class="chapter" data-level="7.4" data-path="causal_inference.html"><a href="causal_inference.html#cross-validation"><i class="fa fa-check"></i><b>7.4</b> Cross-validation</a></li>
+<li class="chapter" data-level="7.5" data-path="causal_inference.html"><a href="causal_inference.html#null-models"><i class="fa fa-check"></i><b>7.5</b> Null Models</a></li>
+<li class="chapter" data-level="7.6" data-path="causal_inference.html"><a href="causal_inference.html#structural-equation-models-sems"><i class="fa fa-check"></i><b>7.6</b> Structural Equation Models (SEMs)</a></li>
+</ul></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Advanced Biostatistics with R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="header">
+<h1 class="title">Advanced Biostatistics with R</h1>
+<p class="author"><em>Florian Hartig</em></p>
+<p class="date"><em>2022-06-11</em></p>
+</div>
+<div id="preface" class="section level1 hasAnchor" number="1">
+<h1><span class="header-section-number">1</span> Preface<a href="index.html#preface" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<!-- Put this here (right after the first markdown headline) and only here for each document! -->
+<script src="./scripts/multipleChoice.js"></script>
+<p>The aim of this course is to be able to gain a good theoretical and practical understanding of the statistical problem of estimating an effect: We have a response variable and want to understand how this response variable is influenced by a number of other factors. Truly understanding this problem will require mastering a number of skills, in particular:</p>
+<ul>
+<li>Understanding of the fundamental statistical indicators in regression analysis (p-value, estimator) and their quality (power, bias, error, coverage),</li>
+<li>good understanding of causal inference in a regression context, and its relation to model selection,</li>
+<li>understanding of all building blocks of the “advanced GLMM framework”, i.e. GLM, random effects, GAM, correlation structures,</li>
+<li>knowledge of standard non-parametric evaluation methods such as parametric and non-parametric bootstrap, cross-validation,</li>
+<li>and the ability to use all of these methods in an applied data analysis.</li>
+</ul>
+<p>This is what we will mainly train in this course. Don’t worry if you think that this sounds too simple. We could spend an entire week to only understand the p-value, no problem. We will still only scratch the surface. But I want to make sure that you get an overview of these topics and are confident enough to run a realistic scientific analysis on your own. Additionally, we will shortly cover advanced topics that lead into the area of machine learning and predictive inference, for example regularization (L1 / L2 penalty), as well as regression trees and the associated methods (e.g. boosting, bagging) as well as model averaging.</p>
+<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>
+
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+
+<a href="reminder.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
