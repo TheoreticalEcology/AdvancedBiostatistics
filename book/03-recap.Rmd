@@ -267,7 +267,7 @@ abline(v = 0, lty = 2)
 
 That shows us that the value 0 is far outside of the set of our observed values for Temp, which is measured in Fahrenheit. Thus, we are extrapolating the Ozone far beyond the observed data. What we can do to avoid this is to simply re-define the x-Axis, by subtracting the mean:
 
-```{r chunk_chapter3_chunk14, echo=TRUE, eval=TRUE}
+```{r, echo=TRUE, eval=TRUE}
 airquality$cTemp = airquality$Temp - mean(airquality$Temp)
 ```
 
