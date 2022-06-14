@@ -2,7 +2,7 @@ preface
 reminder
 your-r-system
 installing-libraries
-operating-with-data-in-r
+representing-data-in-r
 exploring-data-structures
 dynamic-typing
 data-selection-slicing-and-subsetting

@@ -69,7 +69,7 @@ devtools::install_github(repo = "florianhartig/EcoData", subdir = "EcoData",
 
 For your convenience, the EcoData installation also forces the installation of most of the packges needed in this book, so this may take a while. If you want to load only the EcoData package, or if you encounter problems during the install, set `dependencies = F, build_vignettes = F`. 
 
-## Operating With Data in R
+## Representing Data in R
 
 ### Exploring Data Structures
 
@@ -94,7 +94,15 @@ dim(x)
 str(x)
 ```
 
-allow you to explore the structure of variables and the data they contain. Ask yourself, or discuss with your partner(s) - what is the meaning of the three functions, and what is the structure / properties of the following data types in R:
+allow you to explore the structure of variables and the data they contain. 
+
+
+```{=html}
+  <hr/>
+  <strong><span style="color: #0011AA; font-size:25px;">Task</span></strong><br/>
+```
+
+Ask yourself, or discuss with your partner(s) - what is the meaning of the three functions, and what is the structure / properties of the following data types in R:
 
 * Atomic types (which atomic types exist),
 * list,
@@ -107,6 +115,24 @@ Moreover, what is the data type of the iris data set, which is built-in in R und
 
 ```{r chunk_chapter2_6, eval=FALSE}
 iris
+```
+
+```{=html}
+  <details>
+    <summary>
+      <strong><span style="color: #0011AA; font-size:25px;">Solution</span></strong>
+    </summary>
+    <p>
+```
+
+Q1: Atomic types: e.g. numeric, factor, boolean ...; List can have severa tyes, vector not! data.frame is list of vectors. matrix is 2-dim array, array can have any dim, only one type.
+
+Q2: iris, like most simple datasets, is of type data.frame
+
+```{=html}
+    </p>
+  </details>
+  <br/><hr/>
 ```
 
 
@@ -139,10 +165,10 @@ Have a look at what this does to the values in iris$Sepal.Length.
 Note: The actions above operate on a local copy of the iris data set. You don't overwrite the base data and can use it again in a new R session or reset it with `data(iris)`{.R}.
 
 
-### Data Selection, Slicing and Subsetting
+## Data Selection, Slicing and Subsetting
 
 
-#### Subsetting and Slicing for Single Data Types
+### Subsetting and Slicing for Single Data Types
 
 We often want to select only a subset of our data. You can generally subset from data structures using indices and TRUE/FALSE (or T/F).
 Here for a vector:
@@ -179,18 +205,18 @@ The syntax `matrix[1,]`{.R} is also called *slicing*, for obvious reasons.
 Data.frames are the same as matrices, except that, like with lists of vectors, you can also access columns via names as in `data.frame$column`{.R}.
 
 
-#### Logic and Slicing
+### Logic and Slicing
 
 Slicing is very powerful if you combine it with logical operators, such as "&" (logical and), "|" (logical or), "==" (equal), "!=" (not equal), "<=", ">", etc. Here are a few examples:
 
 ```{r chunk_chapter2_13}
-head(iris[iris$Species == "virginica", ], 20)   # Show first 20 entries only.
+head(iris[iris$Species == "virginica", ])   # Show first 20 entries only.
 ```
 
-Note that this is identical to the following:
+Note that this is identical to using the subset command:
 
 ```{r chunk_chapter2_14}
-head(subset(iris, Species == "virginica"), 20)  # Show first 20 entries only.
+head(subset(iris, Species == "virginica"))  # Show first 20 entries only.
 ```
 
 You can also combine several logical commands:
@@ -199,13 +225,10 @@ You can also combine several logical commands:
 iris[iris$Species == "virginica" & iris$Sepal.Length > 7, ]
 ```
 
-Note that this works element-wise!
-
 
 ## Applying Functions and Aggregates Across a Data Set
 
-In this chapter, we discuss the most basic functions in R for calculating means, averages or apply other functions across a data set.
-
+Apart from selecting data, you will often combine or calculate statistics on data.
 
 ### Functions
 
@@ -311,7 +334,6 @@ testFunction(b = 10, c = 20, a = 30)
   <br/><hr/>
 ```
 
-
 ### The apply() Function
 
 Now that we know functions, we can introduce functions that use functions. One of the most important is the apply function. The apply function applies a function of a data structure, typically a matrix or data.frame. 
@@ -413,15 +435,14 @@ Note that `max`{.R}` is the function to get the maximum value, and has nothing t
 
 The dot is general R syntax and usually refers to "use all columns in the data set".
 
-
 ## Plotting
 
-The following two commands are identical:
+I assume that you have already made plots with R. Else [here](https://www.youtube.com/embed/UXeJ1bNYCos) is a super-quick 5-min introduction video. In this course, we will not be using a lot graphics, but it will be useful for you to know the basic plot commands. Note in particular that the following two commands are identical:
 
 * `plot(iris$Sepal.Length, iris$Sepal.Width)`{.R}
 * `plot(Sepal.Width ~ Sepal.Length, data = iris)`{.R}
 
-The second option is preferable, because it allows you to subset data easier.
+The second option is preferable, because it allows you to subset data easier and can be directly copied to regression functions.
 
 ```{r chunk_chapter2_21}
 plot(Sepal.Width ~ Sepal.Length, data = iris[iris$Species == "versicolor", ])
@@ -440,17 +461,11 @@ plot(iris$Sepal.Length, iris$Sepal.Width, col = iris$Species,
      cex = iris$Petal.Length)
 ```
 
-More on plots in R in this short video:
+For more help on plotting, I recommend:
 
-```{r chunk_chapter2_24, eval=knitr::is_html_output(excludes = "epub"), results = 'asis', echo = F}
-cat(
-  '<iframe width="560" height="315"
-  src="https://www.youtube.com/embed/UXeJ1bNYCos"
-  frameborder="0" allow="accelerometer; autoplay; clipboard-write;
-  encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
-  </iframe>'
-)
-```
+* Read ["Fundamentals of Data Visualization" by Claus O. Wilke](https://clauswilke.com/dataviz/) (explains all standard plots and why / when to use them)
+* [Data to Viz](https://www.data-to-viz.com) provides a decision tree for visualizations and links to the [R graph gallery](https://r-graph-gallery.com/index.html)
+
 
 
 ## Additional Resources
