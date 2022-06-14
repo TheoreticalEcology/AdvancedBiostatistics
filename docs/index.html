@@ -4,20 +4,20 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Advanced Biostatistics with R</title>
-  <meta name="description" content="Advanced Biostatistics with R" />
+  <title>Advanced Regression Models with R</title>
+  <meta name="description" content="Advanced Regression with R" />
   <meta name="generator" content="bookdown 0.26 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Advanced Biostatistics with R" />
+  <meta property="og:title" content="Advanced Regression Models with R" />
   <meta property="og:type" content="book" />
   
-  <meta property="og:description" content="Advanced Biostatistics with R" />
+  <meta property="og:description" content="Advanced Regression with R" />
   <meta name="github-repo" content="rstudio/bookdown-demo" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Advanced Biostatistics with R" />
+  <meta name="twitter:title" content="Advanced Regression Models with R" />
   
-  <meta name="twitter:description" content="Advanced Biostatistics with R" />
+  <meta name="twitter:description" content="Advanced Regression with R" />
   
 
 <meta name="author" content="Florian Hartig" />
@@ -161,41 +161,37 @@ code span.wa { color: #bf0303; } /* Warning */
 <li class="chapter" data-level="2.4.1" data-path="reminder.html"><a href="reminder.html#functions"><i class="fa fa-check"></i><b>2.4.1</b> Functions</a></li>
 <li class="chapter" data-level="2.4.2" data-path="reminder.html"><a href="reminder.html#the-apply-function"><i class="fa fa-check"></i><b>2.4.2</b> The apply() Function</a></li>
 <li class="chapter" data-level="2.4.3" data-path="reminder.html"><a href="reminder.html#the-aggregate-function"><i class="fa fa-check"></i><b>2.4.3</b> The aggregate() Function</a></li>
+<li class="chapter" data-level="2.4.4" data-path="reminder.html"><a href="reminder.html#for-loops"><i class="fa fa-check"></i><b>2.4.4</b> For loops</a></li>
 </ul></li>
 <li class="chapter" data-level="2.5" data-path="reminder.html"><a href="reminder.html#plotting"><i class="fa fa-check"></i><b>2.5</b> Plotting</a></li>
-<li class="chapter" data-level="2.6" data-path="reminder.html"><a href="reminder.html#additional-resources"><i class="fa fa-check"></i><b>2.6</b> Additional Resources</a>
-<ul>
-<li class="chapter" data-level="2.6.1" data-path="reminder.html"><a href="reminder.html#books"><i class="fa fa-check"></i><b>2.6.1</b> Books</a></li>
-<li class="chapter" data-level="2.6.2" data-path="reminder.html"><a href="reminder.html#instructional-videos"><i class="fa fa-check"></i><b>2.6.2</b> Instructional Videos</a></li>
 </ul></li>
+<li class="chapter" data-level="3" data-path="understanding_linear_regression.html"><a href="understanding_linear_regression.html"><i class="fa fa-check"></i><b>3</b> Understanding Linear Regression</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="understanding_linear_regression.html"><a href="understanding_linear_regression.html#simple-linear-regression"><i class="fa fa-check"></i><b>3.1</b> Simple Linear Regression</a>
+<ul>
+<li class="chapter" data-level="3.1.1" data-path="understanding_linear_regression.html"><a href="understanding_linear_regression.html#fitting-and-interpreting-the-regression"><i class="fa fa-check"></i><b>3.1.1</b> Fitting and Interpreting the Regression</a></li>
+<li class="chapter" data-level="3.1.2" data-path="understanding_linear_regression.html"><a href="understanding_linear_regression.html#centering-of-predictors"><i class="fa fa-check"></i><b>3.1.2</b> Centering of Predictors</a></li>
+<li class="chapter" data-level="3.1.3" data-path="understanding_linear_regression.html"><a href="understanding_linear_regression.html#residual-checks"><i class="fa fa-check"></i><b>3.1.3</b> Residual Checks</a></li>
+<li class="chapter" data-level="3.1.4" data-path="understanding_linear_regression.html"><a href="understanding_linear_regression.html#categorical-predictors"><i class="fa fa-check"></i><b>3.1.4</b> Categorical Predictors</a></li>
+<li class="chapter" data-level="3.1.5" data-path="understanding_linear_regression.html"><a href="understanding_linear_regression.html#plantTrait1"><i class="fa fa-check"></i><b>3.1.5</b> Exercise: Global Plant Trait Analysis</a></li>
 </ul></li>
-<li class="chapter" data-level="3" data-path="recap.html"><a href="recap.html"><i class="fa fa-check"></i><b>3</b> Understanding Linear Regression</a>
+<li class="chapter" data-level="3.2" data-path="understanding_linear_regression.html"><a href="understanding_linear_regression.html#multiple-regression"><i class="fa fa-check"></i><b>3.2</b> Multiple Regression</a>
 <ul>
-<li class="chapter" data-level="3.1" data-path="recap.html"><a href="recap.html#simple-linear-regression"><i class="fa fa-check"></i><b>3.1</b> Simple Linear Regression</a>
-<ul>
-<li class="chapter" data-level="3.1.1" data-path="recap.html"><a href="recap.html#fitting-and-interpreting-the-regression"><i class="fa fa-check"></i><b>3.1.1</b> Fitting and Interpreting the Regression</a></li>
-<li class="chapter" data-level="3.1.2" data-path="recap.html"><a href="recap.html#centering-of-predictors"><i class="fa fa-check"></i><b>3.1.2</b> Centering of Predictors</a></li>
-<li class="chapter" data-level="3.1.3" data-path="recap.html"><a href="recap.html#residual-checks"><i class="fa fa-check"></i><b>3.1.3</b> Residual Checks</a></li>
-<li class="chapter" data-level="3.1.4" data-path="recap.html"><a href="recap.html#categorical-predictors"><i class="fa fa-check"></i><b>3.1.4</b> Categorical Predictors</a></li>
-<li class="chapter" data-level="3.1.5" data-path="recap.html"><a href="recap.html#plantTrait1"><i class="fa fa-check"></i><b>3.1.5</b> Exercise: Global Plant Trait Analysis</a></li>
+<li class="chapter" data-level="3.2.1" data-path="understanding_linear_regression.html"><a href="understanding_linear_regression.html#getting-started"><i class="fa fa-check"></i><b>3.2.1</b> Getting Started</a></li>
+<li class="chapter" data-level="3.2.2" data-path="understanding_linear_regression.html"><a href="understanding_linear_regression.html#simulating-the-effect-of-collinearity"><i class="fa fa-check"></i><b>3.2.2</b> Simulating the Effect of Collinearity</a></li>
+<li class="chapter" data-level="3.2.3" data-path="understanding_linear_regression.html"><a href="understanding_linear_regression.html#scaling-variables"><i class="fa fa-check"></i><b>3.2.3</b> Scaling Variables</a></li>
+<li class="chapter" data-level="3.2.4" data-path="understanding_linear_regression.html"><a href="understanding_linear_regression.html#anova-for-multiple-regression"><i class="fa fa-check"></i><b>3.2.4</b> ANOVA for Multiple Regression</a></li>
+<li class="chapter" data-level="3.2.5" data-path="understanding_linear_regression.html"><a href="understanding_linear_regression.html#interactions"><i class="fa fa-check"></i><b>3.2.5</b> Interactions</a></li>
+<li class="chapter" data-level="3.2.6" data-path="understanding_linear_regression.html"><a href="understanding_linear_regression.html#plantTrait2"><i class="fa fa-check"></i><b>3.2.6</b> Exercise: Global Plant Trait Analysis #2</a></li>
 </ul></li>
-<li class="chapter" data-level="3.2" data-path="recap.html"><a href="recap.html#multiple-regression"><i class="fa fa-check"></i><b>3.2</b> Multiple Regression</a>
+<li class="chapter" data-level="3.3" data-path="understanding_linear_regression.html"><a href="understanding_linear_regression.html#model-choice-and-causal-inference"><i class="fa fa-check"></i><b>3.3</b> Model Choice and Causal Inference</a>
 <ul>
-<li class="chapter" data-level="3.2.1" data-path="recap.html"><a href="recap.html#getting-started"><i class="fa fa-check"></i><b>3.2.1</b> Getting Started</a></li>
-<li class="chapter" data-level="3.2.2" data-path="recap.html"><a href="recap.html#simulating-the-effect-of-collinearity"><i class="fa fa-check"></i><b>3.2.2</b> Simulating the Effect of Collinearity</a></li>
-<li class="chapter" data-level="3.2.3" data-path="recap.html"><a href="recap.html#scaling-variables"><i class="fa fa-check"></i><b>3.2.3</b> Scaling Variables</a></li>
-<li class="chapter" data-level="3.2.4" data-path="recap.html"><a href="recap.html#anova-for-multiple-regression"><i class="fa fa-check"></i><b>3.2.4</b> ANOVA for Multiple Regression</a></li>
-<li class="chapter" data-level="3.2.5" data-path="recap.html"><a href="recap.html#interactions"><i class="fa fa-check"></i><b>3.2.5</b> Interactions</a></li>
-<li class="chapter" data-level="3.2.6" data-path="recap.html"><a href="recap.html#plantTrait2"><i class="fa fa-check"></i><b>3.2.6</b> Exercise: Global Plant Trait Analysis #2</a></li>
-</ul></li>
-<li class="chapter" data-level="3.3" data-path="recap.html"><a href="recap.html#model-choice-and-causal-inference"><i class="fa fa-check"></i><b>3.3</b> Model Choice and Causal Inference</a>
-<ul>
-<li class="chapter" data-level="3.3.1" data-path="recap.html"><a href="recap.html#the-bias-variance-trade-off"><i class="fa fa-check"></i><b>3.3.1</b> The Bias-Variance Trade-off</a></li>
-<li class="chapter" data-level="3.3.2" data-path="recap.html"><a href="recap.html#causal-inference"><i class="fa fa-check"></i><b>3.3.2</b> Causal Inference</a></li>
-<li class="chapter" data-level="3.3.3" data-path="recap.html"><a href="recap.html#model-selection-methods"><i class="fa fa-check"></i><b>3.3.3</b> Model Selection Methods</a></li>
-<li class="chapter" data-level="3.3.4" data-path="recap.html"><a href="recap.html#pHacking"><i class="fa fa-check"></i><b>3.3.4</b> P-hacking</a></li>
-<li class="chapter" data-level="3.3.5" data-path="recap.html"><a href="recap.html#problems-of-stepwise-model-selection"><i class="fa fa-check"></i><b>3.3.5</b> Problems of Stepwise Model Selection</a></li>
-<li class="chapter" data-level="3.3.6" data-path="recap.html"><a href="recap.html#exercise-global-plant-trait-analysis-3"><i class="fa fa-check"></i><b>3.3.6</b> Exercise: Global Plant Trait Analysis #3</a></li>
+<li class="chapter" data-level="3.3.1" data-path="understanding_linear_regression.html"><a href="understanding_linear_regression.html#the-bias-variance-trade-off"><i class="fa fa-check"></i><b>3.3.1</b> The Bias-Variance Trade-off</a></li>
+<li class="chapter" data-level="3.3.2" data-path="understanding_linear_regression.html"><a href="understanding_linear_regression.html#causal-inference"><i class="fa fa-check"></i><b>3.3.2</b> Causal Inference</a></li>
+<li class="chapter" data-level="3.3.3" data-path="understanding_linear_regression.html"><a href="understanding_linear_regression.html#model-selection-methods"><i class="fa fa-check"></i><b>3.3.3</b> Model Selection Methods</a></li>
+<li class="chapter" data-level="3.3.4" data-path="understanding_linear_regression.html"><a href="understanding_linear_regression.html#pHacking"><i class="fa fa-check"></i><b>3.3.4</b> P-hacking</a></li>
+<li class="chapter" data-level="3.3.5" data-path="understanding_linear_regression.html"><a href="understanding_linear_regression.html#problems-of-stepwise-model-selection"><i class="fa fa-check"></i><b>3.3.5</b> Problems of Stepwise Model Selection</a></li>
+<li class="chapter" data-level="3.3.6" data-path="understanding_linear_regression.html"><a href="understanding_linear_regression.html#exercise-global-plant-trait-analysis-3"><i class="fa fa-check"></i><b>3.3.6</b> Exercise: Global Plant Trait Analysis #3</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="heteroskedasticity.html"><a href="heteroskedasticity.html"><i class="fa fa-check"></i><b>4</b> Heteroskedasticity and Grouped Data (Random Effects)</a>
@@ -264,7 +260,7 @@ code span.wa { color: #bf0303; } /* Warning */
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Advanced Biostatistics with R</a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Advanced Regression Models with R</a>
           </h1>
         </div>
 
@@ -273,7 +269,7 @@ code span.wa { color: #bf0303; } /* Warning */
 
             <section class="normal" id="section-">
 <div id="header">
-<h1 class="title">Advanced Biostatistics with R</h1>
+<h1 class="title">Advanced Regression Models with R</h1>
 <p class="author"><em>Florian Hartig</em></p>
 <p class="date"><em>2022-06-14</em></p>
 </div>
@@ -281,15 +277,16 @@ code span.wa { color: #bf0303; } /* Warning */
 <h1><span class="header-section-number">1</span> Preface<a href="index.html#preface" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <!-- Put this here (right after the first markdown headline) and only here for each document! -->
 <script src="./scripts/multipleChoice.js"></script>
-<p>The aim of this course is to be able to gain a good theoretical and practical understanding of the statistical problem of estimating an effect: We have a response variable and want to understand how this response variable is influenced by a number of other factors. Truly understanding this problem will require mastering a number of skills, in particular:</p>
+<p>The main aim of this course can be put simply: assume we have a response variable and want to understand how this response variable is influenced by a number of other factors. We will typically use a regression model for this task. To be able to perform such an analysis at a quality that is sufficient for a scientific study, you will have to master a number of skills, in particular:</p>
 <ul>
 <li>Understanding of the fundamental statistical indicators in regression analysis (p-value, estimator) and their quality (power, bias, error, coverage),</li>
-<li>good understanding of causal inference in a regression context, and its relation to model selection,</li>
-<li>understanding of all building blocks of the “advanced GLMM framework”, i.e. GLM, random effects, GAM, correlation structures,</li>
-<li>knowledge of standard non-parametric evaluation methods such as parametric and non-parametric bootstrap, cross-validation,</li>
+<li>Understanding what a causal effect means in a regression context, and what this means for experimental design and model selection,</li>
+<li>Knowing all building blocks of the “advanced GLMM framework” that helps us to correctly model our data, e.g. GLMs, random effects, GAMs, correlation structures, …</li>
+<li>Knowledge of standard non-parametric evaluation methods for regression models, such as parametric and non-parametric bootstrap, cross-validation,</li>
 <li>and the ability to use all of these methods in an applied data analysis.</li>
 </ul>
-<p>This is what we will mainly train in this course. Don’t worry if you think that this sounds too simple. We could spend an entire week to only understand the p-value, no problem. We will still only scratch the surface. But I want to make sure that you get an overview of these topics and are confident enough to run a realistic scientific analysis on your own. Additionally, we will shortly cover advanced topics that lead into the area of machine learning and predictive inference, for example regularization (L1 / L2 penalty), as well as regression trees and the associated methods (e.g. boosting, bagging) as well as model averaging.</p>
+<p>This is what we will mainly train in this course. Don’t worry if you think that this sounds too simple. We could spend an entire week to only understand the p-value alone. We will still only scratch the surface. But I want to make sure that you get an overview of these topics and are confident enough to run a realistic scientific analysis on your own.</p>
+<p>This course assumes that have have basic knowledge of statistical methods (tests, regressions, p-value, power, CIs, …) and the ability to apply those in R. In Regensburg, this knowledge would be taught in the Bachelors Biology Lecture “Statistik und Bioinformatik” (lecture notes in German <a href="https://www.dropbox.com/s/nefr3bteve5lym7/GrundlagenDerStatistik.pdf?dl=0">here</a>), and the block course “Introduction to statistics in R”. If you didn’t take those or comparable courses, you should at least try to get some basic understanding of R before proceeding with this book. This <a href="https://www.youtube.com/playlist?list=PLqzoL9-eJTNBDdKgJgJzaQcY6OXmsXAHU">lecture series</a> from MarinStatsLectures could be a good start.</p>
 <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a> Note that some elements of this work (embedded videos, graphics) may be under a seperate licence and are thus not included in this licence. 
 
 </div>

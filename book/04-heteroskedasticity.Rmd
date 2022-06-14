@@ -4,6 +4,8 @@ output:
   bookdown::gitbook:
     highlight: kate
 documentclass: book
+editor_options: 
+  chunk_output_type: console
 ---
 
 
@@ -19,10 +21,11 @@ In this chapter, we check `lm()`{.R} and change the functional for our variance 
 
 ## Warm-up Exercise
 
-The following data set contains information about life satisfaction in Germany, based on the socio-economic panel. 
+The following data set contains information about life satisfaction (lebensz_org) in Germany, based on the socio-economic panel. 
 
 ```{r chunk_chapter4_chunk1, echo=TRUE, eval=FALSE}
-satisf = read.csv(file = "https://www.dropbox.com/s/sggy9b9xb0rekkx/soep_satisfcation.csv?dl=1")
+library(EcoData)
+?soep
 ```
 
 ```{=html}

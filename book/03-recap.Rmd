@@ -9,7 +9,7 @@ editor_options:
 ---
 
 
-# Understanding Linear Regression {#recap}
+# Understanding Linear Regression {#understanding_linear_regression}
 
 ```{=html}
 <!-- Put this here (right after the first markdown headline) and only here for each document! -->
@@ -883,8 +883,8 @@ What we are using here is **Helmert contrasts**, which contrast the second level
 Look at the analysis of plant height data <a href="http://environmentalcomputing.net/linear-regression/" target="_blank" rel="noopener">here</a>. In this example, the authors perform a simple linear regression to answer the question whether height of plant species from around the world depends on temperature at the location of occurrence. Note that "loght" = log(height).
 
 ```{r chunk_chapter3_chunk42, echo=TRUE, eval=TRUE}
-Plant_height = read.csv(file ="https://www.dropbox.com/s/zgf1j59mho66z74/Plant_height.csv?dl=1")
-model = lm(loght ~ temp, data = Plant_height)
+library(EcoData)
+model = lm(loght ~ temp, data = plantHeight)
 ```
 
 The model suggests a significant global trend of plant height increasing with temperature:

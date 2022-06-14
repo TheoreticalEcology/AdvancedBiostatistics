@@ -4,6 +4,8 @@ output:
   bookdown::gitbook:
     highlight: kate
 documentclass: book
+editor_options: 
+  chunk_output_type: console
 ---
 
 
@@ -24,11 +26,17 @@ In this course, we work with the combination of R + RStudio.
 * R is the calculation engine that performs the computations.
 * RStudio is the editor that helps you sending inputs to R and collect outputs.
 
-Make sure you have a recent version of R + RStudio installed on your computer.
+Make sure you have a recent version of R + RStudio installed on your computer. If you have never used RStudio, <a href="https://videocampus.sachsen.de/video/First-steps-with-R-and-RStudio/528e5d164219f2d07e32a51736c3f7d1" target="_blank" rel="noopener">here</a> is an introductory video. 
 
-If you have never used RStudio, <a href="https://videocampus.sachsen.de/video/First-steps-with-R-and-RStudio/528e5d164219f2d07e32a51736c3f7d1" target="_blank" rel="noopener">here</a> is an introductory video.
+### Installing Libraries
 
-For Windows / Mac, R should work out of the box. For other UNIX based systems, may also need to install
+The R engine comes with a number of base functions, but one of the great things about R is that you can extend these base functions by libraries that can be programmed by anyone. In principle, you can install libraries from any website or file. In practice, however, most commonly used libraries are distributed via two major repositories. For statistical methods, this is **CRAN**, and for bioinformatics, this is **Bioconductor**. To install a package from a library, use the command
+
+```{r chunk_chapter2_0, eval=FALSE, purl=FALSE}
+install.packages(LIBRARY)
+```
+
+Exchange "LIBRARY" with the name of the library you want to install. The default is to search the package in CRAN, but you can specify other repositories or file locations in the function. For Windows / Mac, R should work out of the box. For other UNIX based systems, may also need to install
 
 ```{}
 build-essential
@@ -44,21 +52,6 @@ If you are new to installing packages on Debian / Ubuntu, etc., type the followi
 sudo apt update && sudo apt install -y --install-recommends build-essential gfortran libmagick++-dev r-base-dev cmake
 ```
 
-If you use other operating systems, you presumably will be able to install the necessary packages on your own.
-
-
-### Installing Libraries
-
-The R engine comes with a number of base functions, but one of the great things about R is that you can extend these base functions by libraries that can be programmed by anyone. In principle, you can install libraries from any website or file. In practice, however, most commonly used libraries are distributed via two major repositories. For statistical methods, this is **CRAN**, and for bioinformatics, this is **Bioconductor**.
-
-To install a package from a library, use the command
-
-```{r chunk_chapter2_0, eval=FALSE, purl=FALSE}
-install.packages(LIBRARY)
-```
-
-Exchange "LIBRARY" with the name of the library you want to install. The default is to search the package in CRAN, but you can specify other repositories or file locations in the function. 
-
 In this book, we will often use data sets from the `EcoData`{.R} package, which is not on CRAN, but on a GitHub page. To install the package, run:
 
 ```{r chunk_chapter2_2, eval=FALSE}
@@ -73,20 +66,21 @@ For your convenience, the EcoData installation also forces the installation of m
 
 ### Exploring Data Structures
 
-A fundamental requirement for working with data is representing it in a computer. In R, if I type
+A fundamental requirement for working with data is representing it in a computer. In R, we can either read in data (e.g. with functions such as read.table()), or we can assign variables certain values. For example, if I type
 
 ```{r chunk_chapter2_3}
 x <- 1
 ```
 
-the variable x now contains some data, namely the value 1, and I can use x in as a placeholder for the data it contains in further calculations.
-With only minor differences, the more common syntax
+the variable x now contains some data, namely the value 1, and I can use x in as a placeholder for the data it contains in further calculations. 
+
+Alternatively to the <- operator, you can also use = (in all circumstances that you are likely to encounter, it's the same). 
 
 ```{r chunk_chapter2_4}
 x = 1
 ```
 
-does the same. If you have worked with R previously, you should know this already, and you should also know that the commands
+If you have worked with R previously, this should all be familiar to you, and you should also know that the commands
 
 ```{r chunk_chapter2_5, eval=FALSE}
 class(x)
@@ -94,15 +88,14 @@ dim(x)
 str(x)
 ```
 
-allow you to explore the structure of variables and the data they contain. 
-
+allow you to explore the structure of variables and the data they contain. Ask yourself, or discuss with your partner(s):
 
 ```{=html}
   <hr/>
   <strong><span style="color: #0011AA; font-size:25px;">Task</span></strong><br/>
 ```
 
-Ask yourself, or discuss with your partner(s) - what is the meaning of the three functions, and what is the structure / properties of the following data types in R:
+What is the meaning of the three functions, and what is the structure / properties of the following data types in R:
 
 * Atomic types (which atomic types exist),
 * list,
@@ -111,11 +104,6 @@ Ask yourself, or discuss with your partner(s) - what is the meaning of the three
 * matrix,
 * array.
 
-Moreover, what is the data type of the iris data set, which is built-in in R under the name
-
-```{r chunk_chapter2_6, eval=FALSE}
-iris
-```
 
 ```{=html}
   <details>
@@ -125,15 +113,43 @@ iris
     <p>
 ```
 
-Q1: Atomic types: e.g. numeric, factor, boolean ...; List can have severa tyes, vector not! data.frame is list of vectors. matrix is 2-dim array, array can have any dim, only one type.
-
-Q2: iris, like most simple datasets, is of type data.frame
+Atomic types: e.g. numeric, factor, boolean ...; List can have severa tyes, vector not! data.frame is list of vectors. matrix is 2-dim array, array can have any dim, only one type.
 
 ```{=html}
     </p>
   </details>
   <br/><hr/>
 ```
+
+
+```{=html}
+  <hr/>
+  <strong><span style="color: #0011AA; font-size:25px;">Task</span></strong><br/>
+```
+
+What is the data type of the iris data set, which is built-in in R under the name
+
+```{r chunk_chapter2_6, eval=FALSE}
+iris
+```
+
+
+```{=html}
+  <details>
+    <summary>
+      <strong><span style="color: #0011AA; font-size:25px;">Solution</span></strong>
+    </summary>
+    <p>
+```
+
+Iris, like most simple datasets, is of type data.frame
+
+```{=html}
+    </p>
+  </details>
+  <br/><hr/>
+```
+
 
 
 ### Dynamic Typing
@@ -163,7 +179,6 @@ iris$Sepal.Length = as.numeric(iris$Sepal.Length)
 Have a look at what this does to the values in iris$Sepal.Length.
 
 Note: The actions above operate on a local copy of the iris data set. You don't overwrite the base data and can use it again in a new R session or reset it with `data(iris)`{.R}.
-
 
 ## Data Selection, Slicing and Subsetting
 
@@ -435,6 +450,37 @@ Note that `max`{.R}` is the function to get the maximum value, and has nothing t
 
 The dot is general R syntax and usually refers to "use all columns in the data set".
 
+### For loops
+
+Apply and aggregate are convenience function for a far more general concept that exists in all programming language, which is the for loop. In R, a for loop look like this:
+
+```{r, eval = F}
+for (i in 1:10){
+  #doSomething
+}
+```
+
+and if it is executed, it will excecute 10 times the main block in the curly brackes, while counting the index variable i from 1:10. To demonstrate this, let's execute a shorter for lool, going from 1:3, and printing i
+
+```{r}
+for (i in 1:3){
+  print(i)
+}
+```
+
+For loops are very useful when you want to execute the same task many times. This can be for plotting, but also for data manipulation. For example, if I would like to re-programm the apply function with a for loop, it would look like that:
+
+```{r}
+apply(iris[,1:4], 2, mean, na.rm = T)
+
+out = rep(NA, 4)
+for (i in 1:4){
+  out[i] = mean(iris[,i])
+}
+out
+```
+
+
 ## Plotting
 
 I assume that you have already made plots with R. Else [here](https://www.youtube.com/embed/UXeJ1bNYCos) is a super-quick 5-min introduction video. In this course, we will not be using a lot graphics, but it will be useful for you to know the basic plot commands. Note in particular that the following two commands are identical:
@@ -465,45 +511,4 @@ For more help on plotting, I recommend:
 
 * Read ["Fundamentals of Data Visualization" by Claus O. Wilke](https://clauswilke.com/dataviz/) (explains all standard plots and why / when to use them)
 * [Data to Viz](https://www.data-to-viz.com) provides a decision tree for visualizations and links to the [R graph gallery](https://r-graph-gallery.com/index.html)
-
-
-
-## Additional Resources
-
-As additional R resources for self-study, I recommend:
-
-
-### Books
-
-* The PDF <a href="https://cran.r-project.org/doc/manuals/R-intro.pdf" target="_blank" rel="noopener">An introduction to R</a>.
-* <a href="http://faculty.marshall.usc.edu/gareth-james/" target="_blank" rel="noopener">An Introduction to Statistical Learning</a> - A simplified version version of a classic machine learning textbook, free PDF for download.
-* <a href="https://www.statmethods.net/" target="_blank" rel="noopener">Quick R</a> - Good site as a reference with code examples for most standard tasks.
-* Ebook <a href="https://rstudio-education.github.io/hopr/" target="_blank" rel="noopener">Hands on Programming with R</a>.
-
-
-### Instructional Videos
-
-* YouTube - R Programming Tutorial - Learn the Basics of Statistical Computing (approx 2h, goes through most basics).
-
-```{r chunk_chapter2_25, eval=knitr::is_html_output(excludes = "epub"), results = 'asis', echo = F}
-cat(
-  '<iframe width="560" height="315"
-  src="https://www.youtube.com/embed/_V8eKsto3Ug" title="YouTube video player"
-  frameborder="0" allow="accelerometer; autoplay; clipboard-write;
-  encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
-  </iframe>'
-)
-```
-
-* YouTube - Statistics with R, Tutorials by MarinStatsLectures - Lots of smaller videos for particular topics. 
-
-```{r chunk_chapter2_26, eval=knitr::is_html_output(excludes = "epub"), results = 'asis', echo = F}
-cat(
-  '<iframe width="560" height="315"
-  src="https://www.youtube.com/embed/riONFzJdXcs?list=PLqzoL9-eJTNBDdKgJgJzaQcY6OXmsXAHU"
-  frameborder="0" allow="accelerometer; autoplay; clipboard-write;
-  encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
-  </iframe>'
-)
-```
 

@@ -1,5 +1,5 @@
 --- 
-title: "Advanced Biostatistics with R"
+title: "Advanced Regression Models with R"
 author: "Florian Hartig"
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
@@ -11,7 +11,7 @@ bibliography: ["packages.bib", "literature.bib"]
 biblio-style: "apalike"
 link-citations: yes
 github-repo: rstudio/bookdown-demo
-description: "Advanced Biostatistics with R"
+description: "Advanced Regression with R"
 ---
 
 
@@ -31,15 +31,17 @@ knitr::opts_chunk$set(cache = TRUE)
 set.seed(123)
 ``` 
 
-The aim of this course is to be able to gain a good theoretical and practical understanding of the statistical problem of estimating an effect: We have a response variable and want to understand how this response variable is influenced by a number of other factors. Truly understanding this problem will require mastering a number of skills, in particular: 
+The main aim of this course can be put simply: assume we have a response variable and want to understand how this response variable is influenced by a number of other factors. We will typically use a regression model for this task. To be able to perform such an analysis at a quality that is sufficient for a scientific study, you will have to master a number of skills, in particular: 
 
 * Understanding of the fundamental statistical indicators in regression analysis (p-value, estimator) and their quality (power, bias, error, coverage),
-* good understanding of causal inference in a regression context, and its relation to model selection,
-* understanding of all building blocks of the "advanced GLMM framework", i.e. GLM, random effects, GAM, correlation structures,
-* knowledge of standard non-parametric evaluation methods such as parametric and non-parametric bootstrap, cross-validation,
+* Understanding what a causal effect means in a regression context, and what this means for experimental design and model selection,
+* Knowing all building blocks of the "advanced GLMM framework" that helps us to correctly model our data, e.g. GLMs, random effects, GAMs, correlation structures, ...
+* Knowledge of standard non-parametric evaluation methods for regression models, such as parametric and non-parametric bootstrap, cross-validation,
 * and the ability to use all of these methods in an applied data analysis. 
 
-This is what we will mainly train in this course. Don't worry if you think that this sounds too simple. We could spend an entire week to only understand the p-value, no problem. We will still only scratch the surface. But I want to make sure that you get an overview of these topics and are confident enough to run a realistic scientific analysis on your own. Additionally, we will shortly cover advanced topics that lead into the area of machine learning and predictive inference, for example regularization (L1 / L2 penalty), as well as regression trees and the associated methods (e.g. boosting, bagging) as well as model averaging.
+This is what we will mainly train in this course. Don't worry if you think that this sounds too simple. We could spend an entire week to only understand the p-value alone. We will still only scratch the surface. But I want to make sure that you get an overview of these topics and are confident enough to run a realistic scientific analysis on your own. 
+
+This course assumes that have have basic knowledge of statistical methods (tests, regressions, p-value, power, CIs, ...) and the ability to apply those in R. In Regensburg, this knowledge would be taught in the Bachelors Biology Lecture "Statistik und Bioinformatik" (lecture notes in German  [here](https://www.dropbox.com/s/nefr3bteve5lym7/GrundlagenDerStatistik.pdf?dl=0)), and the block course "Introduction to statistics in R". If you didn't take those or comparable courses, you should at least try to get some basic understanding of R before proceeding with this book. This [lecture series](https://www.youtube.com/playlist?list=PLqzoL9-eJTNBDdKgJgJzaQcY6OXmsXAHU) from MarinStatsLectures could be a good start. 
 
 ```{=html}
 <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a> Note that some elements of this work (embedded videos, graphics) may be under a seperate licence and are thus not included in this licence. 

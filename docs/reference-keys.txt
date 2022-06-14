@@ -12,11 +12,9 @@ applying-functions-and-aggregates-across-a-data-set
 functions
 the-apply-function
 the-aggregate-function
+for-loops
 plotting
-additional-resources
-books
-instructional-videos
-recap
+understanding_linear_regression
 simple-linear-regression
 fitting-and-interpreting-the-regression
 centering-of-predictors
