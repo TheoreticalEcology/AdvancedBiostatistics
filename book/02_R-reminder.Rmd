@@ -55,9 +55,9 @@ sudo apt update && sudo apt install -y --install-recommends build-essential gfor
 In this book, we will often use data sets from the `EcoData`{.R} package, which is not on CRAN, but on a GitHub page. To install the package, run:
 
 ```{r chunk_chapter2_2, eval=FALSE}
-# install.packages("devtools") # if you don't have the devtools package installed
-devtools::install_github(repo = "florianhartig/EcoData", subdir = "EcoData",
-                         dependencies = TRUE, build_vignettes = TRUE)
+# install.packages("devtools")  # If you don't have the devtools package installed,
+devtools::install_github(repo = "TheoreticalEcology/EcoData",
+                         dependencies = T, build_vignettes = T)
 ```
 
 For your convenience, the EcoData installation also forces the installation of most of the packges needed in this book, so this may take a while. If you want to load only the EcoData package, or if you encounter problems during the install, set `dependencies = F, build_vignettes = F`. 

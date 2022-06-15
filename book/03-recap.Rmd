@@ -884,6 +884,7 @@ Look at the analysis of plant height data <a href="http://environmentalcomputing
 
 ```{r chunk_chapter3_chunk42, echo=TRUE, eval=TRUE}
 library(EcoData)
+
 model = lm(loght ~ temp, data = plantHeight)
 ```
 
