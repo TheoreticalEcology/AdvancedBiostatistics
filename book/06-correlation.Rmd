@@ -61,10 +61,9 @@ Unfortunately, the distinction between a larger trend and a correlation is quite
 
 ***Temporal correlation***
 
-As our first example, I look at the hurricane study from yesterday, which is, after all, temporal data. This data set is located in `EcoData`{.R}.
+As our first example, I look at the hurricane study from yesterday, which is, after all, temporal data. This data set is located in `DHARMa`{.R}.
 
 ```{r chunk_chapter6_chunk1, echo=TRUE, eval=TRUE}
-library(EcoData)
 library(glmmTMB)
 library(DHARMa)
 

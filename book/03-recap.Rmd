@@ -731,6 +731,7 @@ Look at the plantHeight dataset in Ecodata. Let's assume we want to analyze whet
 
 ```{r chunk_chapter3_chunk42, echo=TRUE, eval=TRUE}
 library(EcoData)
+
 model = lm(loght ~ temp, data = plantHeight)
 summary(model)
 ```
