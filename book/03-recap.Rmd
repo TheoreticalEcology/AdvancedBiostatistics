@@ -31,7 +31,7 @@ summary(lm(Ozone ~ Wind + Temp, data = airquality))
 summary(lm(Ozone ~ Wind * Temp, data = airquality))
 ```
 
-Why does the effect of Wind on Ozone change each time we change the formula? What is the "true" or correct estimate of the effect of Wind on Ozone? At the end of this chapter, you should be able to answer all these questions!
+Why does the effect of Wind on Ozone change so much as we change the formula? What is the "true" or correct estimate of the effect of Wind on Ozone? At the end of this chapter, you should be able to answer all these questions!
 
 
 ## Simple Linear Regression
@@ -130,7 +130,7 @@ abline(fit)
 
 **Slope and Intercept**
 
-The most common case will be a model with slope and intercept which is probably corresponds most with our visual assessment. This time, we show the full regression table, so that we can also discuss the other outputs.
+The most common case will be a model with slope and intercept which is probably corresponds most with our visual assessment.
 
 ```{r chunk_chapter3_chunk12, echo=TRUE, eval=TRUE}
 fit = lm(Ozone ~ Wind, data = airquality)
@@ -138,6 +138,8 @@ plot(Ozone ~ Wind, data = airquality)
 abline(fit)
 summary(fit)
 ```
+
+This time, we want to look in full at the regression table. Recall that:
 
 -   "**Call**" repeats the regression formula.
 -   "**Residuals**" gives you an indication about how far the observed data scatters around the fitted regression line / function.
@@ -240,7 +242,7 @@ Solar.R seems to have a positive effect of Ozone and this effect is significant.
 ```
 
 
-### Centering of Predictors
+### Centering and Scaling of Predictors
 
 In the last model
 
@@ -265,7 +267,7 @@ abline(h = 0, lty = 2)
 abline(v = 0, lty = 2)
 ```
 
-That shows us that the value 0 is far outside of the set of our observed values for Temp, which is measured in Fahrenheit. Thus, we are extrapolating the Ozone far beyond the observed data. What we can do to avoid this is to simply re-define the x-Axis, by subtracting the mean:
+That shows us that the value 0 is far outside of the set of our observed values for Temp, which is measured in Fahrenheit. Thus, we are extrapolating the Ozone far beyond the observed data. What we can do to avoid this is to simply re-define the x-Axis, by subtracting the mean, which is called **centering**:
 
 ```{r, echo=TRUE, eval=TRUE}
 airquality$cTemp = airquality$Temp - mean(airquality$Temp)
@@ -292,21 +294,29 @@ abline(fit)
 abline(v = 0, lty = 2)
 ```
 
-Note that the intercept of the centered variable will typically be very similar to the grand mean\
-`lm(Ozone ~ 1, data = airquality)')`{.R}. Furthermore, when all (centered) predictors are at their average values, the centered variables are 0. Accordingly, the intercept can be interpreted as the predicted y value when the predictors are at their average values instead of being zero.
+When we center, the intercept of the centered variable can be interpreted as the Ozone concentrate at the mean temperature. This value will also typically be very similar to the grand mean `mean(airquality$Ozone)`. 
 
-```{r chunk_chapter3_chunk20, echo=TRUE, eval=TRUE}
-mean(airquality$Temp) # = 77.88235.
-mean(airquality$cTemp)  # = 0, regarding rounding errors.
-coef(fit)
+Another very common transformation is to divide the x axis by its standard deviation. This is called **scaling**.
+
+```{r, echo=TRUE, eval=TRUE}
+airquality$sTemp = airquality$Temp / sd(airquality$Temp)
 ```
+
+Fitting the model with the scaled variable mainly changes the estimate of the regression slope
+
+```{r echo=TRUE, eval=TRUE}
+fit = lm(Ozone ~ sTemp, data = airquality)
+summary(fit)
+```
+
+which is now around 23 (before it was 2.4). The difference in interpretation is the following: for the unscaled variable, we estimate the effect of 1 unit change of temperature on Ozone. For the scaled variable, we estimate the effect of a temperature change of 1 sd of the temperature values, so we can interpret this as an Ozone effect scaled to typical temperature differences in the data.
 
 ```{=html}
   <hr/>
   <strong><span style="color: #0011AA; font-size:25px;">Task</span></strong><br/>
 ```
 
-Define new variables through linear transformations, meaning that you *either* subtract / add something to the variable, *or* multiply / divide the variable by a certain value. Understand how this changes the regression's estimates.
+Have a look at the results below, where we apply linear transformations on a variable (linear = *either* subtract / add something to the variable, *or* multiply / divide the variable by a certain value). How does the transformation change the regression's estimates?
 
 ```{=html}
   <details>
@@ -316,51 +326,44 @@ Define new variables through linear transformations, meaning that you *either* s
     <p>
 ```
 
+Original model
+
 ```{r chunk_chapter3_task_2, message=FALSE, warning=FALSE}
 fit = lm(Ozone ~ Temp, data = airquality)
+summary(fit)
 plot(Ozone ~ Temp, data = airquality, main = "Standard")
 abline(fit)
 ```
 
+Additive transformation change the intercept value, all p-values, CIs stay the same (except for the intercept, as the test changes)
+
 ```{r chunk_chapter3_task_3, message=FALSE, warning=FALSE}
 airquality$TempAdd = airquality$Temp + 10
 fit = lm(Ozone ~ TempAdd, data = airquality)
+summary(fit)
 plot(Ozone ~ TempAdd, data = airquality, main = "Addition + 10")
 abline(fit)
-
-airquality$TempAdd = airquality$Temp - 10
-fit = lm(Ozone ~ TempAdd, data = airquality)
-plot(Ozone ~ TempAdd, data = airquality, main = "Addition - 10")
-abline(fit)
 ```
+
+Multiplicative transformations change the slope value, p-values and relative CIs for intercept and slope stay the same. 
 
 ```{r chunk_chapter3_task_4, message=FALSE, warning=FALSE}
 airquality$TempMult = airquality$Temp * 10
 fit = lm(Ozone ~ TempMult, data = airquality)
+summary(fit)
 plot(Ozone ~ TempMult, data = airquality, main = "Multiplication * 10")
-abline(fit)
-
-airquality$TempMult = airquality$Temp * 0.1
-fit = lm(Ozone ~ TempMult, data = airquality)
-plot(Ozone ~ TempMult, data = airquality, main = "Multiplication * 0.1")
 abline(fit)
 ```
 
-By performing simple linear transformations, you effectively only transform the x axis without doing something else. Even combinations behave the same:
+Combinations of both have both effects together
 
 ```{r chunk_chapter3_task_5, message=FALSE, warning=FALSE}
 airquality$TempMix = airquality$Temp * 0.1 - 10
 fit = lm(Ozone ~ TempMix, data = airquality)
-plot(Ozone ~ TempMix, data = airquality, main = "Mixed")
-abline(fit)
-
-airquality$TempMix = airquality$Temp * 10 + 10
-fit = lm(Ozone ~ TempMix, data = airquality)
+summary(fit)
 plot(Ozone ~ TempMix, data = airquality, main = "Mixed")
 abline(fit)
 ```
-
-This does in general not hold for transformations dependent on ${x}_{i}$!
 
 ```{=html}
     </p>
@@ -368,21 +371,23 @@ This does in general not hold for transformations dependent on ${x}_{i}$!
   <br/>
 ```
 
+
 ```{=html}
   <hr/>
   <strong><span style="color: #0011AA; font-size:25px;">Pro Task</span></strong><br/>
 ```
 
-Why do the confidence intervals (Std. Error) in the two models (centered and uncentered) differ? Do we fit different models? To get an idea, look at the standard effect plots, then run
+Look at the centered and uncentered regression models
 
-```{r chunk_chapter3_task_6, message=FALSE, warning=FALSE, eval=FALSE}
-# Set the boundary and step size for x-axis, resp. x-ticks for effects plots:
-preList = list(cTemp = seq(-10, 110, 1))
+```{r chunk_chapter3_task_6, message=FALSE, warning=FALSE, eval=TRUE}
+fit1 = lm(Ozone ~ Temp, data = airquality)
+summary(fit1)
 
-plot(Effect("cTemp", fit,  xlevels = preList))
+fit2 = lm(Ozone ~ cTemp, data = airquality)
+summary(fit2)
 ```
 
-(mind the library `effects`.{R}) and compare `vcov(fit)`{.R} (calculates variance-covariance matrix) for both models.
+Why do the confidence intervals (Std. Error) on the intercept in the two models (centered and uncentered) differ? To get an idea, look at the effect plots (library effects) for the model. You can also run compare `vcov(fit)`{.R} (calculates variance-covariance matrix) for both models.
 
 ```{=html}
   <details>
@@ -395,61 +400,15 @@ plot(Effect("cTemp", fit,  xlevels = preList))
 ```{r chunk_chapter3_task_7, message=FALSE, warning=FALSE}
 library(effects)
 
-fit1 = lm(Ozone ~ Temp, data = airquality)
-summary(fit1)
-
-fit2 = lm(Ozone ~ cTemp, data = airquality)
-summary(fit2)
-
-vcov(fit1)
-vcov(fit2)
-
-plot(Ozone ~ Temp, data = airquality, xlim = c(-50, 110), ylim = c(-100, 170))
-abline(fit1)
-
-plot(Ozone ~ cTemp, data = airquality, xlim = c(-50, 110), ylim = c(-100, 170))
-abline(fit2)
-
 preList = list(Temp = seq(-10, 110, 1))
 plot(effect("Temp", fit1,  xlevels = preList), main = "Standard")
 
 preList = list(cTemp = seq(-10, 110, 1))
 plot(effect("cTemp", fit2,  xlevels = preList), main = "Centered")
-```
 
-At $\bar{x}$, the estimated function value using the ordinary least squares method (concerning an intercept that is not fixed at 0) is $\bar{y}$, so the regression line goes through $\left(\bar{x}, \bar{y}\right)$ by definition. By centering the $x$ values: $\hat{x} = x - \bar{x}$, one shifts this to $\left( 0, \bar{y}\right)$. At $\bar{x}$, resp. centered 0, one has the most certain information about where the regression line lies. You also see, that, in the centered version, one has several data points around 0 (in the uncentered version, they are around $\bar{x}$). Furthermore, you know the exact position of $\bar{y}$ at $\bar{x}$ resp. 0. But mind, this does not hold for the slope! Centering $x$ does not change anything concerning the slope of the regression line.
+vcov(fit1)
+vcov(fit2)
 
-Though we fit different models, they inherently are the same. Mind here, that predicting new values implies shifting $\hat{x}$ back to the original position: $\operatorname{f}(x) = \hat{\operatorname{f}}\left( \hat{x} + \bar{x} \right)$. Thus, simply shifting data after collection does not decrease your uncertainity at any shifted position (for example shifted by $- \bar{x}$). If you want to have this effect, you must center your data at collection, for example by defining a reasonable neutral point.
-
-The formula for the standard error of the intercept at an arbitrary position $\tilde{x}$ is:
-$$\displaystyle {\sigma} \sqrt{\frac{1}{n} + \frac{{\left( \tilde{x} - {\bar{x}} \right)}^{2}}{\displaystyle \sum_{i = 1}^{n}{{\left( {x}_{i} - \bar{x} \right)}^{2}}}}$$
-with $\sigma$ denoting the standard deviation of the residuals of the regression line and ${x}_{i}$ denoting the known data points for construction of the regression line.
-Hence, you can easily see what happens when you center your data.
-
-
-Furthermore, when increasing the amount ($n$) of data for calculation of the regression line, uncertainity also decreases and vice versa:
-
-```{r chunk_chapter3_task_8, message=FALSE, warning=FALSE}
-# Using just half of the data:
-fit3 = lm(Ozone ~ Temp, data = airquality[1:(nrow(airquality)/2),])
-fit4 = lm(Ozone ~ cTemp, data = airquality[1:(nrow(airquality)/2),])
-
-vcov(fit1)  # Temp, 100% data.
-vcov(fit3)  # Temp, 50% data.
-vcov(fit2)  # cTemp, 100% data.
-vcov(fit4)  # cTemp, 50% data.
-
-preList = list(Temp = seq(-10, 110, 1))
-plot(effect("Temp", fit1,  xlevels = preList), main = "Uncentered, 100% data")
-
-preList = list(Temp = seq(-10, 110, 1))
-plot(effect("Temp", fit3,  xlevels = preList), main = "Uncentered, 50% data")
-
-preList = list(cTemp = seq(-10, 110, 1))
-plot(effect("cTemp", fit2,  xlevels = preList), main = "Centered, 100% data")
-
-preList = list(cTemp = seq(-10, 110, 1))
-plot(effect("cTemp", fit4,  xlevels = preList), main = "Centered, 50% data")
 ```
 
 ```{=html}
@@ -458,63 +417,19 @@ plot(effect("cTemp", fit4,  xlevels = preList), main = "Centered, 50% data")
   <br/>
 ```
 
+Solution: both centered and uncentered inherently fit the same model, but uncertainty of the intercept for the uncentered model is higher, because this is wide outside the data area, thus we are extrapolating. 
+
 ```{=html}
   <hr/>
   <strong><span style="color: #0011AA; font-size:25px;">Task</span></strong><br/>
 ```
 
-How about multiplicative changes?
-
-```{=html}
-  <details>
-    <summary>
-      <strong><span style="color: #0011AA; font-size:25px;">Solution</span></strong>
-    </summary>
-    <p>
-```
-
-```{r chunk_chapter3_task_9, message=FALSE, warning=FALSE}
-library(effects)
-
-airquality$mTemp10 = airquality$Temp * 10
-airquality$mTemp01 = airquality$Temp * 0.1
-
-fit5 = lm(Ozone ~ mTemp10, data = airquality)
-summary(fit5)
-
-fit6 = lm(Ozone ~ mTemp01, data = airquality)
-summary(fit6)
-
-vcov(fit1)
-vcov(fit5)
-vcov(fit6)
-
-preList = list(Temp = seq(-10, 1100, 1))
-plot(effect("Temp", fit1,  xlevels = preList), main = "Standard")
-
-preList = list(mTemp10 = seq(-10, 1100, 10))
-plot(effect("mTemp10", fit5,  xlevels = preList), main = "Multiplication * 10")
-
-preList = list(mTemp01 = seq(-10, 1100, 10))
-plot(effect("mTemp01", fit6,  xlevels = preList), main = "Multiplication * 0.1")
-```
-
-Looking at $\displaystyle {\sigma} \sqrt{\frac{1}{n} + \frac{{\left( \tilde{x} - {\bar{x}} \right)}^{2}}{\displaystyle \sum_{i = 1}^{n}{{\left( {x}_{i} - \bar{x} \right)}^{2}}}}$ explains this behavior.
-
-```{=html}
-    </p>
-  </details>
-  <br/><hr/>
-```
-
 
 ### Residual Checks
 
-Now we fitted a model. But does it even fit to the data? Let's take the slope only model  
-`lm(Ozone ~ Wind - 1, data = airquality)`{.R}, where we assumed that the regression line should go through (0, 0). Maybe we have good reasons to think that this should be the case biologically, but our data seem to suggest a different behavior.  
-So, the question is: do the model assumptions `lm(Ozone ~ Wind - 1)`{.R} even fit to our data?
+So far, we fitted a regression model, but we didn't check if the model assumptions fit to the data. Actually, in quite a few examples above we actually saw quite bad fits. For example, let's take the slope only model `lm(Ozone ~ Wind - 1, data = airquality)`{.R}, where we assumed that the regression line should go through (0, 0). Maybe we have good reasons to think that this should be the case biologically, but our data seem to suggest a different behavior. 
 
-With a bit of experience, you can already see with a simple prediction plot overlaid with the data that this is not the case. It seems the model systematically underpredicts Ozone for low Wind, and overpredicts for high Wind.
+Wht about the slope and intercept model? Also here, if we plot the predicitons, it seems the model systematically underpredicts Ozone for low Wind, and overpredicts for high Wind.
 
 ```{r chunk_chapter3_chunk21, echo=TRUE, eval=TRUE}
 fit = lm(Ozone ~ cTemp, data = airquality)
@@ -522,11 +437,10 @@ plot(Ozone ~ cTemp, data = airquality)
 abline(fit)
 ```
 
-We can see this a bit nicer if we use the `effects`.{R} package, which we will use from now on for doing result plots for regression models.
+We can see this a bit better if we use the `effects`.{R} package, which we will use from now on for doing result plots for regression models.
 
 ```{r chunk_chapter3_chunk22, echo=TRUE, eval=TRUE}
 library(effects)
-
 plot(allEffects(fit, partial.residuals = T))
 ```
 
@@ -605,93 +519,34 @@ Annotation: In the picture above, you can see, that the 95% confidence interval 
     <p>
 ```
 
+Possible solution, adding a quadratic predictor and chosing a power of 0.35 transformation based on the boxcox function:
+
 ```{r chunk_chapter3_task_11, message=FALSE, warning=FALSE}
-fit = lm(Ozone ~ Wind + I(Wind^2), data = airquality)
-plot(allEffects(fit, partial.residuals = T), selection = 1) # Plot only 1 picture.
-boxcox(fit)
-plot(fit)
+fit1 = lm(Ozone^0.35 ~ Wind + I(Wind^2), data = airquality)
+plot(allEffects(fit1, partial.residuals = T), selection = 1)
 ```
 
-Tolerable fit but still slightly poor diagnosis plots.
-
-```{=html}
-  <hr/>
-```
-
-```{r chunk_chapter3_task_12, message=FALSE, warning=FALSE}
-fit = lm(Ozone^0.35 ~ Wind + I(Wind^2), data = airquality)
-plot(allEffects(fit, partial.residuals = T), selection = 1)
-boxcox(fit)
-par(mfrow = c(2, 2))
-plot(fit)
-```
-
-Slightly better fit, especially in the middle of the data. Better diagnosis plots. No perfect result, but definitely OK. Mind the few data points at the borders, especially to the right. This might explain the discrepancy between the decent fit amid the data and the worse fit at higher values.
-
-Note that now (Ozone^0.35), 1 is in the 95% confidence interval, actually near the middle of the interval. Ozone doesn't need to be transformed more, at least according to the Box-Cox transformation.
-
-
-
-***I consider this as the best fit in this solution.***
-
-```{=html}
-  <hr/>
-```
-
-```{r chunk_chapter3_task_13, message=FALSE, warning=FALSE}
-fit = lm(Ozone^0.35 ~ Wind + I(Wind^2) + I(Wind^3), data = airquality)
-plot(allEffects(fit, partial.residuals = T), selection = 1)
-boxcox(fit)
-par(mfrow = c(2, 2))
-plot(fit)
-```
-
-Slightly better fit to the data, but the diagnosis plots are beginning to get worse.
-
-```{=html}
-  <hr/>
-```
-
-```{r chunk_chapter3_task_14, message=FALSE, warning=FALSE}
-fit = lm(Ozone^0.35 ~ Wind + I(Wind^2) + I(Wind^3) + I(Wind^4), data = airquality)
-plot(allEffects(fit, partial.residuals = T), selection = 1)
-boxcox(fit)
-par(mfrow = c(2, 2))
-plot(fit)
-```
-
-Even better fit and good diagnosis plots, bit already high model complexity and worsening leverage.
-
-```{=html}
-  <hr/>
-```
-
-```{r chunk_chapter3_task_15, message=FALSE, warning=FALSE}
-fit = lm(Ozone^0.35 ~ Wind + I(Wind^2) + I(Wind^3) + I(Wind^4) +
-           I(Wind^5), data = airquality)
-plot(allEffects(fit, partial.residuals = T), selection = 1)
-boxcox(fit)
-par(mfrow = c(2, 2))
-plot(fit)
-```
-
-As you can see, the higher the complexity of the model, the better it fits the particular data points but the less it can predict the data resp. it does not learn the underlying structure any more, but simply adopts as best as possible to the available data. This is a case of *overfitting*!
-Note the overshooting of the regression line which is a common property of higher grade polynomials.
-
-```{=html}
-  <hr/>
-```
+You could get even better fit by adding more and more predictors, as we will discuss on the section on model selection, this model probably overfits:
 
 ```{r chunk_chapter3_task_16, message=FALSE, warning=FALSE}
-fit = lm(Ozone^0.35 ~ Wind + I(Wind^2) + I(Wind^3) + I(Wind^4) + I(Wind^5) +
+fit2 = lm(Ozone^0.35 ~ Wind + I(Wind^2) + I(Wind^3) + I(Wind^4) + I(Wind^5) +
            I(Wind^6) + I(Wind^7) + I(Wind^8), data = airquality)
-plot(allEffects(fit, partial.residuals = T), selection = 1)
-boxcox(fit)
-par(mfrow = c(2, 2))
-plot(fit)
+plot(allEffects(fit2, partial.residuals = T), selection = 1)
 ```
 
-Yet outliers at the border are perfectly fitted.
+We can see this by looking at common model selection indicators (again, more in the section on model selection). AIC comparison (lower = better)
+
+```{r}
+AIC(fit1)
+AIC(fit2) 
+```
+
+Likelihood ratio test (is there evidence for the more complex model?)
+
+```{r}
+anova(fit1, fit2)
+```
+
 
 ```{=html}
     </p>
@@ -707,7 +562,6 @@ The `lm()`{.R} function can handle both numerical and categorical variables. To 
 ```{r chunk_chapter3_chunk27, echo=TRUE, eval=TRUE}
 boxplot(weight ~ group, data = PlantGrowth)
 ```
-
 
 
 ***A basic lm()***
@@ -743,21 +597,16 @@ We see that trt1 is the first level (you can also see this if checking `levels()
 
 ```{r chunk_chapter3_chunk31, echo=TRUE, eval=TRUE}
 fit = lm(weight ~ group2, data = PlantGrowth)
-```
-
-And this is the result:
-
-```{r chunk_chapter3_chunk32, echo=FALSE, eval=TRUE}
 summary(fit)
 ```
 
 Weird, now suddenly we have a significant difference between the groups. Wasn't the group difference not significant before? What's the difference?
 
-The answer is that we are still fitting the totally same model, and if you would do a `plot(allEffects(fit))`{.R} for the first and second model, it would look the same. However, as the p-values in the regression table always compare against the reference, we now do a comparison (ctr1 vs ctr2) that we didn't do before, and this comparison is significant.
+The answer is that we are still fitting the identical regression model, and if you would do a `plot(allEffects(fit))`{.R} for the first and second model, it would look the same. However, as the p-values in the regression table always compare against the reference, we now do a comparison (ctr1 vs ctr2) that we didn't do before, and this comparison is significant.
+
 So, if the ordering influences what levels are compared (technically, we call this **contrasts**, see below), how can we deal with the problem that the order influences which factors are compared. There are three answers for this:
 
 First, in many cases, the scientific question / experimental design determines which factor level should be first. In this case, the original reference was ctrl. This clearly stands for control. So, we have a special treatment here (control), and we are probably interested in the contrast between control and the treatments, but not between the different treatments. In this case, we are probably fine.
-
 
 
 ***ANOVA (Analysis of Variance)***
@@ -781,8 +630,6 @@ To interpret this, recall that in a nutshell, the ANOVA starts with a base model
 * If this increase of model fit is significant.
 
 In this case, we can conclude that the variable group (3 levels) significantly improves model fit, i.e. the group seems to have an overall effect, even though the individual contrasts in the original model where not significant.
-
-
 
 ***Post-Hoc Tests***
 
@@ -880,18 +727,15 @@ What we are using here is **Helmert contrasts**, which contrast the second level
 
 ### Exercise: Global Plant Trait Analysis {#plantTrait1}
 
-Look at the analysis of plant height data <a href="http://environmentalcomputing.net/linear-regression/" target="_blank" rel="noopener">here</a>. In this example, the authors perform a simple linear regression to answer the question whether height of plant species from around the world depends on temperature at the location of occurrence. Note that "loght" = log(height).
+Look at the plantHeight dataset in Ecodata. Let's assume we want to analyze whether height of plant species from around the world depends on temperature at the location of occurrence. Note that "loght" = log(height).
 
 ```{r chunk_chapter3_chunk42, echo=TRUE, eval=TRUE}
 library(EcoData)
 model = lm(loght ~ temp, data = plantHeight)
-```
-
-The model suggests a significant global trend of plant height increasing with temperature:
-
-```{r chunk_chapter3_chunk43, echo=FALSE, eval=TRUE}
 summary(model)
 ```
+
+The model suggests a significant global trend of plant height increasing with temperature.
 
 ```{=html}
   <hr/>
@@ -937,51 +781,24 @@ summary(model)
 
 ## Multiple Regression
 
-Multiple (linear) regression means that we consider more than 1 predictor in the same model. The syntax is very easy: Just add your predictors (numerical or categorical) to your regression formula, as in
-
-```{r chunk_chapter3_chunk44, echo=TRUE, eval=TRUE}
-fit = lm(Ozone ~ Wind + Temp, data = airquality)
-```
-
-The estimates for the regression will appear as before in the regression table:
-
-```{r chunk_chapter3_chunk45, echo=FALSE, eval=TRUE}
-summary(fit)
-```
-
-And we can visualize the results as before via:
-
-```{r chunk_chapter3_chunk46, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE}
-library(effects)
-
-plot(allEffects(fit, partial.residuals = T))
-```
-
-However, there are a few complications when adding multiple predictors, which we will cover in this chapter.
-
-
-### Getting Started
-
-To get started with the multiple regression, let's just use a bunch of predictor variables in the airquality data set. I created a new variable fMonth to have month as a factor (categorical):
+Multiple (linear) regression means that we consider more than 1 predictor in the same model. The syntax is very easy: Just add your predictors (numerical or categorical) to your regression formula, as in the following example for the airquality dataset. To be able to also add a factor, I created a new variable fMonth to have month as a factor (categorical):
 
 ```{r chunk_chapter3_chunk47, echo=TRUE, eval=TRUE}
 airquality$fMonth = factor(airquality$Month)
 fit = lm(Ozone ~ Temp + Wind + Solar.R + fMonth, data = airquality)
 ```
 
-The resulting regression table looks already a bit intimidating:
+The resulting regression table looks already a bit intimidating, but in principle everything is interpreted as before:
 
 ```{r chunk_chapter3_chunk48, echo=FALSE, eval=TRUE}
 summary(fit)
 ```
 
-But luckily we have the effect plots to make sense of this:
+Luckily, we also have the effect plots to make sense of this:
 
 ```{r chunk_chapter3_chunk49, echo=TRUE, eval=TRUE}
-plot(allEffects(fit))
+plot(allEffects(fit, partial.residuals = T) )
 ```
-
-
 
 ***Multiple regression != A lot of univariate regressions***
 
@@ -1030,9 +847,9 @@ Try out different combinations of predictors and observe how the estimates chang
 So, which effect is the correct one, the univariate or the multivariate model? We will speak about the rules when to put variables in and out of the regression later, in the chapter on model choice. For the moment, however, note that if two variables correlate, including or removing one will change the estimate for the other. Remember: If there is collinearity, including one variable changes the effect size for other variables!
 
 
-### Simulating the Effect of Collinearity
+### Understanding the Effect of Collinearity
 
-We can understand this problem in more detail if we simulate some data. Let's create 2 positively collinear predictors:
+We can understand the problem of one variable influencing the effect of the other in more detail if we simulate some data. Let's create 2 positively collinear predictors:
 
 ```{r chunk_chapter3_chunk52, echo=TRUE, eval=TRUE}
 x1 = runif(100, -5, 5)
@@ -1077,11 +894,10 @@ abline(0, 1, col = "red")
 legend("topleft", c("fitted", "true"), lwd = 1, col = c("black", "red"))
 ```
 
-The multivariate model, on the other hand, is fine:
+The multivariate model, on the other hand, gets the right estimates (with a bit of error):
 
 ```{r chunk_chapter3_chunk57, echo=TRUE, eval=TRUE}
 coef(lm(y~x1 + x2))
-plot(effects::allEffects(lm(y ~ x1 + x2)), ylim = c(-12, 12))
 ```
 
 ```{=html}
@@ -1120,7 +936,6 @@ abline(0, 1, col = "red")
 legend("topleft", c("fitted", "true"), lwd = 1, col = c("black", "red"))
 
 coef(lm(y~x1 + x2))
-plot(effects::allEffects(lm(y ~ x1 + x2)), ylim = c(-12, 12))
 ```
 
 *Both effects cancel out*.
@@ -1131,8 +946,7 @@ plot(effects::allEffects(lm(y ~ x1 + x2)), ylim = c(-12, 12))
   <br/><hr/>
 ```
 
-
-### Scaling Variables
+### Scaling Variables in the Multiple Regression
 
 Before, we had already computed the regression table for a regression with 4 predictors:
 
@@ -1149,46 +963,29 @@ No, and the reason is that we have to remember the effect on the response $y = \
 A small trick that is therefore often applied is to divide all numeric predictors by their standard deviation to bring them all on the same range, which will then be roughly between -2, 2. You can do this by hand, or use the `scale()`{.R} function in R:
 
 ```{r chunk_chapter3_chunk59, echo=TRUE, eval=TRUE}
-airquality$sTemp = scale(airquality$Temp, center = F)  
-airquality$sTemp = airquality$Temp / sd(airquality$Temp) # Identical.
+airquality$sTemp = scale(airquality$Temp) # also performs centering
+airquality$sTemp = airquality$Temp / sd(airquality$Temp) # only scaling.
 ```
 
 We do the same for the other numeric variables and run the regression:
 
 ```{r chunk_chapter3_chunk60, echo=TRUE, eval=TRUE}
-airquality$sWind = scale(airquality$Wind, center = F)  
-airquality$sSolar.R = scale(airquality$Solar.R, center = F)
+airquality$sWind = scale(airquality$Wind)  
+airquality$sSolar.R = scale(airquality$Solar.R)
 fit = lm(Ozone ~ sTemp + sWind + sSolar.R + fMonth, data = airquality)
 summary(fit)
 ```
 
 We can compare the effect sizes directly, which suggests that Temp is actually the most important predictor.
 
-Note: In the code above, I used `scale(..., center = F)`{.R}. By default, the scale function will scale and center. As discussed before, centering is nearly always useful as it improves the interpretability of the intercept, so we should have actually better run the defaults:
-
-```{r chunk_chapter3_chunk61, echo=TRUE, eval=TRUE}
-airquality$sTemp = scale(airquality$Temp)  
-airquality$sWind = scale(airquality$Wind)  
-airquality$sSolar.R = scale(airquality$Solar.R)
-fit = lm(Ozone ~ sTemp + sWind + sSolar.R + fMonth, data = airquality)
-```
-
-Which results in the following regression table:
-
-```{r chunk_chapter3_chunk62, echo=FALSE, eval=TRUE}
-summary(fit)
-```
-
-Note that all estimates are identical, except for the intercept, which is now the estimate for the mean value of all numeric predictors (and with standard contrasts for the reference value of the categorical predictors).
+Note: In the code above, I used `scale(...)`{.R}. By default, the scale function will scale and center. As discussed before, centering is nearly always useful as it improves the interpretability of the intercept, so I would suggest to use this as a default when scaling. 
 
 ```{=html}
   <hr/>
   <strong><span style="color: #0011AA; font-size:25px;">Tasks</span></strong><br/>
 ```
 
-1. Compare centered / uncentered models visually, using the `effects`.{R} package. Are any of the predictions different, i.e. would you conclude something different using the different options?
-2. Discuss: If we get a different data set with a smaller standard deviation for e.g. Wind, the effect estimate would change. You can check this by just dividing the scaled variable by 0.5. Is this a problem?
-3. Discuss: Under which circumstances should you center / scale, and how should you discuss the estimated coefficients in a paper?
+Discuss: Under which circumstances should you center / scale, and how should you discuss the estimated coefficients in a paper?
 
 ```{=html}
   <details>
@@ -1198,25 +995,7 @@ Note that all estimates are identical, except for the intercept, which is now th
     <p>
 ```
 
-
-***1.***
-
-```{r chunk_chapter3_task_25, message=FALSE, warning=FALSE}
-
-```
-
-***2.***
-
-```{r chunk_chapter3_task_26, message=FALSE, warning=FALSE}
-
-```
-
-***3.***
-
-```{r chunk_chapter3_task_27, message=FALSE, warning=FALSE}
-
-```
-
+Scaling = estimate of relative imporatance. Original units: interpretable as effect per unit change.
 
 ```{=html}
     </p>
@@ -1826,6 +1605,8 @@ Conclusion: Stepwise selection + regression table is **hidden multiple testing**
 That being said, those methods work excellent to generate *predictive* models!
 
 
+## Case studies
+
 ### Exercise: Global Plant Trait Analysis #3
 
 ```{=html}
@@ -1855,3 +1636,40 @@ Revisit exercises \@ref(plantTrait1) / \@ref(plantTrait2), and discuss / analyze
   </details>
   <br/><hr/>
 ```
+
+
+
+### Case study: Life satisfaction
+
+The following data set contains information about life satisfaction (lebensz_org) in Germany, based on the socio-economic panel. 
+
+```{r chunk_chapter4_chunk1, echo=TRUE, eval=FALSE}
+library(EcoData)
+?soep
+```
+
+```{=html}
+  <hr/>
+  <strong><span style="color: #0011AA; font-size:25px;">Task</span></strong><br/>
+```
+
+Perform an exploratory causal analysis of the data to find out what determines life satisfaction and if the effect of those factors has changed over time. 
+
+```{=html}
+  <details>
+    <summary>
+      <strong><span style="color: #0011AA; font-size:25px;">Solution</span></strong>
+    </summary>
+    <p>
+```
+
+```{r chunk_chapter4_task_0, message=FALSE, warning=FALSE}
+
+```
+
+```{=html}
+    </p>
+  </details>
+  <br/><hr/>
+```
+

@@ -16,60 +16,20 @@ editor_options:
 <script src="./scripts/multipleChoice.js"></script>
 ```
 
-In this chapter, we check `lm()`{.R} and change the functional for our variance terms to improve the model.
-
-
-## Warm-up Exercise
-
-The following data set contains information about life satisfaction (lebensz_org) in Germany, based on the socio-economic panel. 
-
-```{r chunk_chapter4_chunk1, echo=TRUE, eval=FALSE}
-library(EcoData)
-?soep
-```
-
-```{=html}
-  <hr/>
-  <strong><span style="color: #0011AA; font-size:25px;">Task</span></strong><br/>
-```
-
-Perform an exploratory causal analysis of the data to find out what determines life satisfaction and if the effect of those factors has changed over time. 
-
-```{=html}
-  <details>
-    <summary>
-      <strong><span style="color: #0011AA; font-size:25px;">Solution</span></strong>
-    </summary>
-    <p>
-```
-
-```{r chunk_chapter4_task_0, message=FALSE, warning=FALSE}
-
-```
-
-```{=html}
-    </p>
-  </details>
-  <br/><hr/>
-```
-
-
-## General Modelling Strategy for lm() + Correction of Residuals
-
-With all the discussion about causality, model selection etc., we can re-visit the question of how to build an appropriate `lm()`{.R}. My basic modelling strategy for a causal `lm()`{.R} analysis is the following:
-
-First, think about the problem and your question an decide on a base structure. Ideally, you do this by:
+In the last chapter, we have discussed how to set up a basic lm, including the selection of predictors according to the purpose of the modelling (prediction, causal analysis). Remember in particular that for a causal analysis, which I consider the standard case in the scineces, first, think about the problem and your question an decide on a base structure. Ideally, you do this by:
 
 * Writing down your scientific questions (e.g. Ozone ~ Wind)
-* Then add confounders if needed.
+* Then add confounders / mediators if needed.
 * Remember to make a difference between variables controlled for confounding, and other confounders (which are typically not controlled for confounding). We may have to use some model selection, but in fact with a good analysis plan this is rarely necessary for a causal analysis.
 
-Then, we have to check if the model fits all right. Yesterday, we already discussed about residual checks and we discussed that the 4 standard residual plots check for 4 different problems:
+After having arrived at such a base structure, we will have to check if the model is appropriate for the analysis. Yesterday, we already discussed about residual checks and we discussed that the 4 standard residual plots check for 4 different problems.
 
 * Residuals vs Fitted = Functional relationship.
 * Normal Q-Q = Normality of residuals.
 * Scale - Location = Variance homogeneity.
 * Residuals vs Leverage = Should we worry about certain outliers?
+
+Here an example for a linear regression of Ozone against Wind:
 
 ```{r chunk_chapter4_chunk2, echo=TRUE, eval=TRUE}
 fit = lm(Ozone ~ Temp , data = airquality)
@@ -80,17 +40,20 @@ par(mfrow = c(2, 2))
 plot(fit)
 ```
 
-It is usually recommended to solve the problems of the plots in that order, i.e.:
+The usual strategy now is to
 
-* First worry about the functional relationship.
-* Then about the distribution, variance and outliers.
+1. First get the functional relationship right, so that the model correctly describe the mean
+2. Then adjust the model assumptions regardigng distribution, variance and outliers.
 
-Today's topic will mostly be about plot 3, the variance modelling. Before we come to that, however, a few more hints about how to deal with plots 1 and 2 (see the following sections).
+We will go through these steps now, and on the way also learn how to deal with heteroskedasticity, outliers, weird distributions and grouped data (random or mixed models). 
 
+## Adjusting the Functional Form
 
-### Wrong Functional Form
+In the residual ~ fitted plot above, we can clearly see a pattern, which means that our model has a systematic misfit. Note that in a multiple regression, you should also check res ~ predictor for all predictors, because patterns of misfit often show up more clearly when plotted against the single predictors. 
 
-What do we do if we have the wrong functional form in the Scale - Location plot? Here a few strategies that you might want to consider:
+What should we do if we see a pattern? Here a few strategies that you might want to consider:
+
+### Changing the regression formular
 
 The easiest strategy is to add complexity to the polynomial, e.g. quadratic terms, interactions etc.
 
@@ -107,8 +70,7 @@ plot(allEffects(fit, partial.residuals = T), selection = 3)
 and see if the residuals are getting better. To avoid doing this totally randomly, it may be useful to plot residuals against individual predictors by hand!
 
 
-
-***GAMs***
+### Generalized additive models (GAMs)
 
 Another options are GAMs = Generalized Additive Models. The idea is to fit a smooth function to data, to automatically find the "right" functional form. The smoothness of the function is automatically optimized.
 
@@ -151,7 +113,41 @@ summary(fit)
 In this way, you still get a nicely interpretable linear effect for Wind, but you don't have to worry about the functional form of the other predictors.
 
 
-### Modelling Variance Terms
+### Exercise functional form
+
+
+```{=html}
+  <hr/>
+  <strong><span style="color: #0011AA; font-size:25px;">Task</span></strong><br/>
+```
+
+Assume our base model is
+
+```{r, echo=TRUE, eval=TRUE}
+fit <- lm(Ozone ~ Wind + Temp + Solar.R, data = airquality)
+```
+
+and we are mainly interested in the effect of wind (Temp - Solar.R are added as confounders). 
+
+Adjust the functional form until the mean is fitted well!
+
+```{=html}
+  <details>
+    <summary>
+      <strong><span style="color: #0011AA; font-size:25px;">Solution</span></strong>
+    </summary>
+    <p>
+```
+
+
+```{=html}
+    </p>
+  </details>
+  <br/><hr/>
+```
+
+
+## Modelling Variance Terms
 
 After we have fixed the functional form, we want to look at the distribution of the residuals. We said yesterday that you can try to get them more normal by applying an appropriate transformation, e.g. the logarithm or square root. Without transformation, we often find that data shows heteroskedasticity, i.e. the residual variance changes with some predictor or the mean estimate (see also Scale - Location plot). Maybe your experimental data looks like this:
 
@@ -174,9 +170,13 @@ summary(aov(fit))
 
 So, what can we do?
 
-**Option 1**: Find a transformation of the response  - If heteroskedasticity correlates with the mean value, one can typically decrease it by some sqrt or log transformation, but often difficult, because this may also conflict with keeping the distribution normal.
+### Transformation
 
-**Option 2**: Model the variance - Modelling the variance to fit a model where the variance is not fixed. The basic option in R is `nlme::gls`{.R}. GLS = *Generalized Least Squares*. In this function, you can specify a dependency of the residual variance on a predictor or the response. See options via `?varFunc`{.R}. In our case, we will use the varIdent option, which allows to specify a different variance per treatment.
+One option is to search for a transformation of the response that improves the problem  - If heteroskedasticity correlates with the mean value, one can typically decrease it by some sqrt or log transformation, but often difficult, because this may also conflict with keeping the distribution normal.
+
+### Model the variance
+
+The second, more general option, is to model the variance - Modelling the variance to fit a model where the variance is not fixed. The basic option in R is `nlme::gls`{.R}. GLS = *Generalized Least Squares*. In this function, you can specify a dependency of the residual variance on a predictor or the response. See options via `?varFunc`{.R}. In our case, we will use the varIdent option, which allows to specify a different variance per treatment.
 
 ```{r chunk_chapter4_chunk10, echo=TRUE, eval=TRUE}
 library(nlme)
@@ -205,8 +205,7 @@ We get 2 regression tables as outputs - one for the effects, and one for the dis
 summary(fit)
 ```
 
-
-### Exercise
+### Exercise variance modelling
 
 Take this plot of Ozone ~ Solar.R using the airquality data. Clearly there is heteroskedasticity in the relationship:
 
@@ -252,7 +251,7 @@ We could of course consider other predictors, but let's say we want to fit this 
 ```
 
 
-### Non-normality and Outliers
+## Non-normality and Outliers
 
 What can we do if, after accounting for the functional relationship, response transformation and variance modelling, residual diagnostic 2 shows non-normality, in particular strong outliers? Here simulated example data with strong outliers / deviations from normality:
 
@@ -326,8 +325,6 @@ summary(fit, se = "boot")
 Alternative and very useful `quantreg`.{R} package: 
 <a href="https://cran.r-project.org/web/packages/lqmm/index.html" target="_blank" rel="noopener">https://cran.r-project.org/web/packages/lqmm/index.html</a>
 
-
-
 ***Summary***
 
 Actions on **real outliers**:
@@ -385,7 +382,6 @@ Nomenclature:
 
 Because grouping naturally occurs in any type of experimental data (batches, blocks, etc.), mixed effect models are the de-facto default for most experimental data! Mind, that grouping even occurs for example, when 2 different persons gather information.
 
-
 ### Fitting Random Effects Models
 
 To speak about random effects, we will use an example data set containing exam scores of 4,059 students from 65 schools in Inner London. This data set is located in the R package `mlmRev`.{R}.
@@ -403,8 +399,6 @@ library(effects)
 mod0 = lm(normexam ~ standLRT + sex , data = Exam)
 plot(allEffects(mod0))
 ```
-
-
 
 ***Random intercept model***
 
@@ -429,7 +423,6 @@ with(Exam, {
     }
 })
 ```
-
 
 
 ***Random slope model***
@@ -459,7 +452,6 @@ with(Exam, {
 ```
 
 
-
 ***Syntax cheat sheet:***
 
 * Random intercept: `(1 | group).
@@ -470,6 +462,66 @@ with(Exam, {
 * Nested random effects:  `(1 | group / subgroup)`{.R}. If groups are labeled A, B, C, ... and subgroups 1, 2, 3, ..., this will create labels A1, A2 ,B1, B2, so that you effectively group in subgroups. Useful for the many experimental people that do not label subgroups uniquely, but otherwise no statistical difference to a normal random effect.
 * Crossed random effects: You can add random effects independently, as in  
 `(1 | group1) + (1 | group2)`{.R}. 
+
+
+### Problems With Mixed Models
+
+Specifying mixed models is quite simple, however, there is a large list of (partly quite complicate) issues in their practical application. Here, a (incomplete) list: 
+
+***Interpretation of random effects***
+
+What do the random effects mean? The classical interpretation is that they are a structured error, so they are basically group residuals and are not of further importance. However, people increasingly see random effects also as a means to fit effects that could otherwise not be fittet. For example, if we have data for common and rare species, and we are interested in the density dependence of the species, we could fit
+
+```{r chunk_chapter4_chunk30, echo=TRUE, eval=FALSE, purl=FALSE}
+mortality ~ density + (density | species)
+```
+
+In such a model, we have the mean density effect across all species, and rare species with few data will be constrained by this effect, while common species with a lot of data can overrule the normal distribution imposed by the random slope and get their own estimate. In this picture, the random effect imposes an adaptive shrinkage, similar to a LASSO or ridge shrinkage estimator, with the shrinkage strength controlled by the standard deviation of the random effect. 
+
+***Degrees of freedom for a random effect***
+
+The second problem is: How many parameters does a random effect model have? To know how many parameters the model hss is crucial for calculating p-values, AIC and all that. We can estimate roughly how many parameters we should have by looking at the fixed effect version of the models: 
+
+```{r chunk_chapter4_chunk31, echo=TRUE, eval=TRUE}
+mod1 = lm(normexam ~ standLRT + sex , data = Exam)
+mod1$rank # 3 parameters.
+
+mod2 = lmer(normexam ~ standLRT + sex +  (1 | school), data = Exam)
+# No idea how many parameters.
+
+mod3 = lm(normexam ~ standLRT + sex + school, data = Exam)
+mod3$rank # 67 parameters.
+```
+
+What we can say is that the mixed model is more complicated than mod1, but less than mod2 (as it has the additional constraint), so the complexity must be somewhere in-between. But now much? 
+
+In fact, the complexity is controlled by the estimated variance of the random effect. For a high variance, the model is nearly as complex as mod3, for a low variance, it is only as complex as mod1. Because of these issues, `lmer`{.R} by default does not return p-values. However, you can calculate p-values based on approximate degrees of freedom via the `lmerTest`{.R} package, which also corrects ANOVA for random effects, but not AIC.
+
+```{r chunk_chapter4_chunk32, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE}
+library(lmerTest)
+
+m2 = lmer(normexam ~ standLRT + sex +  (1 | school), data = Exam, REML = F)
+summary(m2)
+```
+
+
+***Variance partitioning / ANOVA***
+
+Also variance partitioning is a bit tricky, as (see type I/II/III ANOVA discussion) fixed and random components of the model are in some way "correlated". The question is: Do you want to count the random effect variance as "explained", or "residual". The most common approach is the hierarchical partitioning proposed by by *Nakagawa & Schielzeth 2013, Nakagawa et al. (2017)*, which is implemented in the `MuMIn`.{R} package. With this, we can run 
+
+```{r chunk_chapter4_chunk33, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE}
+library(MuMIn)
+
+r.squaredGLMM(m2) 
+```
+
+Interpretation
+
+* **R2m**: Marginal ${R}^{2}$ value associated with fixed effects.
+* **R2c**: Conditional ${R}^{2}$ value associated with fixed effects plus the random effects.
+
+
+## Case studies
 
 
 ### Case Study 1: College Student Performance Over Time
@@ -521,68 +573,6 @@ Advanced / optional:
   </details>
   <br/><hr/>
 ```
-
-
-### Problems With Mixed Models
-
-Specifying mixed models is quite simple, however, there is a large list of (partly quite complicate) issues in their practical application. Here, a (incomplete) list: 
-
-
-
-***Interpretation of random effects***
-
-What do the random effects mean? The classical interpretation is that they are a structured error, so they are basically group residuals and are not of further importance. However, people increasingly see random effects also as a means to fit effects that could otherwise not be fittet. For example, if we have data for common and rare species, and we are interested in the density dependence of the species, we could fit
-
-```{r chunk_chapter4_chunk30, echo=TRUE, eval=FALSE, purl=FALSE}
-mortality ~ density + (density | species)
-```
-
-In such a model, we have the mean density effect across all species, and rare species with few data will be constrained by this effect, while common species with a lot of data can overrule the normal distribution imposed by the random slope and get their own estimate. In this picture, the random effect imposes an adaptive shrinkage, similar to a LASSO or ridge shrinkage estimator, with the shrinkage strength controlled by the standard deviation of the random effect. 
-
-
-
-***Degrees of freedom for a random effect***
-
-The second problem is: How many parameters does a random effect model have? To know how many parameters the model hss is crucial for calculating p-values, AIC and all that. We can estimate roughly how many parameters we should have by looking at the fixed effect version of the models: 
-
-```{r chunk_chapter4_chunk31, echo=TRUE, eval=TRUE}
-mod1 = lm(normexam ~ standLRT + sex , data = Exam)
-mod1$rank # 3 parameters.
-
-mod2 = lmer(normexam ~ standLRT + sex +  (1 | school), data = Exam)
-# No idea how many parameters.
-
-mod3 = lm(normexam ~ standLRT + sex + school, data = Exam)
-mod3$rank # 67 parameters.
-```
-
-What we can say is that the mixed model is more complicated than mod1, but less than mod2 (as it has the additional constraint), so the complexity must be somewhere in-between. But now much? 
-
-In fact, the complexity is controlled by the estimated variance of the random effect. For a high variance, the model is nearly as complex as mod3, for a low variance, it is only as complex as mod1. Because of these issues, `lmer`{.R} by default does not return p-values. However, you can calculate p-values based on approximate degrees of freedom via the `lmerTest`{.R} package, which also corrects ANOVA for random effects, but not AIC.
-
-```{r chunk_chapter4_chunk32, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE}
-library(lmerTest)
-
-m2 = lmer(normexam ~ standLRT + sex +  (1 | school), data = Exam, REML = F)
-summary(m2)
-```
-
-
-
-***Variance partitioning / ANOVA***
-
-Also variance partitioning is a bit tricky, as (see type I/II/III ANOVA discussion) fixed and random components of the model are in some way "correlated". The question is: Do you want to count the random effect variance as "explained", or "residual". The most common approach is the hierarchical partitioning proposed by by *Nakagawa & Schielzeth 2013, Nakagawa et al. (2017)*, which is implemented in the `MuMIn`.{R} package. With this, we can run 
-
-```{r chunk_chapter4_chunk33, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE}
-library(MuMIn)
-
-r.squaredGLMM(m2) 
-```
-
-Interpretation
-
-* **R2m**: Marginal ${R}^{2}$ value associated with fixed effects.
-* **R2c**: Conditional ${R}^{2}$ value associated with fixed effects plus the random effects.
 
 
 ### Case Study 2 - Honeybee Data
