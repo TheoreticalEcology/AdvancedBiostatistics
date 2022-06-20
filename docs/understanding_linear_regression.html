@@ -23,7 +23,7 @@
 <meta name="author" content="Florian Hartig" />
 
 
-<meta name="date" content="2022-06-19" />
+<meta name="date" content="2022-06-20" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -1063,8 +1063,9 @@ code span.wa { color: #bf0303; } /* Warning */
 <h3><span class="header-section-number">3.1.5</span> Exercise: Global Plant Trait Analysis<a href="understanding_linear_regression.html#plantTrait1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Look at the plantHeight dataset in Ecodata. Let’s assume we want to analyze whether height of plant species from around the world depends on temperature at the location of occurrence. Note that “loght” = log(height).</p>
 <div class="sourceCode" id="cb166"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb166-1"><a href="understanding_linear_regression.html#cb166-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(EcoData)</span>
-<span id="cb166-2"><a href="understanding_linear_regression.html#cb166-2" aria-hidden="true" tabindex="-1"></a>model <span class="ot">=</span> <span class="fu">lm</span>(loght <span class="sc">~</span> temp, <span class="at">data =</span> plantHeight)</span>
-<span id="cb166-3"><a href="understanding_linear_regression.html#cb166-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model)</span></code></pre></div>
+<span id="cb166-2"><a href="understanding_linear_regression.html#cb166-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb166-3"><a href="understanding_linear_regression.html#cb166-3" aria-hidden="true" tabindex="-1"></a>model <span class="ot">=</span> <span class="fu">lm</span>(loght <span class="sc">~</span> temp, <span class="at">data =</span> plantHeight)</span>
+<span id="cb166-4"><a href="understanding_linear_regression.html#cb166-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model)</span></code></pre></div>
 <pre><code>## 
 ## Call:
 ## lm(formula = loght ~ temp, data = plantHeight)

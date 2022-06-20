@@ -23,7 +23,7 @@
 <meta name="author" content="Florian Hartig" />
 
 
-<meta name="date" content="2022-06-19" />
+<meta name="date" content="2022-06-20" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -308,9 +308,9 @@ cmake</code></pre>
 <p>If you are new to installing packages on Debian / Ubuntu, etc., type the following:</p>
 <pre><code>sudo apt update &amp;&amp; sudo apt install -y --install-recommends build-essential gfortran libmagick++-dev r-base-dev cmake</code></pre>
 <p>In this book, we will often use data sets from the <code class="sourceCode r">EcoData</code> package, which is not on CRAN, but on a GitHub page. To install the package, run:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="reminder.html#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages(&quot;devtools&quot;) # if you don&#39;t have the devtools package installed</span></span>
-<span id="cb4-2"><a href="reminder.html#cb4-2" aria-hidden="true" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="at">repo =</span> <span class="st">&quot;florianhartig/EcoData&quot;</span>, <span class="at">subdir =</span> <span class="st">&quot;EcoData&quot;</span>,</span>
-<span id="cb4-3"><a href="reminder.html#cb4-3" aria-hidden="true" tabindex="-1"></a>                         <span class="at">dependencies =</span> <span class="cn">TRUE</span>, <span class="at">build_vignettes =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="reminder.html#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages(&quot;devtools&quot;)  # If you don&#39;t have the devtools package installed,</span></span>
+<span id="cb4-2"><a href="reminder.html#cb4-2" aria-hidden="true" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="at">repo =</span> <span class="st">&quot;TheoreticalEcology/EcoData&quot;</span>,</span>
+<span id="cb4-3"><a href="reminder.html#cb4-3" aria-hidden="true" tabindex="-1"></a>                         <span class="at">dependencies =</span> T, <span class="at">build_vignettes =</span> T)</span></code></pre></div>
 <p>For your convenience, the EcoData installation also forces the installation of most of the packges needed in this book, so this may take a while. If you want to load only the EcoData package, or if you encounter problems during the install, set <code>dependencies = F, build_vignettes = F</code>.</p>
 </div>
 </div>
@@ -384,29 +384,30 @@ cmake</code></pre>
 <h3><span class="header-section-number">2.3.1</span> Subsetting and Slicing for Single Data Types<a href="reminder.html#subsetting-and-slicing-for-single-data-types" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>We often want to select only a subset of our data. You can generally subset from data structures using indices and TRUE/FALSE (or T/F).
 Here for a vector:</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="reminder.html#cb12-1" aria-hidden="true" tabindex="-1"></a>vector[<span class="dv">1</span>] <span class="co"># First element.</span></span>
-<span id="cb12-2"><a href="reminder.html#cb12-2" aria-hidden="true" tabindex="-1"></a>vector[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>] <span class="co"># Elements 1, 2, 3.</span></span>
-<span id="cb12-3"><a href="reminder.html#cb12-3" aria-hidden="true" tabindex="-1"></a>vector[<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">5</span>, <span class="dv">6</span>)]  <span class="co"># Elements 1, 5, 6.</span></span>
-<span id="cb12-4"><a href="reminder.html#cb12-4" aria-hidden="true" tabindex="-1"></a>vector[<span class="fu">c</span>(T, T, F, F, T)]  <span class="co"># Elements 1, 2, 5.</span></span></code></pre></div>
-<p>If you use TRUE/FALSE, you must specify a truth value for every (!) position.</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="reminder.html#cb13-1" aria-hidden="true" tabindex="-1"></a>vector <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>)</span>
-<span id="cb13-2"><a href="reminder.html#cb13-2" aria-hidden="true" tabindex="-1"></a>vector[<span class="fu">c</span>(T, F)] <span class="co"># Does NOT work!</span></span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="reminder.html#cb12-1" aria-hidden="true" tabindex="-1"></a>vector <span class="ot">=</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">6</span></span>
+<span id="cb12-2"><a href="reminder.html#cb12-2" aria-hidden="true" tabindex="-1"></a>vector[<span class="dv">1</span>] <span class="co"># First element.</span></span>
+<span id="cb12-3"><a href="reminder.html#cb12-3" aria-hidden="true" tabindex="-1"></a>vector[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>] <span class="co"># Elements 1, 2, 3.</span></span>
+<span id="cb12-4"><a href="reminder.html#cb12-4" aria-hidden="true" tabindex="-1"></a>vector[<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">5</span>, <span class="dv">6</span>)]  <span class="co"># Elements 1, 5, 6.</span></span>
+<span id="cb12-5"><a href="reminder.html#cb12-5" aria-hidden="true" tabindex="-1"></a>vector[<span class="fu">c</span>(T, T, F, F, T)]  <span class="co"># Elements 1, 2, 5.</span></span></code></pre></div>
+<p>Careful, special behavior of R: If you specify fewer values than needed, the input vector will be repeated. This is called “recycling”.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="reminder.html#cb13-1" aria-hidden="true" tabindex="-1"></a>vector[<span class="fu">c</span>(T, F)] <span class="co"># Does NOT work!</span></span></code></pre></div>
 <p>For a list, it’s basically the same, except the following points:</p>
 <ul>
 <li>Elements in lists usually have a name, so you can also access those via <code class="sourceCode r">list<span class="sc">$</span>name</code>.</li>
 <li>Lists accessed with [] return a list. If you want to select a single element, you have to access it via [[]], as in <code class="sourceCode r">list[[<span class="dv">2</span>]]</code>.</li>
 </ul>
 <p>For data.frames and other objects with dimension &gt; 2, the same is true, except that you have several indices.</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="reminder.html#cb14-1" aria-hidden="true" tabindex="-1"></a>matrix[<span class="dv">1</span>, <span class="dv">2</span>]  <span class="co"># Element in first row, second column.</span></span>
-<span id="cb14-2"><a href="reminder.html#cb14-2" aria-hidden="true" tabindex="-1"></a>matrix[<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>,]  <span class="co"># First two rows, all columns.</span></span>
-<span id="cb14-3"><a href="reminder.html#cb14-3" aria-hidden="true" tabindex="-1"></a>matrix[, <span class="fu">c</span>(T, F ,T)]  <span class="co"># All rows, 1st and 3rd column.</span></span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="reminder.html#cb14-1" aria-hidden="true" tabindex="-1"></a>matrix <span class="ot">=</span> <span class="fu">matrix</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">16</span>, <span class="at">nrow =</span> <span class="dv">4</span>)</span>
+<span id="cb14-2"><a href="reminder.html#cb14-2" aria-hidden="true" tabindex="-1"></a>matrix[<span class="dv">1</span>, <span class="dv">2</span>]  <span class="co"># Element in first row, second column.</span></span>
+<span id="cb14-3"><a href="reminder.html#cb14-3" aria-hidden="true" tabindex="-1"></a>matrix[<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>,]  <span class="co"># First two rows, all columns.</span></span>
+<span id="cb14-4"><a href="reminder.html#cb14-4" aria-hidden="true" tabindex="-1"></a>matrix[, <span class="fu">c</span>(T, F ,T)]  <span class="co"># All rows, 1st and 3rd column.</span></span></code></pre></div>
 <p>The syntax <code class="sourceCode r">matrix[<span class="dv">1</span>,]</code> is also called <em>slicing</em>, for obvious reasons.</p>
-<p>Data.frames are the same as matrices, except that, like with lists of vectors, you can also access columns via names as in <code class="sourceCode r">data.frame<span class="sc">$</span>column</code>.</p>
+<p>Data.frames are the same as matrices, except that, like with lists of vectors, you can also access columns via names as in <code class="sourceCode r">data.frame<span class="sc">$</span>column</code>. This is because a data.frame ist a list of vectors.</p>
 </div>
 <div id="logic-and-slicing" class="section level3 hasAnchor" number="2.3.2">
 <h3><span class="header-section-number">2.3.2</span> Logic and Slicing<a href="reminder.html#logic-and-slicing" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Slicing is very powerful if you combine it with logical operators, such as “&amp;” (logical and), “|” (logical or), “==” (equal), “!=” (not equal), “&lt;=”, “&gt;”, etc. Here are a few examples:</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="reminder.html#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(iris[iris<span class="sc">$</span>Species <span class="sc">==</span> <span class="st">&quot;virginica&quot;</span>, ])   <span class="co"># Show first 20 entries only.</span></span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="reminder.html#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(iris[iris<span class="sc">$</span>Species <span class="sc">==</span> <span class="st">&quot;virginica&quot;</span>, ])  </span></code></pre></div>
 <pre><code>##     Sepal.Length Sepal.Width Petal.Length Petal.Width   Species
 ## 101          6.3         3.3          6.0         2.5 virginica
 ## 102          5.8         2.7          5.1         1.9 virginica
@@ -415,7 +416,7 @@ Here for a vector:</p>
 ## 105          6.5         3.0          5.8         2.2 virginica
 ## 106          7.6         3.0          6.6         2.1 virginica</code></pre>
 <p>Note that this is identical to using the subset command:</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="reminder.html#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">subset</span>(iris, Species <span class="sc">==</span> <span class="st">&quot;virginica&quot;</span>))  <span class="co"># Show first 20 entries only.</span></span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="reminder.html#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">subset</span>(iris, Species <span class="sc">==</span> <span class="st">&quot;virginica&quot;</span>))  </span></code></pre></div>
 <pre><code>##     Sepal.Length Sepal.Width Petal.Length Petal.Width   Species
 ## 101          6.3         3.3          6.0         2.5 virginica
 ## 102          5.8         2.7          5.1         1.9 virginica

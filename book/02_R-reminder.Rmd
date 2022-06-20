@@ -189,16 +189,16 @@ We often want to select only a subset of our data. You can generally subset from
 Here for a vector:
 
 ```{r chunk_chapter2_10, eval=FALSE, purl=FALSE}
+vector = 1:6
 vector[1] # First element.
 vector[1:3] # Elements 1, 2, 3.
 vector[c(1, 5, 6)]  # Elements 1, 5, 6.
 vector[c(T, T, F, F, T)]  # Elements 1, 2, 5.
 ```
 
-If you use TRUE/FALSE, you must specify a truth value for every (!) position.
+Careful, special behavior of R: If you specify fewer values than needed, the input vector will be repeated. This is called "recycling".
 
 ```{r chunk_chapter2_11, eval=FALSE, purl=FALSE}
-vector = c(1, 2, 3, 4, 5)
 vector[c(T, F)] # Does NOT work!
 ```
 
@@ -210,6 +210,7 @@ For a list, it's basically the same, except the following points:
 For data.frames and other objects with dimension > 2, the same is true, except that you have several indices.
 
 ```{r chunk_chapter2_12, eval=FALSE, purl=FALSE}
+matrix = matrix(1:16, nrow = 4)
 matrix[1, 2]  # Element in first row, second column.
 matrix[1:2,]  # First two rows, all columns.
 matrix[, c(T, F ,T)]  # All rows, 1st and 3rd column.
@@ -217,21 +218,20 @@ matrix[, c(T, F ,T)]  # All rows, 1st and 3rd column.
 
 The syntax `matrix[1,]`{.R} is also called *slicing*, for obvious reasons. 
 
-Data.frames are the same as matrices, except that, like with lists of vectors, you can also access columns via names as in `data.frame$column`{.R}.
-
+Data.frames are the same as matrices, except that, like with lists of vectors, you can also access columns via names as in `data.frame$column`{.R}. This is because a data.frame ist a list of vectors. 
 
 ### Logic and Slicing
 
 Slicing is very powerful if you combine it with logical operators, such as "&" (logical and), "|" (logical or), "==" (equal), "!=" (not equal), "<=", ">", etc. Here are a few examples:
 
 ```{r chunk_chapter2_13}
-head(iris[iris$Species == "virginica", ])   # Show first 20 entries only.
+head(iris[iris$Species == "virginica", ])  
 ```
 
 Note that this is identical to using the subset command:
 
 ```{r chunk_chapter2_14}
-head(subset(iris, Species == "virginica"))  # Show first 20 entries only.
+head(subset(iris, Species == "virginica"))  
 ```
 
 You can also combine several logical commands:

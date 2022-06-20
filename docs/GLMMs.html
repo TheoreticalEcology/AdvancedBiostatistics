@@ -23,7 +23,7 @@
 <meta name="author" content="Florian Hartig" />
 
 
-<meta name="date" content="2022-06-19" />
+<meta name="date" content="2022-06-20" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -300,8 +300,8 @@ code span.wa { color: #bf0303; } /* Warning */
 <div id="a-binomial-example" class="section level3 hasAnchor" number="5.1.1">
 <h3><span class="header-section-number">5.1.1</span> A Binomial Example<a href="GLMMs.html#a-binomial-example" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>We want to look at the titanic data set. A cleaned version of this is in the package <code class="sourceCode r">EcoData</code>, which you have to install first from GitHub. If you haven’t already installed this package, I hope this works for you:</p>
-<div class="sourceCode" id="cb328"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb328-1"><a href="GLMMs.html#cb328-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;devtools&quot;</span>)</span>
-<span id="cb328-2"><a href="GLMMs.html#cb328-2" aria-hidden="true" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="at">repo =</span> <span class="st">&quot;florianhartig/EcoData&quot;</span>, <span class="at">subdir =</span> <span class="st">&quot;EcoData&quot;</span>,</span>
+<div class="sourceCode" id="cb328"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb328-1"><a href="GLMMs.html#cb328-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages(&quot;devtools&quot;)  # If you don&#39;t have the devtools package installed.</span></span>
+<span id="cb328-2"><a href="GLMMs.html#cb328-2" aria-hidden="true" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="at">repo =</span> <span class="st">&quot;TheoreticalEcology/EcoData&quot;</span>,</span>
 <span id="cb328-3"><a href="GLMMs.html#cb328-3" aria-hidden="true" tabindex="-1"></a>                         <span class="at">dependencies =</span> T, <span class="at">build_vignettes =</span> T)</span></code></pre></div>
 <p>Let’s look at the titanic data set included in EcoData:</p>
 <div class="sourceCode" id="cb329"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb329-1"><a href="GLMMs.html#cb329-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(EcoData)</span></code></pre></div>
@@ -968,7 +968,7 @@ code span.wa { color: #bf0303; } /* Warning */
   <strong><span style="color: #0011AA; font-size:25px;">Task</span></strong><br/>
 <p>In <a href="https://www.pnas.org/content/111/24/8782" target="_blank" rel="noopener">https://www.pnas.org/content/111/24/8782</a>, Jung et al. claim that “Female hurricanes are deadlier than male hurricanes”.</p>
 <p>Specifically, they analyze the number of hurricane fatalities, and claim that there is an effect of the femininity of the name on the number of fatalities, correcting for several possible confounders. They interpret the result as causal (including mediators), claiming that giving only male names to hurricanes would considerably reduce death toll.</p>
-<p>The data is available in <code class="sourceCode r">EcoData</code>.</p>
+<p>The data is available in <code class="sourceCode r">DHARMa</code>.</p>
 <div class="sourceCode" id="cb400"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb400-1"><a href="GLMMs.html#cb400-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DHARMa)</span>
 <span id="cb400-2"><a href="GLMMs.html#cb400-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mgcv)</span>
 <span id="cb400-3"><a href="GLMMs.html#cb400-3" aria-hidden="true" tabindex="-1"></a></span>

@@ -23,7 +23,7 @@
 <meta name="author" content="Florian Hartig" />
 
 
-<meta name="date" content="2022-06-19" />
+<meta name="date" content="2022-06-20" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -319,17 +319,16 @@ code span.wa { color: #bf0303; } /* Warning */
 </ol>
 <p>Unfortunately, the distinction between a larger trend and a correlation is quite fluid. Nevertheless, one should always first check for and remove the trend, typically by including time/space as a predictor, potentially in a flexible way (GAMs come in handy). After this is done, we can fit a model with a temporally/spatially correlated error.</p>
 <p><strong><em>Temporal correlation</em></strong></p>
-<p>As our first example, I look at the hurricane study from yesterday, which is, after all, temporal data. This data set is located in <code class="sourceCode r">EcoData</code>.</p>
-<div class="sourceCode" id="cb407"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb407-1"><a href="correlation.html#cb407-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(EcoData)</span>
-<span id="cb407-2"><a href="correlation.html#cb407-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glmmTMB)</span>
-<span id="cb407-3"><a href="correlation.html#cb407-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DHARMa)</span>
-<span id="cb407-4"><a href="correlation.html#cb407-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb407-5"><a href="correlation.html#cb407-5" aria-hidden="true" tabindex="-1"></a>originalModelGAM <span class="ot">=</span> <span class="fu">glmmTMB</span>(alldeaths <span class="sc">~</span> <span class="fu">scale</span>(MasFem) <span class="sc">*</span></span>
-<span id="cb407-6"><a href="correlation.html#cb407-6" aria-hidden="true" tabindex="-1"></a>                          (<span class="fu">scale</span>(Minpressure_Updated_2014) <span class="sc">+</span> <span class="fu">scale</span>(NDAM)),</span>
-<span id="cb407-7"><a href="correlation.html#cb407-7" aria-hidden="true" tabindex="-1"></a>                           <span class="at">data =</span> hurricanes, <span class="at">family =</span> nbinom2)</span>
-<span id="cb407-8"><a href="correlation.html#cb407-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb407-9"><a href="correlation.html#cb407-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Residual checks with DHARMa.</span></span>
-<span id="cb407-10"><a href="correlation.html#cb407-10" aria-hidden="true" tabindex="-1"></a>res <span class="ot">=</span> <span class="fu">simulateResiduals</span>(originalModelGAM)</span></code></pre></div>
+<p>As our first example, I look at the hurricane study from yesterday, which is, after all, temporal data. This data set is located in <code class="sourceCode r">DHARMa</code>.</p>
+<div class="sourceCode" id="cb407"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb407-1"><a href="correlation.html#cb407-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glmmTMB)</span>
+<span id="cb407-2"><a href="correlation.html#cb407-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DHARMa)</span>
+<span id="cb407-3"><a href="correlation.html#cb407-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb407-4"><a href="correlation.html#cb407-4" aria-hidden="true" tabindex="-1"></a>originalModelGAM <span class="ot">=</span> <span class="fu">glmmTMB</span>(alldeaths <span class="sc">~</span> <span class="fu">scale</span>(MasFem) <span class="sc">*</span></span>
+<span id="cb407-5"><a href="correlation.html#cb407-5" aria-hidden="true" tabindex="-1"></a>                          (<span class="fu">scale</span>(Minpressure_Updated_2014) <span class="sc">+</span> <span class="fu">scale</span>(NDAM)),</span>
+<span id="cb407-6"><a href="correlation.html#cb407-6" aria-hidden="true" tabindex="-1"></a>                           <span class="at">data =</span> hurricanes, <span class="at">family =</span> nbinom2)</span>
+<span id="cb407-7"><a href="correlation.html#cb407-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb407-8"><a href="correlation.html#cb407-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Residual checks with DHARMa.</span></span>
+<span id="cb407-9"><a href="correlation.html#cb407-9" aria-hidden="true" tabindex="-1"></a>res <span class="ot">=</span> <span class="fu">simulateResiduals</span>(originalModelGAM)</span></code></pre></div>
 <pre><code>## Warning in TMB::openmp(parallel): OpenMP not supported.</code></pre>
 <pre><code>## Warning in TMB::openmp(n = n_orig): OpenMP not supported.</code></pre>
 <pre><code>## Warning in TMB::openmp(parallel): OpenMP not supported.</code></pre>
@@ -557,6 +556,9 @@ code span.wa { color: #bf0303; } /* Warning */
 <span id="cb436-6"><a href="correlation.html#cb436-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DHARMa)</span></code></pre></div>
 <p>To plot the phylogenetic tree, use</p>
 <div class="sourceCode" id="cb437"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb437-1"><a href="correlation.html#cb437-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(anolisTree)</span></code></pre></div>
+<p>Regress species traits</p>
+<div class="sourceCode" id="cb438"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb438-1"><a href="correlation.html#cb438-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Check whether names are matching in both files.</span></span>
+<span id="cb438-2"><a href="correlation.html#cb438-2" aria-hidden="true" tabindex="-1"></a><span class="fu">name.check</span>(anolisTree, anolisData)</span></code></pre></div>
 <pre><code>## $tree_not_data
 ##   [1] &quot;ahli&quot;            &quot;alayoni&quot;         &quot;alfaroi&quot;         &quot;aliniger&quot;       
 ##   [5] &quot;allisoni&quot;        &quot;allogus&quot;         &quot;altitudinalis&quot;   &quot;alumina&quot;        
@@ -594,7 +596,12 @@ code span.wa { color: #bf0303; } /* Warning */
 ##  [73] &quot;74&quot;  &quot;75&quot;  &quot;76&quot;  &quot;77&quot;  &quot;78&quot;  &quot;79&quot;  &quot;8&quot;   &quot;80&quot;  &quot;81&quot;  &quot;82&quot;  &quot;83&quot;  &quot;84&quot; 
 ##  [85] &quot;85&quot;  &quot;86&quot;  &quot;87&quot;  &quot;88&quot;  &quot;89&quot;  &quot;9&quot;   &quot;90&quot;  &quot;91&quot;  &quot;92&quot;  &quot;93&quot;  &quot;94&quot;  &quot;95&quot; 
 ##  [97] &quot;96&quot;  &quot;97&quot;  &quot;98&quot;  &quot;99&quot;</code></pre>
-<p><img src="_main_files/figure-html/chunk_chapter6_chunk10-1.png" width="672" /></p>
+<div class="sourceCode" id="cb440"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb440-1"><a href="correlation.html#cb440-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot traits.</span></span>
+<span id="cb440-2"><a href="correlation.html#cb440-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(anolisData[, <span class="fu">c</span>(<span class="st">&quot;awesomeness&quot;</span>, <span class="st">&quot;hostility&quot;</span>)])</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<div class="sourceCode" id="cb441"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb441-1"><a href="correlation.html#cb441-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(hostility <span class="sc">~</span> awesomeness, <span class="at">data =</span> anolisData)</span>
+<span id="cb441-2"><a href="correlation.html#cb441-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">lm</span>(hostility <span class="sc">~</span> awesomeness, <span class="at">data =</span> anolisData)</span>
+<span id="cb441-3"><a href="correlation.html#cb441-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code></pre></div>
 <pre><code>## 
 ## Call:
 ## lm(formula = hostility ~ awesomeness, data = anolisData)
@@ -613,18 +620,14 @@ code span.wa { color: #bf0303; } /* Warning */
 ## Residual standard error: 0.3807 on 98 degrees of freedom
 ## Multiple R-squared:  0.8555, Adjusted R-squared:  0.8541 
 ## F-statistic: 580.4 on 1 and 98 DF,  p-value: &lt; 2.2e-16</code></pre>
-<p><img src="_main_files/figure-html/chunk_chapter6_chunk10-2.png" width="672" /></p>
-<pre><code>## $observed
-## [1] 0.04121925
-## 
-## $expected
-## [1] -0.01010101
-## 
-## $sd
-## [1] 0.009665021
-## 
-## $p.value
-## [1] 1.096872e-07</code></pre>
+<div class="sourceCode" id="cb443"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb443-1"><a href="correlation.html#cb443-1" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(fit)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-10-2.png" width="672" /></p>
+<p>Check for phylogenetic signal in residuals.</p>
+<div class="sourceCode" id="cb444"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb444-1"><a href="correlation.html#cb444-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate weight matrix for phylogenetic distance.</span></span>
+<span id="cb444-2"><a href="correlation.html#cb444-2" aria-hidden="true" tabindex="-1"></a>w <span class="ot">=</span> <span class="dv">1</span><span class="sc">/</span><span class="fu">cophenetic</span>(anolisTree)</span>
+<span id="cb444-3"><a href="correlation.html#cb444-3" aria-hidden="true" tabindex="-1"></a><span class="fu">diag</span>(w) <span class="ot">=</span> <span class="dv">0</span></span>
+<span id="cb444-4"><a href="correlation.html#cb444-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb444-5"><a href="correlation.html#cb444-5" aria-hidden="true" tabindex="-1"></a><span class="fu">Moran.I</span>(<span class="fu">residuals</span>(fit), w)</span></code></pre></div>
 <pre><code>## $observed
 ## [1] 0.05067625
 ## 
@@ -636,6 +639,10 @@ code span.wa { color: #bf0303; } /* Warning */
 ## 
 ## $p.value
 ## [1] 3.751199e-10</code></pre>
+<p>Conclusion: signal in the residuals, a normal lm will not work.</p>
+<p>You can also check with DHARMa, using this works also for GLMMs</p>
+<div class="sourceCode" id="cb446"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb446-1"><a href="correlation.html#cb446-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">=</span> <span class="fu">simulateResiduals</span>(fit)</span>
+<span id="cb446-2"><a href="correlation.html#cb446-2" aria-hidden="true" tabindex="-1"></a><span class="fu">testSpatialAutocorrelation</span>(res, <span class="at">distMat =</span> <span class="fu">cophenetic</span>(anolisTree))</span></code></pre></div>
 <pre><code>## 
 ##  DHARMa Moran&#39;s I test for distance-based autocorrelation
 ## 
@@ -644,24 +651,24 @@ code span.wa { color: #bf0303; } /* Warning */
 ## 3.609e-10
 ## alternative hypothesis: Distance-based autocorrelation</code></pre>
 <p>An old-school method to deal with the problem are the so-called <strong>Phylogenetically Independent Contrasts</strong> (PICs) (Felsenstein, J. (1985) “Phylogenies and the comparative method”. American Naturalist, 125, 1–15.). The idea here is to transform your data in a way that an lm is still appropriate. For completeness, I show the method here.</p>
-<div class="sourceCode" id="cb443"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb443-1"><a href="correlation.html#cb443-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract columns.</span></span>
-<span id="cb443-2"><a href="correlation.html#cb443-2" aria-hidden="true" tabindex="-1"></a>host <span class="ot">=</span> anolisData[, <span class="st">&quot;hostility&quot;</span>]</span>
-<span id="cb443-3"><a href="correlation.html#cb443-3" aria-hidden="true" tabindex="-1"></a>awe <span class="ot">=</span> anolisData[, <span class="st">&quot;awesomeness&quot;</span>]</span>
-<span id="cb443-4"><a href="correlation.html#cb443-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb443-5"><a href="correlation.html#cb443-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Give them names.</span></span>
-<span id="cb443-6"><a href="correlation.html#cb443-6" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(host) <span class="ot">=</span> <span class="fu">names</span>(awe) <span class="ot">=</span> <span class="fu">rownames</span>(anolisData)</span>
-<span id="cb443-7"><a href="correlation.html#cb443-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb443-8"><a href="correlation.html#cb443-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate PICs.</span></span>
-<span id="cb443-9"><a href="correlation.html#cb443-9" aria-hidden="true" tabindex="-1"></a>hPic <span class="ot">=</span> <span class="fu">pic</span>(host, anolisTree)</span></code></pre></div>
+<div class="sourceCode" id="cb448"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb448-1"><a href="correlation.html#cb448-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract columns.</span></span>
+<span id="cb448-2"><a href="correlation.html#cb448-2" aria-hidden="true" tabindex="-1"></a>host <span class="ot">=</span> anolisData[, <span class="st">&quot;hostility&quot;</span>]</span>
+<span id="cb448-3"><a href="correlation.html#cb448-3" aria-hidden="true" tabindex="-1"></a>awe <span class="ot">=</span> anolisData[, <span class="st">&quot;awesomeness&quot;</span>]</span>
+<span id="cb448-4"><a href="correlation.html#cb448-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb448-5"><a href="correlation.html#cb448-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Give them names.</span></span>
+<span id="cb448-6"><a href="correlation.html#cb448-6" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(host) <span class="ot">=</span> <span class="fu">names</span>(awe) <span class="ot">=</span> <span class="fu">rownames</span>(anolisData)</span>
+<span id="cb448-7"><a href="correlation.html#cb448-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb448-8"><a href="correlation.html#cb448-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate PICs.</span></span>
+<span id="cb448-9"><a href="correlation.html#cb448-9" aria-hidden="true" tabindex="-1"></a>hPic <span class="ot">=</span> <span class="fu">pic</span>(host, anolisTree)</span></code></pre></div>
 <pre><code>## Warning in pic(host, anolisTree): the names of argument &#39;x&#39; and the tip labels
 ## of the tree did not match: the former were ignored in the analysis.</code></pre>
-<div class="sourceCode" id="cb445"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb445-1"><a href="correlation.html#cb445-1" aria-hidden="true" tabindex="-1"></a>aPic <span class="ot">=</span> <span class="fu">pic</span>(awe, anolisTree)</span></code></pre></div>
+<div class="sourceCode" id="cb450"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb450-1"><a href="correlation.html#cb450-1" aria-hidden="true" tabindex="-1"></a>aPic <span class="ot">=</span> <span class="fu">pic</span>(awe, anolisTree)</span></code></pre></div>
 <pre><code>## Warning in pic(awe, anolisTree): the names of argument &#39;x&#39; and the tip labels of
 ## the tree did not match: the former were ignored in the analysis.</code></pre>
-<div class="sourceCode" id="cb447"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb447-1"><a href="correlation.html#cb447-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Make a model.</span></span>
-<span id="cb447-2"><a href="correlation.html#cb447-2" aria-hidden="true" tabindex="-1"></a>picModel <span class="ot">=</span> <span class="fu">lm</span>(hPic <span class="sc">~</span> aPic <span class="sc">-</span> <span class="dv">1</span>)</span>
-<span id="cb447-3"><a href="correlation.html#cb447-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb447-4"><a href="correlation.html#cb447-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(picModel) <span class="co"># Yes, significant.</span></span></code></pre></div>
+<div class="sourceCode" id="cb452"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb452-1"><a href="correlation.html#cb452-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Make a model.</span></span>
+<span id="cb452-2"><a href="correlation.html#cb452-2" aria-hidden="true" tabindex="-1"></a>picModel <span class="ot">=</span> <span class="fu">lm</span>(hPic <span class="sc">~</span> aPic <span class="sc">-</span> <span class="dv">1</span>)</span>
+<span id="cb452-3"><a href="correlation.html#cb452-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb452-4"><a href="correlation.html#cb452-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(picModel) <span class="co"># Yes, significant.</span></span></code></pre></div>
 <pre><code>## 
 ## Call:
 ## lm(formula = hPic ~ aPic - 1)
@@ -679,15 +686,15 @@ code span.wa { color: #bf0303; } /* Warning */
 ## Residual standard error: 0.4263 on 98 degrees of freedom
 ## Multiple R-squared:  0.851,  Adjusted R-squared:  0.8495 
 ## F-statistic: 559.9 on 1 and 98 DF,  p-value: &lt; 2.2e-16</code></pre>
-<div class="sourceCode" id="cb449"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb449-1"><a href="correlation.html#cb449-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot results.</span></span>
-<span id="cb449-2"><a href="correlation.html#cb449-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(hPic <span class="sc">~</span> aPic)</span>
-<span id="cb449-3"><a href="correlation.html#cb449-3" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">a =</span> <span class="dv">0</span>, <span class="at">b =</span> <span class="fu">coef</span>(picModel))</span></code></pre></div>
+<div class="sourceCode" id="cb454"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb454-1"><a href="correlation.html#cb454-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot results.</span></span>
+<span id="cb454-2"><a href="correlation.html#cb454-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(hPic <span class="sc">~</span> aPic)</span>
+<span id="cb454-3"><a href="correlation.html#cb454-3" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">a =</span> <span class="dv">0</span>, <span class="at">b =</span> <span class="fu">coef</span>(picModel))</span></code></pre></div>
 <p><img src="_main_files/figure-html/chunk_chapter6_chunk12-1.png" width="672" /></p>
 <p>Now, new school, with a PGLS</p>
-<div class="sourceCode" id="cb450"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb450-1"><a href="correlation.html#cb450-1" aria-hidden="true" tabindex="-1"></a>pglsModel <span class="ot">=</span> <span class="fu">gls</span>(hostility <span class="sc">~</span> awesomeness,</span>
-<span id="cb450-2"><a href="correlation.html#cb450-2" aria-hidden="true" tabindex="-1"></a>                 <span class="at">correlation =</span> <span class="fu">corBrownian</span>(<span class="at">phy =</span> anolisTree, <span class="at">form =</span><span class="sc">~</span> species),</span>
-<span id="cb450-3"><a href="correlation.html#cb450-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">data =</span> anolisData, <span class="at">method =</span> <span class="st">&quot;ML&quot;</span>)</span>
-<span id="cb450-4"><a href="correlation.html#cb450-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(pglsModel)</span></code></pre></div>
+<div class="sourceCode" id="cb455"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb455-1"><a href="correlation.html#cb455-1" aria-hidden="true" tabindex="-1"></a>pglsModel <span class="ot">=</span> <span class="fu">gls</span>(hostility <span class="sc">~</span> awesomeness,</span>
+<span id="cb455-2"><a href="correlation.html#cb455-2" aria-hidden="true" tabindex="-1"></a>                 <span class="at">correlation =</span> <span class="fu">corBrownian</span>(<span class="at">phy =</span> anolisTree, <span class="at">form =</span><span class="sc">~</span> species),</span>
+<span id="cb455-3"><a href="correlation.html#cb455-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">data =</span> anolisData, <span class="at">method =</span> <span class="st">&quot;ML&quot;</span>)</span>
+<span id="cb455-4"><a href="correlation.html#cb455-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(pglsModel)</span></code></pre></div>
 <pre><code>## Generalized least squares fit by maximum likelihood
 ##   Model: hostility ~ awesomeness 
 ##   Data: anolisData 
@@ -714,18 +721,18 @@ code span.wa { color: #bf0303; } /* Warning */
 ## 
 ## Residual standard error: 0.4220369 
 ## Degrees of freedom: 100 total; 98 residual</code></pre>
-<div class="sourceCode" id="cb452"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb452-1"><a href="correlation.html#cb452-1" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(pglsModel)</span></code></pre></div>
+<div class="sourceCode" id="cb457"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb457-1"><a href="correlation.html#cb457-1" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(pglsModel)</span></code></pre></div>
 <pre><code>## (Intercept) awesomeness 
 ##   0.1158895  -0.9196414</code></pre>
-<div class="sourceCode" id="cb454"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb454-1"><a href="correlation.html#cb454-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(hostility <span class="sc">~</span> awesomeness, <span class="at">data =</span> anolisData)</span>
-<span id="cb454-2"><a href="correlation.html#cb454-2" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(pglsModel, <span class="at">col =</span> <span class="st">&quot;red&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb459"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb459-1"><a href="correlation.html#cb459-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(hostility <span class="sc">~</span> awesomeness, <span class="at">data =</span> anolisData)</span>
+<span id="cb459-2"><a href="correlation.html#cb459-2" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(pglsModel, <span class="at">col =</span> <span class="st">&quot;red&quot;</span>)</span></code></pre></div>
 <p><img src="_main_files/figure-html/chunk_chapter6_chunk13-1.png" width="672" /></p>
 <p>OK, same result, but PGLS is WAY more flexible than PICs.
 For example, we can include a discrete predictor:</p>
-<div class="sourceCode" id="cb455"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb455-1"><a href="correlation.html#cb455-1" aria-hidden="true" tabindex="-1"></a>pglsModel2 <span class="ot">=</span> <span class="fu">gls</span>(hostility <span class="sc">~</span> ecomorph,</span>
-<span id="cb455-2"><a href="correlation.html#cb455-2" aria-hidden="true" tabindex="-1"></a>                    <span class="at">correlation =</span> <span class="fu">corBrownian</span>(<span class="at">phy =</span> anolisTree, <span class="at">form =</span><span class="sc">~</span> species),</span>
-<span id="cb455-3"><a href="correlation.html#cb455-3" aria-hidden="true" tabindex="-1"></a>                    <span class="at">data =</span> anolisData, <span class="at">method =</span> <span class="st">&quot;ML&quot;</span>)</span>
-<span id="cb455-4"><a href="correlation.html#cb455-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(pglsModel2)</span></code></pre></div>
+<div class="sourceCode" id="cb460"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb460-1"><a href="correlation.html#cb460-1" aria-hidden="true" tabindex="-1"></a>pglsModel2 <span class="ot">=</span> <span class="fu">gls</span>(hostility <span class="sc">~</span> ecomorph,</span>
+<span id="cb460-2"><a href="correlation.html#cb460-2" aria-hidden="true" tabindex="-1"></a>                    <span class="at">correlation =</span> <span class="fu">corBrownian</span>(<span class="at">phy =</span> anolisTree, <span class="at">form =</span><span class="sc">~</span> species),</span>
+<span id="cb460-3"><a href="correlation.html#cb460-3" aria-hidden="true" tabindex="-1"></a>                    <span class="at">data =</span> anolisData, <span class="at">method =</span> <span class="st">&quot;ML&quot;</span>)</span>
+<span id="cb460-4"><a href="correlation.html#cb460-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(pglsModel2)</span></code></pre></div>
 <pre><code>## Generalized least squares fit by maximum likelihood
 ##   Model: hostility ~ ecomorph 
 ##   Data: anolisData 
@@ -762,17 +769,17 @@ For example, we can include a discrete predictor:</p>
 ## 
 ## Residual standard error: 1.05295 
 ## Degrees of freedom: 100 total; 93 residual</code></pre>
-<div class="sourceCode" id="cb457"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb457-1"><a href="correlation.html#cb457-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(pglsModel2)</span></code></pre></div>
+<div class="sourceCode" id="cb462"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb462-1"><a href="correlation.html#cb462-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(pglsModel2)</span></code></pre></div>
 <pre><code>## Denom. DF: 93 
 ##             numDF   F-value p-value
 ## (Intercept)     1 0.0555807  0.8141
 ## ecomorph        6 1.2170027  0.3046</code></pre>
-<div class="sourceCode" id="cb459"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb459-1"><a href="correlation.html#cb459-1" aria-hidden="true" tabindex="-1"></a><span class="co"># We can even include multiple predictors:</span></span>
-<span id="cb459-2"><a href="correlation.html#cb459-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb459-3"><a href="correlation.html#cb459-3" aria-hidden="true" tabindex="-1"></a>pglsModel3 <span class="ot">=</span> <span class="fu">gls</span>(hostility <span class="sc">~</span> ecomorph <span class="sc">*</span> awesomeness,</span>
-<span id="cb459-4"><a href="correlation.html#cb459-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">correlation =</span> <span class="fu">corBrownian</span>(<span class="at">phy =</span> anolisTree, <span class="at">form =</span><span class="sc">~</span> species),</span>
-<span id="cb459-5"><a href="correlation.html#cb459-5" aria-hidden="true" tabindex="-1"></a>                <span class="at">data =</span> anolisData, <span class="at">method =</span> <span class="st">&quot;ML&quot;</span>)</span>
-<span id="cb459-6"><a href="correlation.html#cb459-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(pglsModel3)</span></code></pre></div>
+<div class="sourceCode" id="cb464"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb464-1"><a href="correlation.html#cb464-1" aria-hidden="true" tabindex="-1"></a><span class="co"># We can even include multiple predictors:</span></span>
+<span id="cb464-2"><a href="correlation.html#cb464-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb464-3"><a href="correlation.html#cb464-3" aria-hidden="true" tabindex="-1"></a>pglsModel3 <span class="ot">=</span> <span class="fu">gls</span>(hostility <span class="sc">~</span> ecomorph <span class="sc">*</span> awesomeness,</span>
+<span id="cb464-4"><a href="correlation.html#cb464-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">correlation =</span> <span class="fu">corBrownian</span>(<span class="at">phy =</span> anolisTree, <span class="at">form =</span><span class="sc">~</span> species),</span>
+<span id="cb464-5"><a href="correlation.html#cb464-5" aria-hidden="true" tabindex="-1"></a>                <span class="at">data =</span> anolisData, <span class="at">method =</span> <span class="st">&quot;ML&quot;</span>)</span>
+<span id="cb464-6"><a href="correlation.html#cb464-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(pglsModel3)</span></code></pre></div>
 <pre><code>## Generalized least squares fit by maximum likelihood
 ##   Model: hostility ~ ecomorph * awesomeness 
 ##   Data: anolisData 
@@ -837,7 +844,7 @@ For example, we can include a discrete predictor:</p>
 ## 
 ## Residual standard error: 0.3956912 
 ## Degrees of freedom: 100 total; 86 residual</code></pre>
-<div class="sourceCode" id="cb461"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb461-1"><a href="correlation.html#cb461-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(pglsModel3)</span></code></pre></div>
+<div class="sourceCode" id="cb466"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb466-1"><a href="correlation.html#cb466-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(pglsModel3)</span></code></pre></div>
 <pre><code>## Denom. DF: 86 
 ##                      numDF  F-value p-value
 ## (Intercept)              1   0.3640  0.5479
@@ -845,13 +852,13 @@ For example, we can include a discrete predictor:</p>
 ## awesomeness              1 517.8319  &lt;.0001
 ## ecomorph:awesomeness     6   0.8576  0.5295</code></pre>
 <p>We can also assume that the error structure follows an <strong>Ornstein-Uhlenbeck</strong> model rather than <strong>Brownian motion</strong>. When trying this, however, I noted that the model does not converge due to a scaling problem. We can do a quick fix by making the branch lengths longer. This will not affect the analysis other than rescaling a nuisance parameter.</p>
-<div class="sourceCode" id="cb463"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb463-1"><a href="correlation.html#cb463-1" aria-hidden="true" tabindex="-1"></a>tempTree <span class="ot">=</span> anolisTree</span>
-<span id="cb463-2"><a href="correlation.html#cb463-2" aria-hidden="true" tabindex="-1"></a>tempTree<span class="sc">$</span>edge.length <span class="ot">=</span> tempTree<span class="sc">$</span>edge.length <span class="sc">*</span> <span class="dv">100</span></span>
-<span id="cb463-3"><a href="correlation.html#cb463-3" aria-hidden="true" tabindex="-1"></a>pglsModelLambda <span class="ot">=</span> <span class="fu">gls</span>(hostility <span class="sc">~</span> awesomeness,</span>
-<span id="cb463-4"><a href="correlation.html#cb463-4" aria-hidden="true" tabindex="-1"></a>                      <span class="at">correlation =</span> <span class="fu">corPagel</span>(<span class="dv">1</span>, <span class="at">phy =</span> tempTree, <span class="at">fixed =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb463-5"><a href="correlation.html#cb463-5" aria-hidden="true" tabindex="-1"></a>                                             <span class="at">form =</span><span class="sc">~</span> species),</span>
-<span id="cb463-6"><a href="correlation.html#cb463-6" aria-hidden="true" tabindex="-1"></a>                      <span class="at">data =</span> anolisData, <span class="at">method =</span> <span class="st">&quot;ML&quot;</span>)</span>
-<span id="cb463-7"><a href="correlation.html#cb463-7" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(pglsModelLambda)</span></code></pre></div>
+<div class="sourceCode" id="cb468"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb468-1"><a href="correlation.html#cb468-1" aria-hidden="true" tabindex="-1"></a>tempTree <span class="ot">=</span> anolisTree</span>
+<span id="cb468-2"><a href="correlation.html#cb468-2" aria-hidden="true" tabindex="-1"></a>tempTree<span class="sc">$</span>edge.length <span class="ot">=</span> tempTree<span class="sc">$</span>edge.length <span class="sc">*</span> <span class="dv">100</span></span>
+<span id="cb468-3"><a href="correlation.html#cb468-3" aria-hidden="true" tabindex="-1"></a>pglsModelLambda <span class="ot">=</span> <span class="fu">gls</span>(hostility <span class="sc">~</span> awesomeness,</span>
+<span id="cb468-4"><a href="correlation.html#cb468-4" aria-hidden="true" tabindex="-1"></a>                      <span class="at">correlation =</span> <span class="fu">corPagel</span>(<span class="dv">1</span>, <span class="at">phy =</span> tempTree, <span class="at">fixed =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb468-5"><a href="correlation.html#cb468-5" aria-hidden="true" tabindex="-1"></a>                                             <span class="at">form =</span><span class="sc">~</span> species),</span>
+<span id="cb468-6"><a href="correlation.html#cb468-6" aria-hidden="true" tabindex="-1"></a>                      <span class="at">data =</span> anolisData, <span class="at">method =</span> <span class="st">&quot;ML&quot;</span>)</span>
+<span id="cb468-7"><a href="correlation.html#cb468-7" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(pglsModelLambda)</span></code></pre></div>
 <pre><code>## Generalized least squares fit by maximum likelihood
 ##   Model: hostility ~ awesomeness 
 ##   Data: anolisData 
@@ -879,10 +886,10 @@ For example, we can include a discrete predictor:</p>
 ## 
 ## Residual standard error: 0.4317018 
 ## Degrees of freedom: 100 total; 98 residual</code></pre>
-<div class="sourceCode" id="cb465"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb465-1"><a href="correlation.html#cb465-1" aria-hidden="true" tabindex="-1"></a>pglsModelOU <span class="ot">=</span> <span class="fu">gls</span>(hostility <span class="sc">~</span> awesomeness,</span>
-<span id="cb465-2"><a href="correlation.html#cb465-2" aria-hidden="true" tabindex="-1"></a>                   <span class="at">correlation =</span> <span class="fu">corMartins</span>(<span class="dv">1</span>, <span class="at">phy =</span> tempTree, <span class="at">form =</span><span class="sc">~</span> species),</span>
-<span id="cb465-3"><a href="correlation.html#cb465-3" aria-hidden="true" tabindex="-1"></a>                   <span class="at">data =</span> anolisData)</span>
-<span id="cb465-4"><a href="correlation.html#cb465-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(pglsModelOU)</span></code></pre></div>
+<div class="sourceCode" id="cb470"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb470-1"><a href="correlation.html#cb470-1" aria-hidden="true" tabindex="-1"></a>pglsModelOU <span class="ot">=</span> <span class="fu">gls</span>(hostility <span class="sc">~</span> awesomeness,</span>
+<span id="cb470-2"><a href="correlation.html#cb470-2" aria-hidden="true" tabindex="-1"></a>                   <span class="at">correlation =</span> <span class="fu">corMartins</span>(<span class="dv">1</span>, <span class="at">phy =</span> tempTree, <span class="at">form =</span><span class="sc">~</span> species),</span>
+<span id="cb470-3"><a href="correlation.html#cb470-3" aria-hidden="true" tabindex="-1"></a>                   <span class="at">data =</span> anolisData)</span>
+<span id="cb470-4"><a href="correlation.html#cb470-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(pglsModelOU)</span></code></pre></div>
 <pre><code>## Generalized least squares fit by REML
 ##   Model: hostility ~ awesomeness 
 ##   Data: anolisData 
@@ -928,9 +935,9 @@ For example, we can include a discrete predictor:</p>
       <strong><span style="color: #0011AA; font-size:25px;">Solution</span></strong>
     </summary>
     <p>
-<div class="sourceCode" id="cb467"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb467-1"><a href="correlation.html#cb467-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(EcoData)</span>
-<span id="cb467-2"><a href="correlation.html#cb467-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb467-3"><a href="correlation.html#cb467-3" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(plantcounts)</span></code></pre></div>
+<div class="sourceCode" id="cb472"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb472-1"><a href="correlation.html#cb472-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(EcoData)</span>
+<span id="cb472-2"><a href="correlation.html#cb472-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb472-3"><a href="correlation.html#cb472-3" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(plantcounts)</span></code></pre></div>
 <pre><code>## &#39;data.frame&#39;:    285 obs. of  6 variables:
 ##  $ tk      : int  65341 65342 65343 65344 65351 65352 65353 65354 65361 65362 ...
 ##  $ area    : num  33.6 33.6 33.6 33.6 33.6 ...
