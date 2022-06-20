@@ -207,6 +207,13 @@ For a list, it's basically the same, except the following points:
 * Elements in lists usually have a name, so you can also access those via `list$name`{.R}.
 * Lists accessed with [] return a list. If you want to select a single element, you have to access it via [[]], as in `list[[2]]`{.R}.
 
+```{r}
+myList = list(a = 1, b = "dog", c = TRUE)
+myList[1]
+myList[[1]]
+myList$a
+```
+
 For data.frames and other objects with dimension > 2, the same is true, except that you have several indices.
 
 ```{r chunk_chapter2_12, eval=FALSE, purl=FALSE}
