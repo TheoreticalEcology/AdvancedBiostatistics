@@ -190,34 +190,41 @@ To plot the phylogenetic tree, use
 plot(anolisTree)
 ```
 
-```{r chunk_chapter6_chunk10, echo=FALSE, eval=TRUE}
+Regress species traits
+
+```{r}
 # Check whether names are matching in both files.
 name.check(anolisTree, anolisData)
 
 # Plot traits.
 plot(anolisData[, c("awesomeness", "hostility")])
 
-# lm analysis.
 plot(hostility ~ awesomeness, data = anolisData)
 fit = lm(hostility ~ awesomeness, data = anolisData)
 summary(fit)
 abline(fit)
+```
 
+
+Check for phylogenetic signal in residuals.
+
+```{r}
 # Calculate weight matrix for phylogenetic distance.
 w = 1/cophenetic(anolisTree)
 diag(w) = 0
 
-# Check for phylogenetic signal in hostility.
-Moran.I(anolisData$hostility, w)
-
-# Check for phylogenetic signal in residuals.
 Moran.I(residuals(fit), w)
-# Conclusion: signal in the residuals, a normal lm will not work.
+```
 
-# You can also check with DHARMa, using this works also for GLMMs
+Conclusion: signal in the residuals, a normal lm will not work.
+
+You can also check with DHARMa, using this works also for GLMMs
+
+```{r}
 res = simulateResiduals(fit)
 testSpatialAutocorrelation(res, distMat = cophenetic(anolisTree))
 ```
+
 
 An old-school method to deal with the problem are the so-called **Phylogenetically Independent Contrasts** (PICs) (Felsenstein, J. (1985) "Phylogenies and the comparative method". American Naturalist, 125, 1–15.). The idea here is to transform your data in a way that an lm is still appropriate. For completeness, I show the method here.
 
