@@ -758,20 +758,34 @@ The model suggests a significant global trend of plant height increasing with te
 ***1.***
 
 ```{r chunk_chapter3_task_19, message=FALSE, warning=FALSE}
-
+par(mfrow = c(2, 2))
+plot(model)
 ```
+
+Looks OK!
 
 ***2.***
 
 ```{r chunk_chapter3_task_20, message=FALSE, warning=FALSE}
+aggDat = aggregate(. ~ Family, 
+                data = plantHeight[, c(4, 7, 14)], FUN = mean)
 
+model2 = lm(loght ~ temp, data = aggDat)
+summary(model2)
+summary(aov(model2))
 ```
+
+Yes, there is still an effect
 
 ***3.***
 
 ```{r chunk_chapter3_task_21, message=FALSE, warning=FALSE}
-
+model3 = lm(loght +  temp ~ growthform, data = plantHeight)
+summary(model3)
+summary(aov(model3))
 ```
+
+There is also an effect of growth form. Note that the comparisons are against the growth form fern (intercept), which has only one observation, so it may make sense to re-order the factor in the regression so that you compare, e.g., against herbs (will yield more significant comparisons). 
 
 ```{=html}
     </p>
