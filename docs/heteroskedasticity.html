@@ -993,6 +993,12 @@ Nomenclature:</p>
 ##          (Intr) stnLRT
 ## standLRT -0.013       
 ## sexM     -0.339  0.061</code></pre>
+<p><strong><em>Model selection with mixed models</em></strong></p>
+<p>Selecting with RE models</p>
+<ul>
+<li>Selecting on the fixed effect structure with AIC OK under the assumption that the RE structure doesn’t change</li>
+<li>Selecting on the RE structure with lmerTest::ranova or simulated likelihood ratio tests</li>
+</ul>
 <p><strong><em>Variance partitioning / ANOVA</em></strong></p>
 <p>Also variance partitioning is a bit tricky, as (see type I/II/III ANOVA discussion) fixed and random components of the model are in some way “correlated”. The question is: Do you want to count the random effect variance as “explained”, or “residual”. The most common approach is the hierarchical partitioning proposed by by <em>Nakagawa &amp; Schielzeth 2013, Nakagawa et al. (2017)</em>, which is implemented in the <code>MuMIn</code>.{R} package. With this, we can run</p>
 <div class="sourceCode" id="cb351"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb351-1"><a href="heteroskedasticity.html#cb351-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MuMIn)</span>
@@ -1025,6 +1031,19 @@ Nomenclature:</p>
       <strong><span style="color: #0011AA; font-size:25px;">Solution</span></strong>
     </summary>
     <p>
+<div class="sourceCode" id="cb354"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb354-1"><a href="heteroskedasticity.html#cb354-1" aria-hidden="true" tabindex="-1"></a><span class="co"># initial model with a random intercept and fixed effect structure based on</span></span>
+<span id="cb354-2"><a href="heteroskedasticity.html#cb354-2" aria-hidden="true" tabindex="-1"></a><span class="co"># causal assumptions</span></span>
+<span id="cb354-3"><a href="heteroskedasticity.html#cb354-3" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lmer</span>(gpa <span class="sc">~</span> <span class="fu">scale</span>(occasion)<span class="sc">*</span>sex <span class="sc">+</span> <span class="fu">as.numeric</span>(job) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>student), <span class="at">data =</span> gpa)</span>
+<span id="cb354-4"><a href="heteroskedasticity.html#cb354-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span>
+<span id="cb354-5"><a href="heteroskedasticity.html#cb354-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb354-6"><a href="heteroskedasticity.html#cb354-6" aria-hidden="true" tabindex="-1"></a><span class="co"># plot seems to show a lot of differences still, so add random slope</span></span>
+<span id="cb354-7"><a href="heteroskedasticity.html#cb354-7" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fit, </span>
+<span id="cb354-8"><a href="heteroskedasticity.html#cb354-8" aria-hidden="true" tabindex="-1"></a>     <span class="fu">resid</span>(., <span class="at">scaled=</span><span class="cn">TRUE</span>) <span class="sc">~</span> <span class="fu">fitted</span>(.) <span class="sc">|</span> student, </span>
+<span id="cb354-9"><a href="heteroskedasticity.html#cb354-9" aria-hidden="true" tabindex="-1"></a>     <span class="at">abline =</span> <span class="dv">0</span>)</span>
+<span id="cb354-10"><a href="heteroskedasticity.html#cb354-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb354-11"><a href="heteroskedasticity.html#cb354-11" aria-hidden="true" tabindex="-1"></a><span class="co"># final model</span></span>
+<span id="cb354-12"><a href="heteroskedasticity.html#cb354-12" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lmer</span>(gpa <span class="sc">~</span> <span class="fu">scale</span>(occasion)<span class="sc">*</span>sex <span class="sc">+</span> <span class="fu">as.numeric</span>(job) <span class="sc">+</span> (<span class="fu">scale</span>(occasion)<span class="sc">|</span>student), <span class="at">data =</span> gpa)</span>
+<span id="cb354-13"><a href="heteroskedasticity.html#cb354-13" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code></pre></div>
     </p>
   </details>
   <br/><hr/>
@@ -1034,8 +1053,8 @@ Nomenclature:</p>
   <hr/>
   <strong><span style="color: #0011AA; font-size:25px;">Task</span></strong><br/>
 <p>We use a dataset on bee colonies infected by the American Foulbrood (AFB) disease.</p>
-<div class="sourceCode" id="cb354"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb354-1"><a href="heteroskedasticity.html#cb354-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(EcoData)</span>
-<span id="cb354-2"><a href="heteroskedasticity.html#cb354-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(bees)</span></code></pre></div>
+<div class="sourceCode" id="cb355"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb355-1"><a href="heteroskedasticity.html#cb355-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(EcoData)</span>
+<span id="cb355-2"><a href="heteroskedasticity.html#cb355-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(bees)</span></code></pre></div>
 <p>Perform the data analysis, according to the hypothesis discussed in the course.</p>
   <details>
     <summary>

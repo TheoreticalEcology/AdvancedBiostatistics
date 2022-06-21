@@ -572,6 +572,12 @@ m2 = lmer(normexam ~ standLRT + sex +  (1 | school), data = Exam, REML = F)
 summary(m2)
 ```
 
+***Model selection with mixed models***
+
+Selecting with RE models
+
+* Selecting on the fixed effect structure with AIC OK under the assumption that the RE structure doesn't change
+* Selecting on the RE structure with lmerTest::ranova or simulated likelihood ratio tests
 
 ***Variance partitioning / ANOVA***
 
@@ -623,8 +629,20 @@ Hint: The amount and trend of GPA from one student are not independent. Do a sta
     <p>
 ```
 
-```{r chunk_chapter4_task_2, message=FALSE, warning=FALSE}
+```{r chunk_chapter4_task_2, eval = F}
+# initial model with a random intercept and fixed effect structure based on
+# causal assumptions
+fit <- lmer(gpa ~ scale(occasion)*sex + as.numeric(job) + (1|student), data = gpa)
+summary(fit)
 
+# plot seems to show a lot of differences still, so add random slope
+plot(fit, 
+     resid(., scaled=TRUE) ~ fitted(.) | student, 
+     abline = 0)
+
+# final model
+fit <- lmer(gpa ~ scale(occasion)*sex + as.numeric(job) + (scale(occasion)|student), data = gpa)
+summary(fit)
 ```
 
 ```{=html}
