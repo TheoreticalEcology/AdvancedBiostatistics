@@ -890,7 +890,48 @@ Nomenclature:</p>
 </div>
 <div id="task-a-mixed-model-for-plantheight" class="section level3 hasAnchor" number="4.4.2">
 <h3><span class="header-section-number">4.4.2</span> Task: a mixed model for plantHeight<a href="heteroskedasticity.html#task-a-mixed-model-for-plantheight" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+  <hr/>
+  <strong><span style="color: #0011AA; font-size:25px;">Task</span></strong><br/>
 <p>Take our old plantHeight dataset that we worked with already a lot. Consider that the relationship height ~ temp may be different for each family. Some families may have larger plants in general (random intercept), but it may also be that the temperature relationship changes per family. Thus, you could include family as random intercept + slope in this relationship. Specify the model and run it!</p>
+  <details>
+    <summary>
+      <strong><span style="color: #0011AA; font-size:25px;">Solution</span></strong>
+    </summary>
+    <p>
+<div class="sourceCode" id="cb341"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb341-1"><a href="heteroskedasticity.html#cb341-1" aria-hidden="true" tabindex="-1"></a>oldModel <span class="ot">&lt;-</span> <span class="fu">lm</span>(loght <span class="sc">~</span> temp, <span class="at">data =</span> plantHeight)</span>
+<span id="cb341-2"><a href="heteroskedasticity.html#cb341-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(oldModel)</span>
+<span id="cb341-3"><a href="heteroskedasticity.html#cb341-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb341-4"><a href="heteroskedasticity.html#cb341-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Stragegy: if you have a grouping factor, add a random intercept</span></span>
+<span id="cb341-5"><a href="heteroskedasticity.html#cb341-5" aria-hidden="true" tabindex="-1"></a><span class="co"># check additionally for random slope</span></span>
+<span id="cb341-6"><a href="heteroskedasticity.html#cb341-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb341-7"><a href="heteroskedasticity.html#cb341-7" aria-hidden="true" tabindex="-1"></a>randomInterceptModel <span class="ot">&lt;-</span> <span class="fu">lmer</span>(loght <span class="sc">~</span> temp <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>Family), <span class="at">data =</span> plantHeight)</span>
+<span id="cb341-8"><a href="heteroskedasticity.html#cb341-8" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(randomInterceptModel)</span>
+<span id="cb341-9"><a href="heteroskedasticity.html#cb341-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb341-10"><a href="heteroskedasticity.html#cb341-10" aria-hidden="true" tabindex="-1"></a><span class="co"># if I count sd = 1 paramter more</span></span>
+<span id="cb341-11"><a href="heteroskedasticity.html#cb341-11" aria-hidden="true" tabindex="-1"></a><span class="co"># if I count the REs, 69 parameters more</span></span>
+<span id="cb341-12"><a href="heteroskedasticity.html#cb341-12" aria-hidden="true" tabindex="-1"></a><span class="co"># solution: depends on the sd estimate -&gt; wide sd, loose nearly 69df, narrow sd = loose nothing except the sd estimate -&gt; flexibility of an random effect model is adoptiv (not fixed)</span></span>
+<span id="cb341-13"><a href="heteroskedasticity.html#cb341-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb341-14"><a href="heteroskedasticity.html#cb341-14" aria-hidden="true" tabindex="-1"></a>fixedInterceptModel <span class="ot">&lt;-</span> <span class="fu">lm</span>(loght <span class="sc">~</span> temp <span class="sc">+</span> Family, <span class="at">data =</span> plantHeight)</span>
+<span id="cb341-15"><a href="heteroskedasticity.html#cb341-15" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fixedInterceptModel)</span>
+<span id="cb341-16"><a href="heteroskedasticity.html#cb341-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb341-17"><a href="heteroskedasticity.html#cb341-17" aria-hidden="true" tabindex="-1"></a><span class="co"># loose 69 degrees of freedom -&gt; this model has 69 parameters more to fit than the model loght ~ temp, loose a lot of power</span></span>
+<span id="cb341-18"><a href="heteroskedasticity.html#cb341-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb341-19"><a href="heteroskedasticity.html#cb341-19" aria-hidden="true" tabindex="-1"></a>randomSlopeModel <span class="ot">&lt;-</span> <span class="fu">lmer</span>(loght <span class="sc">~</span> temp <span class="sc">+</span> (temp <span class="sc">|</span> Family), <span class="at">data =</span> plantHeight)</span>
+<span id="cb341-20"><a href="heteroskedasticity.html#cb341-20" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(randomSlopeModel)</span>
+<span id="cb341-21"><a href="heteroskedasticity.html#cb341-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb341-22"><a href="heteroskedasticity.html#cb341-22" aria-hidden="true" tabindex="-1"></a><span class="co"># scaling helps the optimizer</span></span>
+<span id="cb341-23"><a href="heteroskedasticity.html#cb341-23" aria-hidden="true" tabindex="-1"></a>plantHeight<span class="sc">$</span>sTemp <span class="ot">=</span> <span class="fu">scale</span>(plantHeight<span class="sc">$</span>temp)</span>
+<span id="cb341-24"><a href="heteroskedasticity.html#cb341-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb341-25"><a href="heteroskedasticity.html#cb341-25" aria-hidden="true" tabindex="-1"></a>randomSlopeModel <span class="ot">&lt;-</span> <span class="fu">lmer</span>(loght <span class="sc">~</span> sTemp <span class="sc">+</span> (sTemp <span class="sc">|</span> Family), <span class="at">data =</span> plantHeight)</span>
+<span id="cb341-26"><a href="heteroskedasticity.html#cb341-26" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(randomSlopeModel)</span>
+<span id="cb341-27"><a href="heteroskedasticity.html#cb341-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb341-28"><a href="heteroskedasticity.html#cb341-28" aria-hidden="true" tabindex="-1"></a><span class="co"># fixed effect model has no significance any more </span></span>
+<span id="cb341-29"><a href="heteroskedasticity.html#cb341-29" aria-hidden="true" tabindex="-1"></a>fixedSlopeInterceptModel <span class="ot">&lt;-</span> <span class="fu">lm</span>(loght <span class="sc">~</span> temp <span class="sc">*</span> Family, <span class="at">data =</span> plantHeight)</span>
+<span id="cb341-30"><a href="heteroskedasticity.html#cb341-30" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fixedSlopeInterceptModel)</span>
+<span id="cb341-31"><a href="heteroskedasticity.html#cb341-31" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">aov</span>(fixedSlopeInterceptModel))</span></code></pre></div>
+    </p>
+  </details>
+  <br/><hr/>
 </div>
 <div id="problems-with-mixed-models" class="section level3 hasAnchor" number="4.4.3">
 <h3><span class="header-section-number">4.4.3</span> Problems With Mixed Models<a href="heteroskedasticity.html#problems-with-mixed-models" class="anchor-section" aria-label="Anchor link to header"></a></h3>
@@ -898,30 +939,30 @@ Nomenclature:</p>
 <p><strong><em>Interpretation of random effects</em></strong></p>
 <p>What do the random effects mean? The classical interpretation is that they are a structured error, so they are basically group residuals and are not of further importance.</p>
 <p>However, people increasingly see random effects also as a means to regularize fixed effect models. What does that mean? Note first that, conceptual, every random effect model corresponds to a fixed effect model. For a random intercept model, this would be</p>
-<div class="sourceCode" id="cb341"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb341-1"><a href="heteroskedasticity.html#cb341-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lmer</span>(y <span class="sc">~</span> x <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>group)) <span class="ot">=&gt;</span> <span class="fu">lm</span>(y <span class="sc">~</span> x <span class="sc">+</span> group)</span></code></pre></div>
+<div class="sourceCode" id="cb342"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb342-1"><a href="heteroskedasticity.html#cb342-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lmer</span>(y <span class="sc">~</span> x <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>group)) <span class="ot">=&gt;</span> <span class="fu">lm</span>(y <span class="sc">~</span> x <span class="sc">+</span> group)</span></code></pre></div>
 <p>and for the random slope, it would be</p>
-<div class="sourceCode" id="cb342"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb342-1"><a href="heteroskedasticity.html#cb342-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lmer</span>(y <span class="sc">~</span> x <span class="sc">+</span> (x<span class="sc">|</span>group)) <span class="ot">=&gt;</span> <span class="fu">lm</span>(y <span class="sc">~</span> x <span class="sc">*</span> group)</span></code></pre></div>
+<div class="sourceCode" id="cb343"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb343-1"><a href="heteroskedasticity.html#cb343-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lmer</span>(y <span class="sc">~</span> x <span class="sc">+</span> (x<span class="sc">|</span>group)) <span class="ot">=&gt;</span> <span class="fu">lm</span>(y <span class="sc">~</span> x <span class="sc">*</span> group)</span></code></pre></div>
 <p>So, you could alternatively always fit the fixed effect model. What’s the difference? First of all, for the fixed effect models, you would get many more estimates and p-values in the standard summary functions. But that’s not really a big difference. More importantly, however, estimates in the random effect model will be closer together, and if you have groups with very little data, they will still be fittable. So, in a random effect model, parameter estimates for groups with few data points are informed by the estimates of the other groups, because they are connected via the normal distribution.</p>
 <p>This is today often used by people that want to fit effects across groups with varying availability of data. For example, if we have data for common and rare species, and we are interested in the density dependence of the species, we could fit</p>
-<div class="sourceCode" id="cb343"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb343-1"><a href="heteroskedasticity.html#cb343-1" aria-hidden="true" tabindex="-1"></a>mortality <span class="sc">~</span> density <span class="sc">+</span> (density <span class="sc">|</span> species)</span></code></pre></div>
+<div class="sourceCode" id="cb344"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb344-1"><a href="heteroskedasticity.html#cb344-1" aria-hidden="true" tabindex="-1"></a>mortality <span class="sc">~</span> density <span class="sc">+</span> (density <span class="sc">|</span> species)</span></code></pre></div>
 <p>In such a model, we have the mean density effect across all species, and rare species with few data will be constrained by this effect, while common species with a lot of data can overrule the normal distribution imposed by the random slope and get their own estimate. In this picture, the random effect imposes an adaptive shrinkage, similar to a LASSO or ridge shrinkage estimator, with the shrinkage strength controlled by the standard deviation of the random effect.</p>
 <p><strong><em>Degrees of freedom for a random effect</em></strong></p>
 <p>The second problem is: How many parameters does a random effect model have? To know how many parameters the model hss is crucial for calculating p-values, AIC and all that. We can estimate roughly how many parameters we should have by looking at the fixed effect version of the models:</p>
-<div class="sourceCode" id="cb344"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb344-1"><a href="heteroskedasticity.html#cb344-1" aria-hidden="true" tabindex="-1"></a>mod1 <span class="ot">=</span> <span class="fu">lm</span>(normexam <span class="sc">~</span> standLRT <span class="sc">+</span> sex , <span class="at">data =</span> Exam)</span>
-<span id="cb344-2"><a href="heteroskedasticity.html#cb344-2" aria-hidden="true" tabindex="-1"></a>mod1<span class="sc">$</span>rank <span class="co"># 3 parameters.</span></span></code></pre></div>
+<div class="sourceCode" id="cb345"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb345-1"><a href="heteroskedasticity.html#cb345-1" aria-hidden="true" tabindex="-1"></a>mod1 <span class="ot">=</span> <span class="fu">lm</span>(normexam <span class="sc">~</span> standLRT <span class="sc">+</span> sex , <span class="at">data =</span> Exam)</span>
+<span id="cb345-2"><a href="heteroskedasticity.html#cb345-2" aria-hidden="true" tabindex="-1"></a>mod1<span class="sc">$</span>rank <span class="co"># 3 parameters.</span></span></code></pre></div>
 <pre><code>## [1] 3</code></pre>
-<div class="sourceCode" id="cb346"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb346-1"><a href="heteroskedasticity.html#cb346-1" aria-hidden="true" tabindex="-1"></a>mod2 <span class="ot">=</span> <span class="fu">lmer</span>(normexam <span class="sc">~</span> standLRT <span class="sc">+</span> sex <span class="sc">+</span>  (<span class="dv">1</span> <span class="sc">|</span> school), <span class="at">data =</span> Exam)</span>
-<span id="cb346-2"><a href="heteroskedasticity.html#cb346-2" aria-hidden="true" tabindex="-1"></a><span class="co"># No idea how many parameters.</span></span>
-<span id="cb346-3"><a href="heteroskedasticity.html#cb346-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb346-4"><a href="heteroskedasticity.html#cb346-4" aria-hidden="true" tabindex="-1"></a>mod3 <span class="ot">=</span> <span class="fu">lm</span>(normexam <span class="sc">~</span> standLRT <span class="sc">+</span> sex <span class="sc">+</span> school, <span class="at">data =</span> Exam)</span>
-<span id="cb346-5"><a href="heteroskedasticity.html#cb346-5" aria-hidden="true" tabindex="-1"></a>mod3<span class="sc">$</span>rank <span class="co"># 67 parameters.</span></span></code></pre></div>
+<div class="sourceCode" id="cb347"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb347-1"><a href="heteroskedasticity.html#cb347-1" aria-hidden="true" tabindex="-1"></a>mod2 <span class="ot">=</span> <span class="fu">lmer</span>(normexam <span class="sc">~</span> standLRT <span class="sc">+</span> sex <span class="sc">+</span>  (<span class="dv">1</span> <span class="sc">|</span> school), <span class="at">data =</span> Exam)</span>
+<span id="cb347-2"><a href="heteroskedasticity.html#cb347-2" aria-hidden="true" tabindex="-1"></a><span class="co"># No idea how many parameters.</span></span>
+<span id="cb347-3"><a href="heteroskedasticity.html#cb347-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb347-4"><a href="heteroskedasticity.html#cb347-4" aria-hidden="true" tabindex="-1"></a>mod3 <span class="ot">=</span> <span class="fu">lm</span>(normexam <span class="sc">~</span> standLRT <span class="sc">+</span> sex <span class="sc">+</span> school, <span class="at">data =</span> Exam)</span>
+<span id="cb347-5"><a href="heteroskedasticity.html#cb347-5" aria-hidden="true" tabindex="-1"></a>mod3<span class="sc">$</span>rank <span class="co"># 67 parameters.</span></span></code></pre></div>
 <pre><code>## [1] 67</code></pre>
 <p>What we can say is that the mixed model is more complicated than mod1, but less than mod2 (as it has the additional constraint), so the complexity must be somewhere in-between. But now much?</p>
 <p>In fact, the complexity is controlled by the estimated variance of the random effect. For a high variance, the model is nearly as complex as mod3, for a low variance, it is only as complex as mod1. Because of these issues, <code class="sourceCode r">lmer</code> by default does not return p-values. However, you can calculate p-values based on approximate degrees of freedom via the <code class="sourceCode r">lmerTest</code> package, which also corrects ANOVA for random effects, but not AIC.</p>
-<div class="sourceCode" id="cb348"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb348-1"><a href="heteroskedasticity.html#cb348-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lmerTest)</span>
-<span id="cb348-2"><a href="heteroskedasticity.html#cb348-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb348-3"><a href="heteroskedasticity.html#cb348-3" aria-hidden="true" tabindex="-1"></a>m2 <span class="ot">=</span> <span class="fu">lmer</span>(normexam <span class="sc">~</span> standLRT <span class="sc">+</span> sex <span class="sc">+</span>  (<span class="dv">1</span> <span class="sc">|</span> school), <span class="at">data =</span> Exam, <span class="at">REML =</span> F)</span>
-<span id="cb348-4"><a href="heteroskedasticity.html#cb348-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m2)</span></code></pre></div>
+<div class="sourceCode" id="cb349"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb349-1"><a href="heteroskedasticity.html#cb349-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lmerTest)</span>
+<span id="cb349-2"><a href="heteroskedasticity.html#cb349-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb349-3"><a href="heteroskedasticity.html#cb349-3" aria-hidden="true" tabindex="-1"></a>m2 <span class="ot">=</span> <span class="fu">lmer</span>(normexam <span class="sc">~</span> standLRT <span class="sc">+</span> sex <span class="sc">+</span>  (<span class="dv">1</span> <span class="sc">|</span> school), <span class="at">data =</span> Exam, <span class="at">REML =</span> F)</span>
+<span id="cb349-4"><a href="heteroskedasticity.html#cb349-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m2)</span></code></pre></div>
 <pre><code>## Linear mixed model fit by maximum likelihood . t-tests use Satterthwaite&#39;s
 ##   method [lmerModLmerTest]
 ## Formula: normexam ~ standLRT + sex + (1 | school)
@@ -954,9 +995,9 @@ Nomenclature:</p>
 ## sexM     -0.339  0.061</code></pre>
 <p><strong><em>Variance partitioning / ANOVA</em></strong></p>
 <p>Also variance partitioning is a bit tricky, as (see type I/II/III ANOVA discussion) fixed and random components of the model are in some way “correlated”. The question is: Do you want to count the random effect variance as “explained”, or “residual”. The most common approach is the hierarchical partitioning proposed by by <em>Nakagawa &amp; Schielzeth 2013, Nakagawa et al. (2017)</em>, which is implemented in the <code>MuMIn</code>.{R} package. With this, we can run</p>
-<div class="sourceCode" id="cb350"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb350-1"><a href="heteroskedasticity.html#cb350-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MuMIn)</span>
-<span id="cb350-2"><a href="heteroskedasticity.html#cb350-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb350-3"><a href="heteroskedasticity.html#cb350-3" aria-hidden="true" tabindex="-1"></a><span class="fu">r.squaredGLMM</span>(m2) </span></code></pre></div>
+<div class="sourceCode" id="cb351"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb351-1"><a href="heteroskedasticity.html#cb351-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MuMIn)</span>
+<span id="cb351-2"><a href="heteroskedasticity.html#cb351-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb351-3"><a href="heteroskedasticity.html#cb351-3" aria-hidden="true" tabindex="-1"></a><span class="fu">r.squaredGLMM</span>(m2) </span></code></pre></div>
 <pre><code>##            R2m       R2c
 ## [1,] 0.3303846 0.4210712</code></pre>
 <p>Interpretation</p>
@@ -972,36 +1013,13 @@ Nomenclature:</p>
 <h3><span class="header-section-number">4.5.1</span> Case Study 1: College Student Performance Over Time<a href="heteroskedasticity.html#case-study-1-college-student-performance-over-time" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p><strong><em>Background and data structure</em></strong></p>
 <p>The GPA (college grade point average) data is a <strong>longitudinal</strong> data set (also named <strong>panel data</strong>, German: “Längsschnittstudie”. A study repeated at several different moments in time, compared to a <strong>cross-sectional study</strong> (German: “Querschnittstudie”) which has several participants at <em>one time</em>). In this data set, 200 college students and their GPA have been followed 6 consecutive semesters. Look at the GPA data set, which can be found in the <code class="sourceCode r">EcoData</code> package:</p>
-<div class="sourceCode" id="cb352"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb352-1"><a href="heteroskedasticity.html#cb352-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(EcoData)</span>
-<span id="cb352-2"><a href="heteroskedasticity.html#cb352-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb352-3"><a href="heteroskedasticity.html#cb352-3" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(gpa)</span></code></pre></div>
-<pre><code>## &#39;data.frame&#39;:    1200 obs. of  10 variables:
-##  $ student : Factor w/ 200 levels &quot;1&quot;,&quot;2&quot;,&quot;3&quot;,&quot;4&quot;,..: 1 1 1 1 1 1 2 2 2 2 ...
-##  $ occas   : Factor w/ 6 levels &quot;year 1 semester 1&quot;,..: 1 2 3 4 5 6 1 2 3 4 ...
-##   ..- attr(*, &quot;label&quot;)= chr &quot;occasion&quot;
-##  $ gpa     : num  2.3 2.1 3 3 3 3.3 2.2 2.5 2.6 2.6 ...
-##  $ job     : Factor w/ 5 levels &quot;no job&quot;,&quot;1 hour&quot;,..: 3 3 3 3 3 3 3 4 3 3 ...
-##   ..- attr(*, &quot;label&quot;)= chr &quot;job status&quot;
-##  $ sex     : Factor w/ 2 levels &quot;male&quot;,&quot;female&quot;: 2 2 2 2 2 2 1 1 1 1 ...
-##   ..- attr(*, &quot;label&quot;)= chr &quot;pupil gender&quot;
-##  $ highgpa : num  2.8 2.8 2.8 2.8 2.8 2.8 2.5 2.5 2.5 2.5 ...
-##  $ admitted: Factor w/ 2 levels &quot;no&quot;,&quot;yes&quot;: 2 2 2 2 2 2 1 1 1 1 ...
-##   ..- attr(*, &quot;label&quot;)= chr &quot;admitted to university&quot;
-##  $ year    : num  1 1 2 2 3 3 1 1 2 2 ...
-##  $ semester: Factor w/ 2 levels &quot;1&quot;,&quot;2&quot;: 1 2 1 2 1 2 1 2 1 2 ...
-##  $ occasion: num  0 1 2 3 4 5 0 1 2 3 ...</code></pre>
+<div class="sourceCode" id="cb353"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb353-1"><a href="heteroskedasticity.html#cb353-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(EcoData)</span>
+<span id="cb353-2"><a href="heteroskedasticity.html#cb353-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(gpa)</span></code></pre></div>
 <p>In this data set, there are GPA measures on 6 consecutive <strong>occasions</strong>, with a <strong>job</strong> status variable (how many hours worked) for the same 6 occasions. There are two student-level explanatory variables: The <strong>sex</strong> (1 = male, 2 = female) and the high school <strong>gpa</strong>. There is also a dichotomous student-level outcome variable, which indicates whether a student has been <strong>admitted</strong> to the university of their choice. Since not every student applies to a university, this variable has many missing values. Each <strong>student</strong> and each <strong>year</strong> of observation have an id.</p>
   <hr/>
   <strong><span style="color: #0011AA; font-size:25px;">Task</span></strong><br/>
 <p>Analyze if GPA improves over time (<strong>occasion</strong>)!</p>
-<p>Hint: The amount and trend of GPA from one student are not independent. Do a standard linear regression and a mixed effects regression, including random intercept and slope for the grouping variable <strong>student</strong>. Compare the confidence intervals (Hint: <code class="sourceCode r">?confint</code>) and the coefficients (<code class="sourceCode r">?coef</code>) of the standard linear model and the mixed effects model. Look at the random effects estimates of the mixed effects model (hint: <code class="sourceCode r">?ranef</code>).</p>
-<p>Advanced / optional:</p>
-<ul>
-<li>Look at a visualziation of the random slopes at:<br />
-<a href="https://m-clark.github.io/mixed-models-with-R/random_slopes.html#visualization-of-effects" target="_blank" rel="noopener">https://m-clark.github.io/mixed-models-with-R/random_slopes.html#visualization-of-effects</a>.</li>
-<li>Execute and understand the generative simulation of random slopes at:<br />
-<a href="https://m-clark.github.io/mixed-models-with-R/random_slopes.html#exercises-for-random-slopes" target="_blank" rel="noopener">https://m-clark.github.io/mixed-models-with-R/random_slopes.html#exercises-for-random-slopes</a>.</li>
-</ul>
+<p>Hint: The amount and trend of GPA from one student are not independent. Do a standard linear regression and a mixed effects regression, including random intercept and slope for the grouping variable <strong>student</strong>. Compare the confidence intervals, coefficients and p-values of the standard linear model and the mixed effects model. Look at the random effects estimates of the mixed effects model (hint: <code class="sourceCode r">?ranef</code>).</p>
   <details>
     <summary>
       <strong><span style="color: #0011AA; font-size:25px;">Solution</span></strong>
@@ -1015,11 +1033,10 @@ Nomenclature:</p>
 <h3><span class="header-section-number">4.5.2</span> Case Study 2 - Honeybee Data<a href="heteroskedasticity.html#case-study-2---honeybee-data" class="anchor-section" aria-label="Anchor link to header"></a></h3>
   <hr/>
   <strong><span style="color: #0011AA; font-size:25px;">Task</span></strong><br/>
-<p>We use</p>
+<p>We use a dataset on bee colonies infected by the American Foulbrood (AFB) disease.</p>
 <div class="sourceCode" id="cb354"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb354-1"><a href="heteroskedasticity.html#cb354-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(EcoData)</span>
-<span id="cb354-2"><a href="heteroskedasticity.html#cb354-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb354-3"><a href="heteroskedasticity.html#cb354-3" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(bees)</span></code></pre></div>
-<p>Perform the data analysis, according to the hypothesis above.</p>
+<span id="cb354-2"><a href="heteroskedasticity.html#cb354-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(bees)</span></code></pre></div>
+<p>Perform the data analysis, according to the hypothesis discussed in the course.</p>
   <details>
     <summary>
       <strong><span style="color: #0011AA; font-size:25px;">Solution</span></strong>

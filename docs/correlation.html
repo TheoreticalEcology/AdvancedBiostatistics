@@ -599,7 +599,7 @@ code span.wa { color: #bf0303; } /* Warning */
 ##  [97] &quot;96&quot;  &quot;97&quot;  &quot;98&quot;  &quot;99&quot;</code></pre>
 <div class="sourceCode" id="cb467"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb467-1"><a href="correlation.html#cb467-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot traits.</span></span>
 <span id="cb467-2"><a href="correlation.html#cb467-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(anolisData[, <span class="fu">c</span>(<span class="st">&quot;awesomeness&quot;</span>, <span class="st">&quot;hostility&quot;</span>)])</span></code></pre></div>
-<p><img src="_main_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+<p><img src="_main_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
 <div class="sourceCode" id="cb468"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb468-1"><a href="correlation.html#cb468-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(hostility <span class="sc">~</span> awesomeness, <span class="at">data =</span> anolisData)</span>
 <span id="cb468-2"><a href="correlation.html#cb468-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">lm</span>(hostility <span class="sc">~</span> awesomeness, <span class="at">data =</span> anolisData)</span>
 <span id="cb468-3"><a href="correlation.html#cb468-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code></pre></div>
@@ -622,7 +622,7 @@ code span.wa { color: #bf0303; } /* Warning */
 ## Multiple R-squared:  0.8555, Adjusted R-squared:  0.8541 
 ## F-statistic: 580.4 on 1 and 98 DF,  p-value: &lt; 2.2e-16</code></pre>
 <div class="sourceCode" id="cb470"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb470-1"><a href="correlation.html#cb470-1" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(fit)</span></code></pre></div>
-<p><img src="_main_files/figure-html/unnamed-chunk-15-2.png" width="672" /></p>
+<p><img src="_main_files/figure-html/unnamed-chunk-16-2.png" width="672" /></p>
 <p>Check for phylogenetic signal in residuals.</p>
 <div class="sourceCode" id="cb471"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb471-1"><a href="correlation.html#cb471-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate weight matrix for phylogenetic distance.</span></span>
 <span id="cb471-2"><a href="correlation.html#cb471-2" aria-hidden="true" tabindex="-1"></a>w <span class="ot">=</span> <span class="dv">1</span><span class="sc">/</span><span class="fu">cophenetic</span>(anolisTree)</span>

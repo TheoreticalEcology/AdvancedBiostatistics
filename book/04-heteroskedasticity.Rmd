@@ -458,7 +458,61 @@ with(Exam, {
 
 ### Task: a mixed model for plantHeight
 
+```{=html}
+  <hr/>
+  <strong><span style="color: #0011AA; font-size:25px;">Task</span></strong><br/>
+```
+
 Take our old plantHeight dataset that we worked with already a lot. Consider that the relationship height ~ temp may be different for each family. Some families may have larger plants in general (random intercept), but it may also be that the temperature relationship changes per family. Thus, you could include family as random intercept + slope in this relationship. Specify the model and run it!
+
+```{=html}
+  <details>
+    <summary>
+      <strong><span style="color: #0011AA; font-size:25px;">Solution</span></strong>
+    </summary>
+    <p>
+```
+
+```{r, eval = F}
+oldModel <- lm(loght ~ temp, data = plantHeight)
+summary(oldModel)
+
+# Stragegy: if you have a grouping factor, add a random intercept
+# check additionally for random slope
+
+randomInterceptModel <- lmer(loght ~ temp + (1|Family), data = plantHeight)
+summary(randomInterceptModel)
+
+# if I count sd = 1 paramter more
+# if I count the REs, 69 parameters more
+# solution: depends on the sd estimate -> wide sd, loose nearly 69df, narrow sd = loose nothing except the sd estimate -> flexibility of an random effect model is adoptiv (not fixed)
+
+fixedInterceptModel <- lm(loght ~ temp + Family, data = plantHeight)
+summary(fixedInterceptModel)
+
+# loose 69 degrees of freedom -> this model has 69 parameters more to fit than the model loght ~ temp, loose a lot of power
+
+randomSlopeModel <- lmer(loght ~ temp + (temp | Family), data = plantHeight)
+summary(randomSlopeModel)
+
+# scaling helps the optimizer
+plantHeight$sTemp = scale(plantHeight$temp)
+
+randomSlopeModel <- lmer(loght ~ sTemp + (sTemp | Family), data = plantHeight)
+summary(randomSlopeModel)
+
+# fixed effect model has no significance any more 
+fixedSlopeInterceptModel <- lm(loght ~ temp * Family, data = plantHeight)
+summary(fixedSlopeInterceptModel)
+summary(aov(fixedSlopeInterceptModel))
+```
+
+
+```{=html}
+    </p>
+  </details>
+  <br/><hr/>
+```
 
 
 ### Problems With Mixed Models
@@ -538,18 +592,15 @@ Interpretation
 ## Case studies
 
 
-
 ### Case Study 1: College Student Performance Over Time
-
 
 
 ***Background and data structure***
 
 The GPA (college grade point average) data is a **longitudinal** data set (also named **panel data**, German: "Längsschnittstudie". A study repeated at several different moments in time, compared to a **cross-sectional study** (German: "Querschnittstudie") which has several participants at *one time*). In this data set, 200 college students and their GPA have been followed 6 consecutive semesters. Look at the GPA data set, which can be found in the `EcoData`{.R} package:
 
-```{r chunk_chapter4_chunk29, echo=TRUE, eval=TRUE}
+```{r chunk_chapter4_chunk29, echo=TRUE, eval=F}
 library(EcoData)
-
 str(gpa)
 ```
 
@@ -560,16 +611,9 @@ In this data set, there are GPA measures on 6 consecutive **occasions**, with a 
   <strong><span style="color: #0011AA; font-size:25px;">Task</span></strong><br/>
 ```
 
-Analyze if GPA improves over time (**occasion**)!
+Analyze if GPA improves over time (**occasion**)! 
 
-Hint: The amount and trend of GPA from one student are not independent. Do a standard linear regression and a mixed effects regression, including random intercept and slope for the grouping variable **student**. Compare the confidence intervals (Hint: `?confint`{.R}) and the coefficients (`?coef`{.R}) of the standard linear model and the mixed effects model. Look at the random effects estimates of the mixed effects model (hint: `?ranef`{.R}).
-
-Advanced / optional:
-
-* Look at a visualziation of the random slopes at:  
-<a href="https://m-clark.github.io/mixed-models-with-R/random_slopes.html#visualization-of-effects" target="_blank" rel="noopener">https://m-clark.github.io/mixed-models-with-R/random_slopes.html#visualization-of-effects</a>.
-* Execute and understand the generative simulation of random slopes at:  
-<a href="https://m-clark.github.io/mixed-models-with-R/random_slopes.html#exercises-for-random-slopes" target="_blank" rel="noopener">https://m-clark.github.io/mixed-models-with-R/random_slopes.html#exercises-for-random-slopes</a>.
+Hint: The amount and trend of GPA from one student are not independent. Do a standard linear regression and a mixed effects regression, including random intercept and slope for the grouping variable **student**. Compare the confidence intervals, coefficients and p-values of the standard linear model and the mixed effects model. Look at the random effects estimates of the mixed effects model (hint: `?ranef`{.R}).
 
 ```{=html}
   <details>
@@ -597,15 +641,14 @@ Advanced / optional:
   <strong><span style="color: #0011AA; font-size:25px;">Task</span></strong><br/>
 ```
 
-We use 
+We use a dataset on bee colonies infected by the American Foulbrood (AFB) disease. 
 
 ```{r chunk_chapter4_task_3, message=FALSE, warning=FALSE, eval = FALSE, purl=FALSE}
 library(EcoData)
-
 str(bees)
 ```
 
-Perform the data analysis, according to the hypothesis above.
+Perform the data analysis, according to the hypothesis discussed in the course. 
 
 ```{=html}
   <details>
