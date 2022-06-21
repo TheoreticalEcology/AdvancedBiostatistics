@@ -281,12 +281,9 @@ What can we do to deal with such distributional problems and outliers?
 * **Quantile regression** - A special type of regression that does not assume a particular residual distribution.
 
 
-
 ***Change distribution***
 
 If we want to change the distribution, we have to go to a GLM, see Wednesday.
-
-
 
 ***Robust regression***
 
@@ -308,22 +305,18 @@ fit = lmrob(growth ~ concentration)
 summary(fit)
 ```
 
-
-
 ***Quantile regression***
 
 Quantile regressions don't fit a line with an error spreading around it, but try to fit a quantile (e.g. the 0.5 quantile, the median) regardless of the distribution. Thus, they work even if the usual assumptions don't hold.
 
 ```{r chunk_chapter4_chunk19, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE}
-library(quantreg)
+library(qgam)
 
-fit = rq(growth ~ concentration, .5) 
+dat = data.frame(growth = growth, concentration = concentration)
+
+fit = qgam(growth ~ concentration, data = dat, qu = 0.5) 
 summary(fit)
-summary(fit, se = "boot")
 ```
-
-Alternative and very useful `quantreg`.{R} package: 
-<a href="https://cran.r-project.org/web/packages/lqmm/index.html" target="_blank" rel="noopener">https://cran.r-project.org/web/packages/lqmm/index.html</a>
 
 ***Summary***
 

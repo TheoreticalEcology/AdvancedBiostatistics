@@ -300,17 +300,17 @@ code span.wa { color: #bf0303; } /* Warning */
 <div id="a-binomial-example" class="section level3 hasAnchor" number="5.1.1">
 <h3><span class="header-section-number">5.1.1</span> A Binomial Example<a href="GLMMs.html#a-binomial-example" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>We want to look at the titanic data set. A cleaned version of this is in the package <code class="sourceCode r">EcoData</code>, which you have to install first from GitHub. If you haven’t already installed this package, I hope this works for you:</p>
-<div class="sourceCode" id="cb347"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb347-1"><a href="GLMMs.html#cb347-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages(&quot;devtools&quot;)  # If you don&#39;t have the devtools package installed.</span></span>
-<span id="cb347-2"><a href="GLMMs.html#cb347-2" aria-hidden="true" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="at">repo =</span> <span class="st">&quot;TheoreticalEcology/EcoData&quot;</span>,</span>
-<span id="cb347-3"><a href="GLMMs.html#cb347-3" aria-hidden="true" tabindex="-1"></a>                         <span class="at">dependencies =</span> T, <span class="at">build_vignettes =</span> T)</span></code></pre></div>
+<div class="sourceCode" id="cb353"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb353-1"><a href="GLMMs.html#cb353-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages(&quot;devtools&quot;)  # If you don&#39;t have the devtools package installed.</span></span>
+<span id="cb353-2"><a href="GLMMs.html#cb353-2" aria-hidden="true" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="at">repo =</span> <span class="st">&quot;TheoreticalEcology/EcoData&quot;</span>,</span>
+<span id="cb353-3"><a href="GLMMs.html#cb353-3" aria-hidden="true" tabindex="-1"></a>                         <span class="at">dependencies =</span> T, <span class="at">build_vignettes =</span> T)</span></code></pre></div>
 <p>Let’s look at the titanic data set included in EcoData:</p>
-<div class="sourceCode" id="cb348"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb348-1"><a href="GLMMs.html#cb348-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(EcoData)</span></code></pre></div>
+<div class="sourceCode" id="cb354"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb354-1"><a href="GLMMs.html#cb354-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(EcoData)</span></code></pre></div>
 <pre><code>## 
 ## Attaching package: &#39;EcoData&#39;</code></pre>
 <pre><code>## The following object is masked from &#39;package:MASS&#39;:
 ## 
 ##     cement</code></pre>
-<div class="sourceCode" id="cb351"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb351-1"><a href="GLMMs.html#cb351-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(titanic)</span></code></pre></div>
+<div class="sourceCode" id="cb357"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb357-1"><a href="GLMMs.html#cb357-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(titanic)</span></code></pre></div>
 <pre><code>## &#39;data.frame&#39;:    1309 obs. of  14 variables:
 ##  $ pclass   : int  1 1 1 1 1 1 1 1 1 1 ...
 ##  $ survived : int  1 1 0 0 0 1 1 0 1 0 ...
@@ -326,12 +326,12 @@ code span.wa { color: #bf0303; } /* Warning */
 ##  $ boat     : chr  &quot;2&quot; &quot;11&quot; &quot;&quot; &quot;&quot; ...
 ##  $ body     : int  NA NA NA 135 NA NA NA NA NA 22 ...
 ##  $ home.dest: chr  &quot;St Louis, MO&quot; &quot;Montreal, PQ / Chesterville, ON&quot; &quot;Montreal, PQ / Chesterville, ON&quot; &quot;Montreal, PQ / Chesterville, ON&quot; ...</code></pre>
-<div class="sourceCode" id="cb353"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb353-1"><a href="GLMMs.html#cb353-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mosaicplot</span>( <span class="sc">~</span> survived <span class="sc">+</span> sex <span class="sc">+</span> pclass, <span class="at">data =</span> titanic)</span></code></pre></div>
+<div class="sourceCode" id="cb359"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb359-1"><a href="GLMMs.html#cb359-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mosaicplot</span>( <span class="sc">~</span> survived <span class="sc">+</span> sex <span class="sc">+</span> pclass, <span class="at">data =</span> titanic)</span></code></pre></div>
 <p><img src="_main_files/figure-html/chunk_chapter5_chunk2-1.png" width="672" /></p>
-<div class="sourceCode" id="cb354"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb354-1"><a href="GLMMs.html#cb354-1" aria-hidden="true" tabindex="-1"></a>titanic<span class="sc">$</span>pclass <span class="ot">=</span> <span class="fu">as.factor</span>(titanic<span class="sc">$</span>pclass)</span></code></pre></div>
+<div class="sourceCode" id="cb360"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb360-1"><a href="GLMMs.html#cb360-1" aria-hidden="true" tabindex="-1"></a>titanic<span class="sc">$</span>pclass <span class="ot">=</span> <span class="fu">as.factor</span>(titanic<span class="sc">$</span>pclass)</span></code></pre></div>
 <p>You can fit an lm, but the residual checks make it very evident that the data with a 0/1 response don’t fit to the assumption of an lm:</p>
-<div class="sourceCode" id="cb355"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb355-1"><a href="GLMMs.html#cb355-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">lm</span>(survived <span class="sc">~</span> age, <span class="at">data =</span> titanic)</span>
-<span id="cb355-2"><a href="GLMMs.html#cb355-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code></pre></div>
+<div class="sourceCode" id="cb361"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb361-1"><a href="GLMMs.html#cb361-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">lm</span>(survived <span class="sc">~</span> age, <span class="at">data =</span> titanic)</span>
+<span id="cb361-2"><a href="GLMMs.html#cb361-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code></pre></div>
 <pre><code>## 
 ## Call:
 ## lm(formula = survived ~ age, data = titanic)
@@ -351,12 +351,12 @@ code span.wa { color: #bf0303; } /* Warning */
 ##   (263 observations deleted due to missingness)
 ## Multiple R-squared:  0.003082,   Adjusted R-squared:  0.002127 
 ## F-statistic: 3.227 on 1 and 1044 DF,  p-value: 0.07271</code></pre>
-<div class="sourceCode" id="cb357"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb357-1"><a href="GLMMs.html#cb357-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>))</span>
-<span id="cb357-2"><a href="GLMMs.html#cb357-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fit)</span></code></pre></div>
+<div class="sourceCode" id="cb363"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb363-1"><a href="GLMMs.html#cb363-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>))</span>
+<span id="cb363-2"><a href="GLMMs.html#cb363-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fit)</span></code></pre></div>
 <p><img src="_main_files/figure-html/chunk_chapter5_chunk3-1.png" width="672" /></p>
 <p>Thus, what we want to fit is a logistic regression, which assumes a 0/1 response. In principle, this is distribution is called Bernoulli, but in R both 0/1 and k/n are called “binomial”, as Bernoulli is the special case of binomial where n = 1.</p>
-<div class="sourceCode" id="cb358"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb358-1"><a href="GLMMs.html#cb358-1" aria-hidden="true" tabindex="-1"></a>m1 <span class="ot">=</span> <span class="fu">glm</span>(survived <span class="sc">~</span> sex, <span class="at">family =</span> <span class="st">&quot;binomial&quot;</span>, <span class="at">data =</span> titanic)</span>
-<span id="cb358-2"><a href="GLMMs.html#cb358-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m1)</span></code></pre></div>
+<div class="sourceCode" id="cb364"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb364-1"><a href="GLMMs.html#cb364-1" aria-hidden="true" tabindex="-1"></a>m1 <span class="ot">=</span> <span class="fu">glm</span>(survived <span class="sc">~</span> sex, <span class="at">family =</span> <span class="st">&quot;binomial&quot;</span>, <span class="at">data =</span> titanic)</span>
+<span id="cb364-2"><a href="GLMMs.html#cb364-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m1)</span></code></pre></div>
 <pre><code>## 
 ## Call:
 ## glm(formula = survived ~ sex, family = &quot;binomial&quot;, data = titanic)
@@ -380,13 +380,13 @@ code span.wa { color: #bf0303; } /* Warning */
 ## 
 ## Number of Fisher Scoring iterations: 4</code></pre>
 <p>Can you interpret the output? What do the regression coefficients mean? This is a bit tricky. First of all, remember, if you want predictions, you have to apply the link function on the linear predictor. Binomial uses per default the logistic link, to calculate the response use:</p>
-<div class="sourceCode" id="cb360"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb360-1"><a href="GLMMs.html#cb360-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plogis</span>(<span class="fl">0.98</span>)  <span class="co"># Women.</span></span></code></pre></div>
+<div class="sourceCode" id="cb366"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb366-1"><a href="GLMMs.html#cb366-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plogis</span>(<span class="fl">0.98</span>)  <span class="co"># Women.</span></span></code></pre></div>
 <pre><code>## [1] 0.7271082</code></pre>
-<div class="sourceCode" id="cb362"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb362-1"><a href="GLMMs.html#cb362-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plogis</span>(<span class="fl">0.98</span> <span class="sc">-</span> <span class="fl">2.43</span>) <span class="co"># Men.</span></span></code></pre></div>
+<div class="sourceCode" id="cb368"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb368-1"><a href="GLMMs.html#cb368-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plogis</span>(<span class="fl">0.98</span> <span class="sc">-</span> <span class="fl">2.43</span>) <span class="co"># Men.</span></span></code></pre></div>
 <pre><code>## [1] 0.1900016</code></pre>
 <p>You can also use the predict function,</p>
-<div class="sourceCode" id="cb364"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb364-1"><a href="GLMMs.html#cb364-1" aria-hidden="true" tabindex="-1"></a>newDat <span class="ot">=</span> <span class="fu">data.frame</span>(<span class="at">sex =</span> <span class="fu">as.factor</span>(<span class="fu">c</span>(<span class="st">&quot;female&quot;</span>, <span class="st">&quot;male&quot;</span>)))</span>
-<span id="cb364-2"><a href="GLMMs.html#cb364-2" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(m1, <span class="at">newdata =</span> newDat, <span class="at">se =</span> T) <span class="co"># Linear predictor.</span></span></code></pre></div>
+<div class="sourceCode" id="cb370"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb370-1"><a href="GLMMs.html#cb370-1" aria-hidden="true" tabindex="-1"></a>newDat <span class="ot">=</span> <span class="fu">data.frame</span>(<span class="at">sex =</span> <span class="fu">as.factor</span>(<span class="fu">c</span>(<span class="st">&quot;female&quot;</span>, <span class="st">&quot;male&quot;</span>)))</span>
+<span id="cb370-2"><a href="GLMMs.html#cb370-2" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(m1, <span class="at">newdata =</span> newDat, <span class="at">se =</span> T) <span class="co"># Linear predictor.</span></span></code></pre></div>
 <pre><code>## $fit
 ##         1         2 
 ##  0.981813 -1.443625 
@@ -397,7 +397,7 @@ code span.wa { color: #bf0303; } /* Warning */
 ## 
 ## $residual.scale
 ## [1] 1</code></pre>
-<div class="sourceCode" id="cb366"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb366-1"><a href="GLMMs.html#cb366-1" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(m1, <span class="at">newdata =</span> newDat, <span class="at">se =</span> T, <span class="at">type =</span> <span class="st">&quot;response&quot;</span>)  <span class="co"># Response scale.</span></span></code></pre></div>
+<div class="sourceCode" id="cb372"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb372-1"><a href="GLMMs.html#cb372-1" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(m1, <span class="at">newdata =</span> newDat, <span class="at">se =</span> T, <span class="at">type =</span> <span class="st">&quot;response&quot;</span>)  <span class="co"># Response scale.</span></span></code></pre></div>
 <pre><code>## $fit
 ##         1         2 
 ## 0.7274678 0.1909846 
@@ -409,13 +409,13 @@ code span.wa { color: #bf0303; } /* Warning */
 ## $residual.scale
 ## [1] 1</code></pre>
 <p>or we just look at the effect plots</p>
-<div class="sourceCode" id="cb368"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb368-1"><a href="GLMMs.html#cb368-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(effects)</span>
-<span id="cb368-2"><a href="GLMMs.html#cb368-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb368-3"><a href="GLMMs.html#cb368-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">allEffects</span>(m1))</span></code></pre></div>
+<div class="sourceCode" id="cb374"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb374-1"><a href="GLMMs.html#cb374-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(effects)</span>
+<span id="cb374-2"><a href="GLMMs.html#cb374-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb374-3"><a href="GLMMs.html#cb374-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">allEffects</span>(m1))</span></code></pre></div>
 <p><img src="_main_files/figure-html/chunk_chapter5_chunk7-1.png" width="672" /></p>
 <p>The same thing for a slightly more complicated model:</p>
-<div class="sourceCode" id="cb369"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb369-1"><a href="GLMMs.html#cb369-1" aria-hidden="true" tabindex="-1"></a>m2 <span class="ot">=</span> <span class="fu">glm</span>(survived <span class="sc">~</span> sex<span class="sc">*</span>age, <span class="at">family =</span> <span class="st">&quot;binomial&quot;</span>, <span class="at">data =</span> titanic)</span>
-<span id="cb369-2"><a href="GLMMs.html#cb369-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m2)</span></code></pre></div>
+<div class="sourceCode" id="cb375"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb375-1"><a href="GLMMs.html#cb375-1" aria-hidden="true" tabindex="-1"></a>m2 <span class="ot">=</span> <span class="fu">glm</span>(survived <span class="sc">~</span> sex<span class="sc">*</span>age, <span class="at">family =</span> <span class="st">&quot;binomial&quot;</span>, <span class="at">data =</span> titanic)</span>
+<span id="cb375-2"><a href="GLMMs.html#cb375-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m2)</span></code></pre></div>
 <pre><code>## 
 ## Call:
 ## glm(formula = survived ~ sex * age, family = &quot;binomial&quot;, data = titanic)
@@ -441,7 +441,7 @@ code span.wa { color: #bf0303; } /* Warning */
 ## AIC: 1091.4
 ## 
 ## Number of Fisher Scoring iterations: 4</code></pre>
-<div class="sourceCode" id="cb371"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb371-1"><a href="GLMMs.html#cb371-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">allEffects</span>(m2))</span></code></pre></div>
+<div class="sourceCode" id="cb377"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb377-1"><a href="GLMMs.html#cb377-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">allEffects</span>(m2))</span></code></pre></div>
 <p><img src="_main_files/figure-html/chunk_chapter5_chunk8-1.png" width="672" /></p>
 <p>Note:</p>
 <ul>
@@ -450,17 +450,17 @@ code span.wa { color: #bf0303; } /* Warning */
 </ul>
 <p><strong><em>Residual checks</em></strong></p>
 <p>Let’s check m2 from the Titanic example:</p>
-<div class="sourceCode" id="cb372"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb372-1"><a href="GLMMs.html#cb372-1" aria-hidden="true" tabindex="-1"></a>m2 <span class="ot">=</span> <span class="fu">glm</span>(survived <span class="sc">~</span> sex<span class="sc">*</span>age, <span class="at">family =</span> <span class="st">&quot;binomial&quot;</span>, <span class="at">data =</span> titanic)</span></code></pre></div>
+<div class="sourceCode" id="cb378"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb378-1"><a href="GLMMs.html#cb378-1" aria-hidden="true" tabindex="-1"></a>m2 <span class="ot">=</span> <span class="fu">glm</span>(survived <span class="sc">~</span> sex<span class="sc">*</span>age, <span class="at">family =</span> <span class="st">&quot;binomial&quot;</span>, <span class="at">data =</span> titanic)</span></code></pre></div>
 <p>First of all: Due to an unfortunate programming choice in R (Nerds: Check class(m2)), the standard residual plots</p>
-<div class="sourceCode" id="cb373"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb373-1"><a href="GLMMs.html#cb373-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>))</span>
-<span id="cb373-2"><a href="GLMMs.html#cb373-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(m2)</span></code></pre></div>
+<div class="sourceCode" id="cb379"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb379-1"><a href="GLMMs.html#cb379-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>))</span>
+<span id="cb379-2"><a href="GLMMs.html#cb379-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(m2)</span></code></pre></div>
 <p><img src="_main_files/figure-html/chunk_chapter5_chunk10-1.png" width="672" /></p>
 <p>still work, but they don’t look any better than before, because they still check for normality of the residuals, while we are interested in the question of whether the residuals are binomially distributed. The <code>DHARMa</code>.{R} package solves this problem. Load the <code>DHARMa</code>.{R} package, which should have been installed with <code class="sourceCode r">EcoData</code> already:</p>
-<div class="sourceCode" id="cb374"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb374-1"><a href="GLMMs.html#cb374-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DHARMa)</span></code></pre></div>
+<div class="sourceCode" id="cb380"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb380-1"><a href="GLMMs.html#cb380-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DHARMa)</span></code></pre></div>
 <p>Calculate residuals:</p>
-<div class="sourceCode" id="cb375"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb375-1"><a href="GLMMs.html#cb375-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">=</span> <span class="fu">simulateResiduals</span>(m2)</span></code></pre></div>
+<div class="sourceCode" id="cb381"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb381-1"><a href="GLMMs.html#cb381-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">=</span> <span class="fu">simulateResiduals</span>(m2)</span></code></pre></div>
 <p>Standard plot:</p>
-<div class="sourceCode" id="cb376"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb376-1"><a href="GLMMs.html#cb376-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(res)</span></code></pre></div>
+<div class="sourceCode" id="cb382"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb382-1"><a href="GLMMs.html#cb382-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(res)</span></code></pre></div>
 <p><img src="_main_files/figure-html/chunk_chapter5_chunk13-1.png" width="672" /></p>
 <p>Out of the help page: The function creates a plot with two panels. The left panel is a uniform Q-Q plot (calling <a href="https://rdrr.io/cran/DHARMa/man/plotQQunif.html" target="_blank" rel="noopener">plotQQunif</a>), and the right panel shows residuals against predicted values (calling <a href="hhttps://rdrr.io/cran/DHARMa/man/plotResiduals.html" target="_blank" rel="noopener">plotResiduals</a>), with outliers highlighted in red.</p>
 <p>Very briefly, we would expect that a correctly specified model shows:</p>
@@ -470,29 +470,29 @@ code span.wa { color: #bf0303; } /* Warning */
 </ol>
 <p>Deviations from these expectations can be interpreted similarly to a linear regression. See the vignette for detailed examples.</p>
 <p>Also residuals against predictors shows no particular problem:</p>
-<div class="sourceCode" id="cb377"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb377-1"><a href="GLMMs.html#cb377-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</span>
-<span id="cb377-2"><a href="GLMMs.html#cb377-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plotResiduals</span>(m2, <span class="at">form =</span> <span class="fu">model.frame</span>(m2)<span class="sc">$</span>age)</span>
-<span id="cb377-3"><a href="GLMMs.html#cb377-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plotResiduals</span>(m2, <span class="at">form =</span> <span class="fu">model.frame</span>(m2)<span class="sc">$</span>sex)</span></code></pre></div>
+<div class="sourceCode" id="cb383"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb383-1"><a href="GLMMs.html#cb383-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</span>
+<span id="cb383-2"><a href="GLMMs.html#cb383-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plotResiduals</span>(m2, <span class="at">form =</span> <span class="fu">model.frame</span>(m2)<span class="sc">$</span>age)</span>
+<span id="cb383-3"><a href="GLMMs.html#cb383-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plotResiduals</span>(m2, <span class="at">form =</span> <span class="fu">model.frame</span>(m2)<span class="sc">$</span>sex)</span></code></pre></div>
 <p><img src="_main_files/figure-html/chunk_chapter5_chunk14-1.png" width="672" /></p>
 <p>Residuals against missing predictor show a clear problem:</p>
-<div class="sourceCode" id="cb378"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb378-1"><a href="GLMMs.html#cb378-1" aria-hidden="true" tabindex="-1"></a>dataUsed <span class="ot">=</span> <span class="fu">as.numeric</span>(<span class="fu">rownames</span>(<span class="fu">model.frame</span>(m2)))</span>
-<span id="cb378-2"><a href="GLMMs.html#cb378-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plotResiduals</span>(m2, <span class="at">form =</span> titanic<span class="sc">$</span>pclass[dataUsed])</span></code></pre></div>
+<div class="sourceCode" id="cb384"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb384-1"><a href="GLMMs.html#cb384-1" aria-hidden="true" tabindex="-1"></a>dataUsed <span class="ot">=</span> <span class="fu">as.numeric</span>(<span class="fu">rownames</span>(<span class="fu">model.frame</span>(m2)))</span>
+<span id="cb384-2"><a href="GLMMs.html#cb384-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plotResiduals</span>(m2, <span class="at">form =</span> titanic<span class="sc">$</span>pclass[dataUsed])</span></code></pre></div>
 <p><img src="_main_files/figure-html/chunk_chapter5_chunk15-1.png" width="672" /></p>
 <p>We will talk about <code>DHARMa</code>.{R} more later, see also comments on testing binomial GLMs<br />
 <a href="https://cran.r-project.org/web/packages/DHARMa/vignettes/DHARMa.html#binomial-data" target="_blank" rel="noopener">here</a>.</p>
 </div>
 <div id="a-poisson-example" class="section level3 hasAnchor" number="5.1.2">
 <h3><span class="header-section-number">5.1.2</span> A Poisson Example<a href="GLMMs.html#a-poisson-example" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div class="sourceCode" id="cb379"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb379-1"><a href="GLMMs.html#cb379-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(EcoData)</span>
-<span id="cb379-2"><a href="GLMMs.html#cb379-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb379-3"><a href="GLMMs.html#cb379-3" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(birdfeeding)</span></code></pre></div>
+<div class="sourceCode" id="cb385"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb385-1"><a href="GLMMs.html#cb385-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(EcoData)</span>
+<span id="cb385-2"><a href="GLMMs.html#cb385-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb385-3"><a href="GLMMs.html#cb385-3" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(birdfeeding)</span></code></pre></div>
 <pre><code>## &#39;data.frame&#39;:    25 obs. of  2 variables:
 ##  $ feeding       : int  3 6 8 4 2 7 6 8 10 3 ...
 ##  $ attractiveness: int  1 1 1 1 1 2 2 2 2 2 ...</code></pre>
-<div class="sourceCode" id="cb381"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb381-1"><a href="GLMMs.html#cb381-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(feeding <span class="sc">~</span> attractiveness, <span class="at">data =</span> birdfeeding)</span></code></pre></div>
+<div class="sourceCode" id="cb387"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb387-1"><a href="GLMMs.html#cb387-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(feeding <span class="sc">~</span> attractiveness, <span class="at">data =</span> birdfeeding)</span></code></pre></div>
 <p><img src="_main_files/figure-html/chunk_chapter5_chunk16-1.png" width="672" /></p>
-<div class="sourceCode" id="cb382"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb382-1"><a href="GLMMs.html#cb382-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">glm</span>(feeding <span class="sc">~</span> attractiveness, <span class="at">data =</span> birdfeeding, <span class="at">family =</span> <span class="st">&quot;poisson&quot;</span>)</span>
-<span id="cb382-2"><a href="GLMMs.html#cb382-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code></pre></div>
+<div class="sourceCode" id="cb388"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb388-1"><a href="GLMMs.html#cb388-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">glm</span>(feeding <span class="sc">~</span> attractiveness, <span class="at">data =</span> birdfeeding, <span class="at">family =</span> <span class="st">&quot;poisson&quot;</span>)</span>
+<span id="cb388-2"><a href="GLMMs.html#cb388-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code></pre></div>
 <pre><code>## 
 ## Call:
 ## glm(formula = feeding ~ attractiveness, family = &quot;poisson&quot;, data = birdfeeding)
@@ -516,14 +516,14 @@ code span.wa { color: #bf0303; } /* Warning */
 ## 
 ## Number of Fisher Scoring iterations: 4</code></pre>
 <p>Log link means that calculating predicted value for attractiveness requires exp(linear response).</p>
-<div class="sourceCode" id="cb384"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb384-1"><a href="GLMMs.html#cb384-1" aria-hidden="true" tabindex="-1"></a><span class="fu">exp</span>(<span class="fl">1.47459</span> <span class="sc">+</span> <span class="dv">3</span> <span class="sc">*</span> <span class="fl">0.14794</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb390"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb390-1"><a href="GLMMs.html#cb390-1" aria-hidden="true" tabindex="-1"></a><span class="fu">exp</span>(<span class="fl">1.47459</span> <span class="sc">+</span> <span class="dv">3</span> <span class="sc">*</span> <span class="fl">0.14794</span>)</span></code></pre></div>
 <pre><code>## [1] 6.810122</code></pre>
 <p>Effect plots, not the log scaling on the y axis</p>
-<div class="sourceCode" id="cb386"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb386-1"><a href="GLMMs.html#cb386-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">allEffects</span>(fit))</span></code></pre></div>
+<div class="sourceCode" id="cb392"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb392-1"><a href="GLMMs.html#cb392-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">allEffects</span>(fit))</span></code></pre></div>
 <p><img src="_main_files/figure-html/chunk_chapter5_chunk18-1.png" width="672" /></p>
 <p>Residual checks are OK.</p>
-<div class="sourceCode" id="cb387"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb387-1"><a href="GLMMs.html#cb387-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">=</span> <span class="fu">simulateResiduals</span>(fit)</span>
-<span id="cb387-2"><a href="GLMMs.html#cb387-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(res)</span></code></pre></div>
+<div class="sourceCode" id="cb393"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb393-1"><a href="GLMMs.html#cb393-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">=</span> <span class="fu">simulateResiduals</span>(fit)</span>
+<span id="cb393-2"><a href="GLMMs.html#cb393-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(res)</span></code></pre></div>
 <p><img src="_main_files/figure-html/chunk_chapter5_chunk19-1.png" width="672" /></p>
 </div>
 <div id="example---elk-data" class="section level3 hasAnchor" number="5.1.3">
@@ -558,12 +558,12 @@ code span.wa { color: #bf0303; } /* Warning */
 </ol>
 <p>Because the 3rd option gives us more possibilities to model e.g. heteroskedasticity later, its preferable over an OLRE. I would always recommend the third option.</p>
 <p><strong><em>Example:</em></strong></p>
-<div class="sourceCode" id="cb388"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb388-1"><a href="GLMMs.html#cb388-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glmmTMB)</span>
-<span id="cb388-2"><a href="GLMMs.html#cb388-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lme4)</span>
-<span id="cb388-3"><a href="GLMMs.html#cb388-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DHARMa)</span>
-<span id="cb388-4"><a href="GLMMs.html#cb388-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb388-5"><a href="GLMMs.html#cb388-5" aria-hidden="true" tabindex="-1"></a>m1 <span class="ot">=</span> <span class="fu">glm</span>(count <span class="sc">~</span> spp <span class="sc">+</span> mined, <span class="at">family =</span> poisson, <span class="at">data =</span> Salamanders)</span>
-<span id="cb388-6"><a href="GLMMs.html#cb388-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m1)</span></code></pre></div>
+<div class="sourceCode" id="cb394"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb394-1"><a href="GLMMs.html#cb394-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glmmTMB)</span>
+<span id="cb394-2"><a href="GLMMs.html#cb394-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lme4)</span>
+<span id="cb394-3"><a href="GLMMs.html#cb394-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DHARMa)</span>
+<span id="cb394-4"><a href="GLMMs.html#cb394-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb394-5"><a href="GLMMs.html#cb394-5" aria-hidden="true" tabindex="-1"></a>m1 <span class="ot">=</span> <span class="fu">glm</span>(count <span class="sc">~</span> spp <span class="sc">+</span> mined, <span class="at">family =</span> poisson, <span class="at">data =</span> Salamanders)</span>
+<span id="cb394-6"><a href="GLMMs.html#cb394-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m1)</span></code></pre></div>
 <pre><code>## 
 ## Call:
 ## glm(formula = count ~ spp + mined, family = poisson, data = Salamanders)
@@ -592,10 +592,10 @@ code span.wa { color: #bf0303; } /* Warning */
 ## AIC: 2049.6
 ## 
 ## Number of Fisher Scoring iterations: 6</code></pre>
-<div class="sourceCode" id="cb390"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb390-1"><a href="GLMMs.html#cb390-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">=</span> <span class="fu">simulateResiduals</span>(m1, <span class="at">plot =</span> T)</span></code></pre></div>
+<div class="sourceCode" id="cb396"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb396-1"><a href="GLMMs.html#cb396-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">=</span> <span class="fu">simulateResiduals</span>(m1, <span class="at">plot =</span> T)</span></code></pre></div>
 <p><img src="_main_files/figure-html/chunk_chapter5_chunk20-1.png" width="672" /></p>
-<div class="sourceCode" id="cb391"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb391-1"><a href="GLMMs.html#cb391-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Looks overdispersed, additional check.</span></span>
-<span id="cb391-2"><a href="GLMMs.html#cb391-2" aria-hidden="true" tabindex="-1"></a><span class="fu">testDispersion</span>(res)</span></code></pre></div>
+<div class="sourceCode" id="cb397"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb397-1"><a href="GLMMs.html#cb397-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Looks overdispersed, additional check.</span></span>
+<span id="cb397-2"><a href="GLMMs.html#cb397-2" aria-hidden="true" tabindex="-1"></a><span class="fu">testDispersion</span>(res)</span></code></pre></div>
 <p><img src="_main_files/figure-html/chunk_chapter5_chunk20-2.png" width="672" /></p>
 <pre><code>## 
 ##  DHARMa nonparametric dispersion test via sd of residuals fitted vs.
@@ -604,9 +604,9 @@ code span.wa { color: #bf0303; } /* Warning */
 ## data:  simulationOutput
 ## dispersion = 3.9152, p-value &lt; 2.2e-16
 ## alternative hypothesis: two.sided</code></pre>
-<div class="sourceCode" id="cb393"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb393-1"><a href="GLMMs.html#cb393-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Add random effect for site.</span></span>
-<span id="cb393-2"><a href="GLMMs.html#cb393-2" aria-hidden="true" tabindex="-1"></a>m2 <span class="ot">=</span> <span class="fu">glmer</span>(count <span class="sc">~</span> spp <span class="sc">+</span> mined <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>site), <span class="at">family =</span> poisson, <span class="at">data =</span> Salamanders)</span>
-<span id="cb393-3"><a href="GLMMs.html#cb393-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m2)</span></code></pre></div>
+<div class="sourceCode" id="cb399"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb399-1"><a href="GLMMs.html#cb399-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Add random effect for site.</span></span>
+<span id="cb399-2"><a href="GLMMs.html#cb399-2" aria-hidden="true" tabindex="-1"></a>m2 <span class="ot">=</span> <span class="fu">glmer</span>(count <span class="sc">~</span> spp <span class="sc">+</span> mined <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>site), <span class="at">family =</span> poisson, <span class="at">data =</span> Salamanders)</span>
+<span id="cb399-3"><a href="GLMMs.html#cb399-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m2)</span></code></pre></div>
 <pre><code>## Generalized linear mixed model fit by maximum likelihood (Laplace
 ##   Approximation) [glmerMod]
 ##  Family: poisson  ( log )
@@ -647,17 +647,17 @@ code span.wa { color: #bf0303; } /* Warning */
 ## sppDES-L -0.327  0.364  0.608  0.458  0.657              
 ## sppDF    -0.290  0.322  0.538  0.406  0.582  0.587       
 ## minedno  -0.733  0.000  0.000  0.000  0.000  0.000  0.000</code></pre>
-<div class="sourceCode" id="cb395"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb395-1"><a href="GLMMs.html#cb395-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">=</span> <span class="fu">simulateResiduals</span>(m2, <span class="at">plot =</span> T)</span></code></pre></div>
+<div class="sourceCode" id="cb401"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb401-1"><a href="GLMMs.html#cb401-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">=</span> <span class="fu">simulateResiduals</span>(m2, <span class="at">plot =</span> T)</span></code></pre></div>
 <p><img src="_main_files/figure-html/chunk_chapter5_chunk20-3.png" width="672" /></p>
-<div class="sourceCode" id="cb396"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb396-1"><a href="GLMMs.html#cb396-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Now dispersion seems to be OK, rather another problem with heteroskedasticity, see next.</span></span>
-<span id="cb396-2"><a href="GLMMs.html#cb396-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb396-3"><a href="GLMMs.html#cb396-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Just for the sake of completeness, if we would have still overdispersion,</span></span>
-<span id="cb396-4"><a href="GLMMs.html#cb396-4" aria-hidden="true" tabindex="-1"></a><span class="co"># these would be the two options:</span></span>
-<span id="cb396-5"><a href="GLMMs.html#cb396-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb396-6"><a href="GLMMs.html#cb396-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Variable dispersion via OLRE.</span></span>
-<span id="cb396-7"><a href="GLMMs.html#cb396-7" aria-hidden="true" tabindex="-1"></a>Salamanders<span class="sc">$</span>ID <span class="ot">=</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(Salamanders)</span>
-<span id="cb396-8"><a href="GLMMs.html#cb396-8" aria-hidden="true" tabindex="-1"></a>m3 <span class="ot">=</span> <span class="fu">glmer</span>(count <span class="sc">~</span> spp <span class="sc">+</span> mined <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>site) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>ID), <span class="at">family =</span> poisson, <span class="at">data =</span> Salamanders)</span>
-<span id="cb396-9"><a href="GLMMs.html#cb396-9" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m3)</span></code></pre></div>
+<div class="sourceCode" id="cb402"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb402-1"><a href="GLMMs.html#cb402-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Now dispersion seems to be OK, rather another problem with heteroskedasticity, see next.</span></span>
+<span id="cb402-2"><a href="GLMMs.html#cb402-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb402-3"><a href="GLMMs.html#cb402-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Just for the sake of completeness, if we would have still overdispersion,</span></span>
+<span id="cb402-4"><a href="GLMMs.html#cb402-4" aria-hidden="true" tabindex="-1"></a><span class="co"># these would be the two options:</span></span>
+<span id="cb402-5"><a href="GLMMs.html#cb402-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb402-6"><a href="GLMMs.html#cb402-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Variable dispersion via OLRE.</span></span>
+<span id="cb402-7"><a href="GLMMs.html#cb402-7" aria-hidden="true" tabindex="-1"></a>Salamanders<span class="sc">$</span>ID <span class="ot">=</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(Salamanders)</span>
+<span id="cb402-8"><a href="GLMMs.html#cb402-8" aria-hidden="true" tabindex="-1"></a>m3 <span class="ot">=</span> <span class="fu">glmer</span>(count <span class="sc">~</span> spp <span class="sc">+</span> mined <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>site) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>ID), <span class="at">family =</span> poisson, <span class="at">data =</span> Salamanders)</span>
+<span id="cb402-9"><a href="GLMMs.html#cb402-9" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m3)</span></code></pre></div>
 <pre><code>## Generalized linear mixed model fit by maximum likelihood (Laplace
 ##   Approximation) [glmerMod]
 ##  Family: poisson  ( log )
@@ -701,11 +701,11 @@ code span.wa { color: #bf0303; } /* Warning */
 ## minedno  -0.658 -0.023  0.029 -0.015  0.026  0.042  0.037
 ## optimizer (Nelder_Mead) convergence code: 0 (OK)
 ## Model failed to converge with max|grad| = 0.103661 (tol = 0.002, component 1)</code></pre>
-<div class="sourceCode" id="cb398"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb398-1"><a href="GLMMs.html#cb398-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">=</span> <span class="fu">simulateResiduals</span>(m3, <span class="at">plot =</span> T)</span></code></pre></div>
+<div class="sourceCode" id="cb404"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb404-1"><a href="GLMMs.html#cb404-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">=</span> <span class="fu">simulateResiduals</span>(m3, <span class="at">plot =</span> T)</span></code></pre></div>
 <p><img src="_main_files/figure-html/chunk_chapter5_chunk20-4.png" width="672" /></p>
-<div class="sourceCode" id="cb399"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb399-1"><a href="GLMMs.html#cb399-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Variable dispersion via negative binomial.</span></span>
-<span id="cb399-2"><a href="GLMMs.html#cb399-2" aria-hidden="true" tabindex="-1"></a>m4 <span class="ot">=</span> <span class="fu">glmmTMB</span>(count <span class="sc">~</span> spp <span class="sc">+</span> mined <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>site), <span class="at">family =</span> nbinom2, <span class="at">data =</span> Salamanders)</span>
-<span id="cb399-3"><a href="GLMMs.html#cb399-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m4)</span></code></pre></div>
+<div class="sourceCode" id="cb405"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb405-1"><a href="GLMMs.html#cb405-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Variable dispersion via negative binomial.</span></span>
+<span id="cb405-2"><a href="GLMMs.html#cb405-2" aria-hidden="true" tabindex="-1"></a>m4 <span class="ot">=</span> <span class="fu">glmmTMB</span>(count <span class="sc">~</span> spp <span class="sc">+</span> mined <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>site), <span class="at">family =</span> nbinom2, <span class="at">data =</span> Salamanders)</span>
+<span id="cb405-3"><a href="GLMMs.html#cb405-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m4)</span></code></pre></div>
 <pre><code>##  Family: nbinom2  ( log )
 ## Formula:          count ~ spp + mined + (1 | site)
 ## Data: Salamanders
@@ -734,15 +734,15 @@ code span.wa { color: #bf0303; } /* Warning */
 ## minedno       2.2633     0.2838   7.975 1.53e-15 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
-<div class="sourceCode" id="cb401"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb401-1"><a href="GLMMs.html#cb401-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">=</span> <span class="fu">simulateResiduals</span>(m4, <span class="at">plot =</span> T)</span></code></pre></div>
+<div class="sourceCode" id="cb407"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb407-1"><a href="GLMMs.html#cb407-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">=</span> <span class="fu">simulateResiduals</span>(m4, <span class="at">plot =</span> T)</span></code></pre></div>
 <p><img src="_main_files/figure-html/chunk_chapter5_chunk20-5.png" width="672" /></p>
 <div id="heteroskedasticity-in-glmms" class="section level3 hasAnchor" number="5.2.1">
 <h3><span class="header-section-number">5.2.1</span> Heteroskedasticity in GLMMs<a href="GLMMs.html#heteroskedasticity-in-glmms" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>GLM(M)s can be heteroskedastic as well, i.e. dispersion depends on some predictors. In <code>glmmTMB</code>.{R}, you can make the dispersion of the negative Binomial dependent on a formula via the <code>dispformula</code>.{R} argument, in the same way as in <code>nlme</code>.{R} for the linear model.</p>
 <p>Variance problems would show up when plotting residuals against predicted and predictors. On the previous page, we saw some variance problems in the Salamander model. We could add a variable dispersion model via</p>
-<div class="sourceCode" id="cb402"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb402-1"><a href="GLMMs.html#cb402-1" aria-hidden="true" tabindex="-1"></a>m3 <span class="ot">=</span> <span class="fu">glmmTMB</span>(count <span class="sc">~</span> spp <span class="sc">+</span> mined <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>site), <span class="at">family =</span> nbinom1,</span>
-<span id="cb402-2"><a href="GLMMs.html#cb402-2" aria-hidden="true" tabindex="-1"></a>             <span class="at">dispformula =</span> <span class="sc">~</span> spp <span class="sc">+</span> mined ,  <span class="at">data =</span> Salamanders)</span>
-<span id="cb402-3"><a href="GLMMs.html#cb402-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m3)</span></code></pre></div>
+<div class="sourceCode" id="cb408"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb408-1"><a href="GLMMs.html#cb408-1" aria-hidden="true" tabindex="-1"></a>m3 <span class="ot">=</span> <span class="fu">glmmTMB</span>(count <span class="sc">~</span> spp <span class="sc">+</span> mined <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>site), <span class="at">family =</span> nbinom1,</span>
+<span id="cb408-2"><a href="GLMMs.html#cb408-2" aria-hidden="true" tabindex="-1"></a>             <span class="at">dispformula =</span> <span class="sc">~</span> spp <span class="sc">+</span> mined ,  <span class="at">data =</span> Salamanders)</span>
+<span id="cb408-3"><a href="GLMMs.html#cb408-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m3)</span></code></pre></div>
 <pre><code>##  Family: nbinom1  ( log )
 ## Formula:          count ~ spp + mined + (1 | site)
 ## Dispersion:             ~spp + mined
@@ -783,11 +783,11 @@ code span.wa { color: #bf0303; } /* Warning */
 ## minedno       0.5583     0.4187   1.334   0.1823  
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
-<div class="sourceCode" id="cb404"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb404-1"><a href="GLMMs.html#cb404-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">=</span> <span class="fu">simulateResiduals</span>(m3, <span class="at">plot =</span> T)</span></code></pre></div>
+<div class="sourceCode" id="cb410"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb410-1"><a href="GLMMs.html#cb410-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">=</span> <span class="fu">simulateResiduals</span>(m3, <span class="at">plot =</span> T)</span></code></pre></div>
 <p><img src="_main_files/figure-html/chunk_chapter5_chunk21-1.png" width="672" /></p>
-<div class="sourceCode" id="cb405"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb405-1"><a href="GLMMs.html#cb405-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</span>
-<span id="cb405-2"><a href="GLMMs.html#cb405-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plotResiduals</span>(res, Salamanders<span class="sc">$</span>spp)</span>
-<span id="cb405-3"><a href="GLMMs.html#cb405-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plotResiduals</span>(res, Salamanders<span class="sc">$</span>mined)</span></code></pre></div>
+<div class="sourceCode" id="cb411"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb411-1"><a href="GLMMs.html#cb411-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</span>
+<span id="cb411-2"><a href="GLMMs.html#cb411-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plotResiduals</span>(res, Salamanders<span class="sc">$</span>spp)</span>
+<span id="cb411-3"><a href="GLMMs.html#cb411-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plotResiduals</span>(res, Salamanders<span class="sc">$</span>mined)</span></code></pre></div>
 <p><img src="_main_files/figure-html/chunk_chapter5_chunk21-2.png" width="672" /></p>
 </div>
 <div id="zero-inflation" class="section level3 hasAnchor" number="5.2.2">
@@ -802,8 +802,8 @@ code span.wa { color: #bf0303; } /* Warning */
 <p><strong><em>How to check for zero-inflation</em></strong></p>
 <p><em>Important</em>: Do not check for zero-inflation in the response.</p>
 <p><code>DHARMa</code>.{R} has a function for testing zero-inflation:</p>
-<div class="sourceCode" id="cb406"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb406-1"><a href="GLMMs.html#cb406-1" aria-hidden="true" tabindex="-1"></a>m4 <span class="ot">=</span> <span class="fu">glmmTMB</span>(count <span class="sc">~</span> spp <span class="sc">+</span> mined <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>site), <span class="at">family =</span> nbinom2, <span class="at">data =</span> Salamanders)</span>
-<span id="cb406-2"><a href="GLMMs.html#cb406-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m4)</span></code></pre></div>
+<div class="sourceCode" id="cb412"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb412-1"><a href="GLMMs.html#cb412-1" aria-hidden="true" tabindex="-1"></a>m4 <span class="ot">=</span> <span class="fu">glmmTMB</span>(count <span class="sc">~</span> spp <span class="sc">+</span> mined <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>site), <span class="at">family =</span> nbinom2, <span class="at">data =</span> Salamanders)</span>
+<span id="cb412-2"><a href="GLMMs.html#cb412-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m4)</span></code></pre></div>
 <pre><code>##  Family: nbinom2  ( log )
 ## Formula:          count ~ spp + mined + (1 | site)
 ## Data: Salamanders
@@ -832,9 +832,9 @@ code span.wa { color: #bf0303; } /* Warning */
 ## minedno       2.2633     0.2838   7.975 1.53e-15 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
-<div class="sourceCode" id="cb408"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb408-1"><a href="GLMMs.html#cb408-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">=</span> <span class="fu">simulateResiduals</span>(m4, <span class="at">plot =</span> T)</span></code></pre></div>
+<div class="sourceCode" id="cb414"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb414-1"><a href="GLMMs.html#cb414-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">=</span> <span class="fu">simulateResiduals</span>(m4, <span class="at">plot =</span> T)</span></code></pre></div>
 <p><img src="_main_files/figure-html/chunk_chapter5_chunk22-1.png" width="672" /></p>
-<div class="sourceCode" id="cb409"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb409-1"><a href="GLMMs.html#cb409-1" aria-hidden="true" tabindex="-1"></a><span class="fu">testZeroInflation</span>(res)</span></code></pre></div>
+<div class="sourceCode" id="cb415"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb415-1"><a href="GLMMs.html#cb415-1" aria-hidden="true" tabindex="-1"></a><span class="fu">testZeroInflation</span>(res)</span></code></pre></div>
 <p><img src="_main_files/figure-html/chunk_chapter5_chunk22-2.png" width="672" /></p>
 <pre><code>## 
 ##  DHARMa zero-inflation test via comparison to expected zeros with
@@ -874,12 +874,12 @@ code span.wa { color: #bf0303; } /* Warning */
   <hr/>
   <strong><span style="color: #0011AA; font-size:25px;">Task</span></strong><br/>
 <p>Look at the Owl data set in the <code>glmmTMB</code>.{R} package. The initial hypothesis is</p>
-<div class="sourceCode" id="cb411"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb411-1"><a href="GLMMs.html#cb411-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glmmTMB)</span>
-<span id="cb411-2"><a href="GLMMs.html#cb411-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb411-3"><a href="GLMMs.html#cb411-3" aria-hidden="true" tabindex="-1"></a>m1 <span class="ot">=</span> <span class="fu">glm</span>(SiblingNegotiation <span class="sc">~</span> FoodTreatment<span class="sc">*</span>SexParent <span class="sc">+</span> <span class="fu">offset</span>(<span class="fu">log</span>(BroodSize)),</span>
-<span id="cb411-4"><a href="GLMMs.html#cb411-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">data =</span> Owls , <span class="at">family =</span> poisson)</span>
-<span id="cb411-5"><a href="GLMMs.html#cb411-5" aria-hidden="true" tabindex="-1"></a>res <span class="ot">=</span> <span class="fu">simulateResiduals</span>(m1)</span>
-<span id="cb411-6"><a href="GLMMs.html#cb411-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(res)</span></code></pre></div>
+<div class="sourceCode" id="cb417"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb417-1"><a href="GLMMs.html#cb417-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glmmTMB)</span>
+<span id="cb417-2"><a href="GLMMs.html#cb417-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb417-3"><a href="GLMMs.html#cb417-3" aria-hidden="true" tabindex="-1"></a>m1 <span class="ot">=</span> <span class="fu">glm</span>(SiblingNegotiation <span class="sc">~</span> FoodTreatment<span class="sc">*</span>SexParent <span class="sc">+</span> <span class="fu">offset</span>(<span class="fu">log</span>(BroodSize)),</span>
+<span id="cb417-4"><a href="GLMMs.html#cb417-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">data =</span> Owls , <span class="at">family =</span> poisson)</span>
+<span id="cb417-5"><a href="GLMMs.html#cb417-5" aria-hidden="true" tabindex="-1"></a>res <span class="ot">=</span> <span class="fu">simulateResiduals</span>(m1)</span>
+<span id="cb417-6"><a href="GLMMs.html#cb417-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(res)</span></code></pre></div>
 <p><img src="_main_files/figure-html/chunk_chapter5_task_3-1.png" width="672" /></p>
 <p>The offset is a special command that can be used in all regression models.</p>
 <ul>
@@ -891,11 +891,11 @@ code span.wa { color: #bf0303; } /* Warning */
       <strong><span style="color: #0011AA; font-size:25px;">Possible solution</span></strong>
     </summary>
     <p>
-<div class="sourceCode" id="cb412"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb412-1"><a href="GLMMs.html#cb412-1" aria-hidden="true" tabindex="-1"></a>m1 <span class="ot">=</span> glmmTMB<span class="sc">::</span><span class="fu">glmmTMB</span>(SiblingNegotiation <span class="sc">~</span> FoodTreatment <span class="sc">*</span> SexParent </span>
-<span id="cb412-2"><a href="GLMMs.html#cb412-2" aria-hidden="true" tabindex="-1"></a>  <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>Nest) <span class="sc">+</span> <span class="fu">offset</span>(<span class="fu">log</span>(BroodSize)), <span class="at">data =</span> Owls , <span class="at">family =</span> nbinom1,</span>
-<span id="cb412-3"><a href="GLMMs.html#cb412-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">dispformula =</span> <span class="sc">~</span> FoodTreatment <span class="sc">+</span> SexParent,</span>
-<span id="cb412-4"><a href="GLMMs.html#cb412-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">ziformula =</span> <span class="sc">~</span> FoodTreatment <span class="sc">+</span> SexParent)</span>
-<span id="cb412-5"><a href="GLMMs.html#cb412-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m1)</span></code></pre></div>
+<div class="sourceCode" id="cb418"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb418-1"><a href="GLMMs.html#cb418-1" aria-hidden="true" tabindex="-1"></a>m1 <span class="ot">=</span> glmmTMB<span class="sc">::</span><span class="fu">glmmTMB</span>(SiblingNegotiation <span class="sc">~</span> FoodTreatment <span class="sc">*</span> SexParent </span>
+<span id="cb418-2"><a href="GLMMs.html#cb418-2" aria-hidden="true" tabindex="-1"></a>  <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>Nest) <span class="sc">+</span> <span class="fu">offset</span>(<span class="fu">log</span>(BroodSize)), <span class="at">data =</span> Owls , <span class="at">family =</span> nbinom1,</span>
+<span id="cb418-3"><a href="GLMMs.html#cb418-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">dispformula =</span> <span class="sc">~</span> FoodTreatment <span class="sc">+</span> SexParent,</span>
+<span id="cb418-4"><a href="GLMMs.html#cb418-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">ziformula =</span> <span class="sc">~</span> FoodTreatment <span class="sc">+</span> SexParent)</span>
+<span id="cb418-5"><a href="GLMMs.html#cb418-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m1)</span></code></pre></div>
 <pre><code>##  Family: nbinom1  ( log )
 ## Formula:          
 ## SiblingNegotiation ~ FoodTreatment * SexParent + (1 | Nest) +  
@@ -938,9 +938,9 @@ code span.wa { color: #bf0303; } /* Warning */
 ## SexParentMale          -0.1540     0.2399  -0.642   0.5209    
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
-<div class="sourceCode" id="cb414"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb414-1"><a href="GLMMs.html#cb414-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">=</span> <span class="fu">simulateResiduals</span>(m1, <span class="at">plot =</span> T)</span></code></pre></div>
+<div class="sourceCode" id="cb420"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb420-1"><a href="GLMMs.html#cb420-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">=</span> <span class="fu">simulateResiduals</span>(m1, <span class="at">plot =</span> T)</span></code></pre></div>
 <p><img src="_main_files/figure-html/chunk_chapter5_task_4-1.png" width="672" /></p>
-<div class="sourceCode" id="cb415"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb415-1"><a href="GLMMs.html#cb415-1" aria-hidden="true" tabindex="-1"></a><span class="fu">testDispersion</span>(m1)</span></code></pre></div>
+<div class="sourceCode" id="cb421"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb421-1"><a href="GLMMs.html#cb421-1" aria-hidden="true" tabindex="-1"></a><span class="fu">testDispersion</span>(m1)</span></code></pre></div>
 <p><img src="_main_files/figure-html/chunk_chapter5_task_4-2.png" width="672" /></p>
 <pre><code>## 
 ##  DHARMa nonparametric dispersion test via sd of residuals fitted vs.
@@ -949,7 +949,7 @@ code span.wa { color: #bf0303; } /* Warning */
 ## data:  simulationOutput
 ## dispersion = 0.78311, p-value = 0.104
 ## alternative hypothesis: two.sided</code></pre>
-<div class="sourceCode" id="cb417"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb417-1"><a href="GLMMs.html#cb417-1" aria-hidden="true" tabindex="-1"></a><span class="fu">testZeroInflation</span>(m1)</span></code></pre></div>
+<div class="sourceCode" id="cb423"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb423-1"><a href="GLMMs.html#cb423-1" aria-hidden="true" tabindex="-1"></a><span class="fu">testZeroInflation</span>(m1)</span></code></pre></div>
 <p><img src="_main_files/figure-html/chunk_chapter5_task_4-3.png" width="672" /></p>
 <pre><code>## 
 ##  DHARMa zero-inflation test via comparison to expected zeros with
@@ -969,10 +969,10 @@ code span.wa { color: #bf0303; } /* Warning */
 <p>In <a href="https://www.pnas.org/content/111/24/8782" target="_blank" rel="noopener">https://www.pnas.org/content/111/24/8782</a>, Jung et al. claim that “Female hurricanes are deadlier than male hurricanes”.</p>
 <p>Specifically, they analyze the number of hurricane fatalities, and claim that there is an effect of the femininity of the name on the number of fatalities, correcting for several possible confounders. They interpret the result as causal (including mediators), claiming that giving only male names to hurricanes would considerably reduce death toll.</p>
 <p>The data is available in <code class="sourceCode r">DHARMa</code>.</p>
-<div class="sourceCode" id="cb419"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb419-1"><a href="GLMMs.html#cb419-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DHARMa)</span>
-<span id="cb419-2"><a href="GLMMs.html#cb419-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mgcv)</span>
-<span id="cb419-3"><a href="GLMMs.html#cb419-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb419-4"><a href="GLMMs.html#cb419-4" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(hurricanes)</span></code></pre></div>
+<div class="sourceCode" id="cb425"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb425-1"><a href="GLMMs.html#cb425-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DHARMa)</span>
+<span id="cb425-2"><a href="GLMMs.html#cb425-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mgcv)</span>
+<span id="cb425-3"><a href="GLMMs.html#cb425-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb425-4"><a href="GLMMs.html#cb425-4" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(hurricanes)</span></code></pre></div>
 <pre><code>## tibble [92 × 14] (S3: tbl_df/tbl/data.frame)
 ##  $ Year                    : num [1:92] 1950 1950 1952 1953 1953 ...
 ##  $ Name                    : chr [1:92] &quot;Easy&quot; &quot;King&quot; &quot;Able&quot; &quot;Barbara&quot; ...
@@ -989,14 +989,14 @@ code span.wa { color: #bf0303; } /* Warning */
 ##  $ ZMinPressure_A          : num [1:92] -0.356 -0.511 1.038 1.141 1.038 ...
 ##  $ ZNDAM                   : num [1:92] -0.439 -0.148 -0.55 -0.558 -0.561 ...</code></pre>
 <p>Some plots:</p>
-<div class="sourceCode" id="cb421"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb421-1"><a href="GLMMs.html#cb421-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(hurricanes<span class="sc">$</span>MasFem, hurricanes<span class="sc">$</span>NDAM, <span class="at">cex =</span> <span class="fl">0.5</span>, <span class="at">pch =</span> <span class="dv">5</span>)</span>
-<span id="cb421-2"><a href="GLMMs.html#cb421-2" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(hurricanes<span class="sc">$</span>MasFem, hurricanes<span class="sc">$</span>NDAM, <span class="at">cex =</span> hurricanes<span class="sc">$</span>alldeaths<span class="sc">/</span><span class="dv">20</span>,</span>
-<span id="cb421-3"><a href="GLMMs.html#cb421-3" aria-hidden="true" tabindex="-1"></a>       <span class="at">pch =</span> <span class="dv">4</span>, <span class="at">col=</span> <span class="st">&quot;red&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb427"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb427-1"><a href="GLMMs.html#cb427-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(hurricanes<span class="sc">$</span>MasFem, hurricanes<span class="sc">$</span>NDAM, <span class="at">cex =</span> <span class="fl">0.5</span>, <span class="at">pch =</span> <span class="dv">5</span>)</span>
+<span id="cb427-2"><a href="GLMMs.html#cb427-2" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(hurricanes<span class="sc">$</span>MasFem, hurricanes<span class="sc">$</span>NDAM, <span class="at">cex =</span> hurricanes<span class="sc">$</span>alldeaths<span class="sc">/</span><span class="dv">20</span>,</span>
+<span id="cb427-3"><a href="GLMMs.html#cb427-3" aria-hidden="true" tabindex="-1"></a>       <span class="at">pch =</span> <span class="dv">4</span>, <span class="at">col=</span> <span class="st">&quot;red&quot;</span>)</span></code></pre></div>
 <p><img src="_main_files/figure-html/chunk_chapter5_task_6-1.png" width="672" /></p>
 <p>The original model from the paper fits a negative binomial, using <code>mgcv</code>.{R}.</p>
-<div class="sourceCode" id="cb422"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb422-1"><a href="GLMMs.html#cb422-1" aria-hidden="true" tabindex="-1"></a>originalModelGAM <span class="ot">=</span> <span class="fu">gam</span>(alldeaths <span class="sc">~</span> MasFem <span class="sc">*</span> (Minpressure_Updated_2014 <span class="sc">+</span> NDAM), </span>
-<span id="cb422-2"><a href="GLMMs.html#cb422-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> hurricanes, <span class="at">family =</span> nb, <span class="at">na.action =</span> <span class="st">&quot;na.fail&quot;</span>)</span>
-<span id="cb422-3"><a href="GLMMs.html#cb422-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(originalModelGAM)</span></code></pre></div>
+<div class="sourceCode" id="cb428"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb428-1"><a href="GLMMs.html#cb428-1" aria-hidden="true" tabindex="-1"></a>originalModelGAM <span class="ot">=</span> <span class="fu">gam</span>(alldeaths <span class="sc">~</span> MasFem <span class="sc">*</span> (Minpressure_Updated_2014 <span class="sc">+</span> NDAM), </span>
+<span id="cb428-2"><a href="GLMMs.html#cb428-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> hurricanes, <span class="at">family =</span> nb, <span class="at">na.action =</span> <span class="st">&quot;na.fail&quot;</span>)</span>
+<span id="cb428-3"><a href="GLMMs.html#cb428-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(originalModelGAM)</span></code></pre></div>
 <pre><code>## 
 ## Family: Negative Binomial(0.736) 
 ## Link function: log 
@@ -1071,9 +1071,9 @@ code span.wa { color: #bf0303; } /* Warning */
   <strong><span style="color: #0011AA; font-size:25px;">Task</span></strong><br/>
 <p>Analyze the Marmot data you can find in <code class="sourceCode r">EcoData</code>. A description of the data is available <a href="https://elearning.uni-regensburg.de/pluginfile.php/1922323/mod_assign/introattachment/0/Marmots.pdf?forcedownload=1" target="_blank" rel="noopener">https://osf.io/9yh4x/</a>.</p>
 <p>Use the following snippet to read in the data:</p>
-<div class="sourceCode" id="cb424"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb424-1"><a href="GLMMs.html#cb424-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(EcoData)</span>
-<span id="cb424-2"><a href="GLMMs.html#cb424-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb424-3"><a href="GLMMs.html#cb424-3" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(marmots)</span></code></pre></div>
+<div class="sourceCode" id="cb430"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb430-1"><a href="GLMMs.html#cb430-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(EcoData)</span>
+<span id="cb430-2"><a href="GLMMs.html#cb430-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb430-3"><a href="GLMMs.html#cb430-3" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(marmots)</span></code></pre></div>
 <pre><code>## &#39;data.frame&#39;:    896 obs. of  55 variables:
 ##  $ ANIMAL      : int  15 15 15 15 15 15 17 22 38 40 ...
 ##  $ YEAR        : int  1973 1974 1975 1976 1978 1979 1971 1969 1975 1994 ...

@@ -1627,9 +1627,17 @@ includes all possible 2nd-order interactions between the variables in your model
     <p>
 ```
 
-```{r chunk_chapter3_task_40, message=FALSE, warning=FALSE}
+Possible solution: 
 
+```{r chunk_chapter3_task_40, message=FALSE, warning=FALSE}
+library(EcoData)
+plantHeight
+fullModel <- lm(loght ~ (growthform + Family + lat + long + alt + temp + NPP )^2, data = plantHeight)
+selectedModel = stepAIC(fullModel)
+summary(selectedModel)
 ```
+
+R2 = 0.99 ... very high. In general, AIC should not overfit. In practice, however, it can overfit if there are unmodelled correlation in the data, or if you use variables that are (indirectly) identical to your response. 
 
 ```{=html}
     </p>
