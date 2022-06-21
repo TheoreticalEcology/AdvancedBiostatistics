@@ -9,6 +9,7 @@ editor_options:
 ---
 
 
+
 # GLMMs {#GLMMs}
 
 ```{=html}
@@ -37,17 +38,9 @@ knitr::include_graphics(c("images/linkFunctions.jpg"))
 ```
 
 
-### A Binomial Example
+### Binomial data - logistic regression
 
-We want to look at the titanic data set. A cleaned version of this is in the package `EcoData`{.R}, which you have to install first from GitHub. If you haven't already installed this package, I hope this works for you:
-
-```{r chunk_chapter5_chunk1, echo=TRUE, eval=FALSE, purl=FALSE}
-# install.packages("devtools")  # If you don't have the devtools package installed.
-devtools::install_github(repo = "TheoreticalEcology/EcoData",
-                         dependencies = T, build_vignettes = T)
-```
-
-Let's look at the titanic data set included in EcoData:
+The standard model to fit binomial (0/1 or k/n) data is the logistic regression, which combines the binomial distribution with a logit link function. To get to know this model, let's have a look at the titanic data set in EcoData:
 
 ```{r chunk_chapter5_chunk2, echo=TRUE, eval=TRUE}
 library(EcoData)
@@ -58,84 +51,67 @@ mosaicplot( ~ survived + sex + pclass, data = titanic)
 titanic$pclass = as.factor(titanic$pclass)
 ```
 
-You can fit an lm, but the residual checks make it very evident that the data with a 0/1 response don't fit to the assumption of an lm:
+We want to analyze how survival in the titanic accident dependend on other predictors. We could fit an lm, but the residual checks make it very evident that the data with a 0/1 response don't fit to the assumption of an lm:
 
 ```{r chunk_chapter5_chunk3, echo=TRUE, eval=TRUE}
-fit = lm(survived ~ age, data = titanic)
+fit = lm(survived ~ sex * age, data = titanic)
 summary(fit)
 par(mfrow = c(2, 2))
 plot(fit)
 ```
 
-Thus, what we want to fit is a logistic regression, which assumes a 0/1 response. In principle, this is distribution is called Bernoulli, but in R both 0/1 and k/n are called "binomial", as Bernoulli is the special case of binomial where n = 1. 
+Thus, what we want to fit is a logistic regression, which assumes a 0/1 response + logit link. In principle, this is distribution is called Bernoulli, but in R both 0/1 and k/n are called "binomial", as Bernoulli is the special case of binomial where n = 1. 
 
 ```{r chunk_chapter5_chunk4, echo=TRUE, eval=TRUE}
-m1 = glm(survived ~ sex, family = "binomial", data = titanic)
+m1 = glm(survived ~ sex*age, family = "binomial", data = titanic)
 summary(m1)
 ```
 
-Can you interpret the output? What do the regression coefficients mean? This is a bit tricky. First of all, remember, if you want predictions, you have to apply the link function on the linear predictor. Binomial uses per default the logistic link, to calculate the response use:
+Can you interpret the output? What do the regression coefficients mean? 
+
+In principle, interpretation as before, but if you want transform the coefficients in predictions, you have to apply the link function on the linear predictor. Binomial uses per default the logit link, to calculate the response use:
 
 ```{r chunk_chapter5_chunk5, echo=TRUE, eval=TRUE}
-plogis(0.98)  # Women.
-plogis(0.98 - 2.43) # Men.
+plogis(0.493381 + 0.022516 * 20)  # Women, age 20.
+plogis(0.493381 -1.154139 + 20*(0.022516-0.046276)) # Men, age 20
 ```
 
-You can also use the predict function,
+Alternatively, you can also use the predict function to transform predictions to the response scale
 
 ```{r chunk_chapter5_chunk6, echo=TRUE, eval=TRUE}
-newDat = data.frame(sex = as.factor(c("female", "male")))
-predict(m1, newdata = newDat, se = T) # Linear predictor.
-predict(m1, newdata = newDat, se = T, type = "response")  # Response scale.
+newDat = data.frame(sex = as.factor(c("female", "male")), age = c(20,20))
+predict(m1, newdata = newDat) # Linear predictor.
+predict(m1, newdata = newDat, type = "response")  # Response scale.
 ```
 
-or we just look at the effect plots
+A third alternative is to look at the effect plots, which scale the y axis according to the link scale
 
 ```{r chunk_chapter5_chunk7, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE}
 library(effects)
-
 plot(allEffects(m1))
-```
-
-The same thing for a slightly more complicated model:
-
-```{r chunk_chapter5_chunk8, echo=TRUE, eval=TRUE}
-m2 = glm(survived ~ sex*age, family = "binomial", data = titanic)
-summary(m2)
-plot(allEffects(m2))
 ```
 
 Note: 
 
 * Treatment coding for factors works as before.
-* Age effects for male / female cannot directly be compared, because they are calculated at a different intercept, and through the nonlinear link, this leads to a different effect on the response. One option to solve this are the so-called **odds ratios**. Or just look at the response scale, e.g. via the effect plots, and interpret there!
-
+* If you have k/n data, you can either specify the response as cbind(k, n-k), or you can fit the glm with k ~ x, weights = n
+* For interactions, as in our age effect for male / female, effect sizes can in general not be directly be compared, because they are calculated at a different intercept, and through the nonlinear link, this leads to a different effect on the response. One option to solve this are the so-called **odds ratios**. Or just look at the response scale, e.g. via the effect plots, and interpret there! In our example, however, effect directions changed, so there is no question that there is an interactions. 
 
 
 ***Residual checks***
 
-Let's check m2 from the Titanic example:
-
-```{r chunk_chapter5_chunk9, echo=TRUE, eval=TRUE}
-m2 = glm(survived ~ sex*age, family = "binomial", data = titanic)
-```
-
-First of all: Due to an unfortunate programming choice in R (Nerds: Check class(m2)), the standard residual plots  
+How can we check the residuals of a GLM? First of all: Due to an unfortunate programming choice in R (Nerds: Check class(m2)), the standard residual plots still work  
 
 ```{r chunk_chapter5_chunk10, echo=TRUE, eval=TRUE}
 par(mfrow = c(2, 2))
 plot(m2)
 ```
 
-still work, but they don't look any better than before, because they still check for normality of the residuals, while we are interested in the question of whether the residuals are binomially distributed. The `DHARMa`.{R} package solves this problem. Load the `DHARMa`.{R} package, which should have been installed with `EcoData`{.R} already:
+but they don't look any better than before, because they still check for normality of the residuals, while we are interested in the question of whether the residuals are binomially distributed. The `DHARMa`.{R} package solves this problem. Load the `DHARMa`.{R} package, which should have been installed with `EcoData`{.R} already:
 
-```{r chunk_chapter5_chunk11, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE}
-library(DHARMa)
-```
-
-Calculate residuals:
 
 ```{r chunk_chapter5_chunk12, echo=TRUE, eval=TRUE}
+library(DHARMa)
 res = simulateResiduals(m2)
 ```
 
@@ -173,8 +149,9 @@ plotResiduals(m2, form = titanic$pclass[dataUsed])
 We will talk about `DHARMa`.{R} more later, see also comments on testing binomial GLMs  
 <a href="https://cran.r-project.org/web/packages/DHARMa/vignettes/DHARMa.html#binomial-data" target="_blank" rel="noopener">here</a>.
 
+### Poisson regression
 
-### A Poisson Example
+The second common regression model is the Poisson regression, which is used for count data (1,2,3). The Poisson regression means a Poisson distribution + log link function. 
 
 ```{r chunk_chapter5_chunk16, echo=TRUE, eval=TRUE}
 library(EcoData)
@@ -192,17 +169,16 @@ Log link means that calculating predicted value for attractiveness requires exp(
 exp(1.47459 + 3 * 0.14794)
 ```
 
-Effect plots, not the log scaling on the y axis
+Effect plots, note the log scaling on the y axis
 
 ```{r chunk_chapter5_chunk18, echo=TRUE, eval=TRUE}
 plot(allEffects(fit))
 ```
 
-Residual checks are OK.
+Residual checks are OK, but note that most Poisson models in practice tend to be overdispersed (see next chapter).
 
 ```{r chunk_chapter5_chunk19, echo=TRUE, eval=TRUE}
-res = simulateResiduals(fit)
-plot(res)
+res = simulateResiduals(fit, plot = T)
 ```
 
 
@@ -213,7 +189,7 @@ plot(res)
   <strong><span style="color: #0011AA; font-size:25px;">Task</span></strong><br/>
 ```
 
-Here a data set of habitat use of Elks in Canada. Measured is the presence of Elks (0/1), and a number of other predictors. Perform either:
+You will be given a data set of habitat use of Elks in Canada. Measured is the presence of Elks (0/1), and a number of other predictors. Perform either:
 
 a) A predictive analysis, i.e. a model to predict where Elks can be found.
 b) A causal analysis, trying to understand the effect of roads on Elk presence.
@@ -247,7 +223,9 @@ b) A causal analysis, trying to understand the effect of roads on Elk presence.
 
 ## Dispersion Problems in GLMs
 
-The problem with functions such as the Poisson or the Binomial (for k/n data) is, unlike the normal distribution, they do not have a parameter for the dispersion. That is, unlike the normal distribution, which can have different levels of spread around the regression line, *the Poisson distribution always assumes a certain mean corresponds to a fixed variance*.
+First of all: all other comments (causal structure, checking for misfit of the model) that we discussed for LMs also apply for GLMs in general, and you should check models for those problems. The reason that I concentrate here on dispersion problems is that those are different in GLMs than in normal LMs, so this is an issue that comes on top of the other things.
+
+GLMs have more problems with dispersion because standard GLM distributions such as the Poisson or the Binomial (for k/n data) do not have a parameter for adjusting the spread of the observed data around the regression line (dispersion). Thus, unlike the normal distribution, which can have different levels of spread around the regression line, *the Poisson distribution always assumes a certain mean corresponds to a fixed variance*.
 
 This is obviously not always a good assumption. In most cases with count data, we actually find overdispersion (more dispersion than expected). You can, however, also have underdispersion, i.e. less dispersion than expected. Ways to treat this include 
 
@@ -325,8 +303,6 @@ Note that the result of 2. can again be zero, so there are two explanations for 
 
 Zero-inflated GLMMs can, for example, be fit with the `glmmTMB`.{R} package, using `ziformula = ~ 0`{.R}. 
 
-
-
 ***How to check for zero-inflation***
 
 *Important*: Do not check for zero-inflation in the response. 
@@ -341,15 +317,16 @@ res = simulateResiduals(m4, plot = T)
 testZeroInflation(res)
 ```
 
-Problem with this: When there is really zero-inflation, variable dispersion models such as the Poisson often simply increase the dispersion to account for the zeros, leading to no apparent zero-inflation in the residuals, but rather underdispersion. 
+This shows no sign of zero-inflation. Problem with this test: When there is really zero-inflation, variable dispersion models such as the negative Binomial often simply increase the dispersion to account for the zeros, leading to no apparent zero-inflation in the residuals, but rather underdispersion. 
 
-Thus, if you see underdispersion in variable-dispersion GLM for count data, check for zero-inflation. Reliable check is to simply compare a zero-inflation model via AIC or likelihood ratio test.
+Thus, for zero-inflation, model selection, or simply fitting a ZIP model is often more reliable than residual checks. You can compare a zero-inflation model via AIC or likelihood ratio test to your base model, or simply check if the ZIP term in glmmTMB is significant.
 
+```{r}
+m5 = glmmTMB(count ~ spp + mined + (1|site), family = nbinom2, ziformula = ~1,  data = Salamanders)
+summary(m5)
+```
 
-### P-hacking Link Collection
-
-In the context of GLM(M)s, you have also to be careful about p-hacking. See \@ref(pHacking).
-
+In this case, we have no evidence for zero-inflation. To see an example where you can find zero-inflation, do the Owl case study below. 
 
 ## Case Studies {#protocol}
 
@@ -369,58 +346,6 @@ Fit this base model, then do residual checks for
 * ...
 
 And adjust the model accordingly. 
-
-
-### Owls
-
-```{=html}
-  <hr/>
-  <strong><span style="color: #0011AA; font-size:25px;">Task</span></strong><br/>
-```
-
-Look at the Owl data set in the `glmmTMB`.{R} package. The initial hypothesis is 
-
-```{r chunk_chapter5_task_3, message=FALSE, warning=FALSE}
-library(glmmTMB)
-
-m1 = glm(SiblingNegotiation ~ FoodTreatment*SexParent + offset(log(BroodSize)),
-         data = Owls , family = poisson)
-res = simulateResiduals(m1)
-plot(res)
-```
-
-The offset is a special command that can be used in all regression models.
-
-* *First, try to understand what the offset does*!
-* Then, try to improve the model with everything we have discussed so far.
-
-```{=html}
-  <details>
-    <summary>
-      <strong><span style="color: #0011AA; font-size:25px;">Possible solution</span></strong>
-    </summary>
-    <p>
-```
-
-```{r chunk_chapter5_task_4, message=FALSE, warning=FALSE}
-m1 = glmmTMB::glmmTMB(SiblingNegotiation ~ FoodTreatment * SexParent 
-  + (1|Nest) + offset(log(BroodSize)), data = Owls , family = nbinom1,
-  dispformula = ~ FoodTreatment + SexParent,
-  ziformula = ~ FoodTreatment + SexParent)
-summary(m1)
-
-res = simulateResiduals(m1, plot = T)
-
-testDispersion(m1)
-testZeroInflation(m1)
-```
-
-```{=html}
-    </p>
-  </details>
-  <br/><hr/>
-```
-
 
 ### Hurricanes
 
@@ -461,7 +386,8 @@ summary(originalModelGAM)
 Tasks:
 
 * Confirm that you get the same results as in the paper.
-* Forget what they did. Go back to start, do a causal analysis like we did, and do your own model, diagnosing all residual problems that we discussed. 
+* Have a look at the ?hurricanes to see a residual analysis of the model in the paper
+* Forget what they did. Go back to start, do a causal analysis like we did, and do your own model, diagnosing all residual problems that we discussed. Do you think there is an effect of femininity? 
 
 ```{=html}
   <details>
@@ -518,6 +444,65 @@ Do a re-analysis of the data as if you were the 30th team to contribute the resu
 
 ```{r chunk_chapter5_task_9, message=FALSE, warning=FALSE}
 
+```
+
+```{=html}
+    </p>
+  </details>
+  <br/><hr/>
+```
+
+### Ants
+
+The paper available [here](https://epub.uni-regensburg.de/44615/7/een.12995.pdf) uses a binomial GLMM to analyze the directional decision taken by ants in a Y-maze. Tasks:
+
+* download the data in the paper 
+* re-implement the model, based on the description in the paper
+* check model assumptions, residuals, and all that. Do you agree with the analysis?
+
+### Owls
+
+```{=html}
+  <hr/>
+  <strong><span style="color: #0011AA; font-size:25px;">Task</span></strong><br/>
+```
+
+Look at the Owl data set in the `glmmTMB`.{R} package. The initial hypothesis is 
+
+```{r chunk_chapter5_task_3, message=FALSE, warning=FALSE}
+library(glmmTMB)
+
+m1 = glm(SiblingNegotiation ~ FoodTreatment*SexParent + offset(log(BroodSize)),
+         data = Owls , family = poisson)
+res = simulateResiduals(m1)
+plot(res)
+```
+
+The offset is a special command that can be used in all regression models. It means that we include an effect with effect size 1. 
+
+The offset has a special importance in models with a log link function, because with these models, we have y = exp(x ...), so if you do y = exp(x + log(BroodSize) ) and use exp rules, this is y = exp(x) * exp(log(BroodSize)) = y = exp(x) * BroodSize, so this makes the response proportional to BroodSize. This trick is often used in log link GLMs to make the response proportional to Area, Sampling effort, etc. 
+
+Now, try to improve the model with everything we have discussed so far.
+
+```{=html}
+  <details>
+    <summary>
+      <strong><span style="color: #0011AA; font-size:25px;">Possible solution</span></strong>
+    </summary>
+    <p>
+```
+
+```{r chunk_chapter5_task_4, message=FALSE, warning=FALSE}
+m1 = glmmTMB::glmmTMB(SiblingNegotiation ~ FoodTreatment * SexParent 
+  + (1|Nest) + offset(log(BroodSize)), data = Owls , family = nbinom1,
+  dispformula = ~ FoodTreatment + SexParent,
+  ziformula = ~ FoodTreatment + SexParent)
+summary(m1)
+
+res = simulateResiduals(m1, plot = T)
+
+testDispersion(m1)
+testZeroInflation(m1)
 ```
 
 ```{=html}

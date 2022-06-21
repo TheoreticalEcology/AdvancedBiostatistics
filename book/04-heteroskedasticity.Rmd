@@ -521,16 +521,17 @@ Specifying mixed models is quite simple, however, there is a large list of (part
 
 ***Interpretation of random effects***
 
-What do the random effects mean? The classical interpretation is that they are a structured error, so they are basically group residuals and are not of further importance. 
+What do the random effects mean? The classical interpretation of the rando intercept is that they are a group-structured error, i.e. they are like residuals, but for an entire group. 
 
-However, people increasingly see random effects also as a means to regularize fixed effect models. What does that mean? Note first that, conceptual, every random effect model corresponds to a fixed effect model. For a random intercept model, this would be 
+However, this view breaks down a bit for a random slope model. Another way to view this is that the RE terms absorb variation in parameters. This view works for random intercept and slope models. So, our main model fits the grand mean, and the RE models variation in the parameters, which is assumed to be normally distributed.
+
+A third view of RE models is that they are regularized fixed effect models. What does that mean? Note again that, conceptual, every random effect model corresponds to a fixed effect model. For a random intercept model, this would be 
 
 ```{r, eval = F}
 lmer(y ~ x + (1|group)) => lm(y ~ x + group)
 ```
 
 and for the random slope, it would be 
-
 
 ```{r, eval = F}
 lmer(y ~ x + (x|group)) => lm(y ~ x * group)
@@ -572,16 +573,37 @@ m2 = lmer(normexam ~ standLRT + sex +  (1 | school), data = Exam, REML = F)
 summary(m2)
 ```
 
+***Predictions***
+
+When we predict, we can predict conditional on the fitted REs, or we can use the grand mean. In some packages, the predict function can be adjusted. In lme4, this is via the option re.form, which is available in the predict and simulate function. 
+
 ***Model selection with mixed models***
 
-Selecting with RE models
+For model selection, the degrees of freedom problem means that normal model selection techniques such as AIC or naive LRTs don't work on the random effect structure, because they don't count the correct degrees of freedom.
 
-* Selecting on the fixed effect structure with AIC OK under the assumption that the RE structure doesn't change
-* Selecting on the RE structure with lmerTest::ranova or simulated likelihood ratio tests
+However, assuming that by changing the fixed effect structure, the flexibility of the REs doesn't change a lot (you would see this by looking at the RE sd), we can use standard model selection on the fixed effect structure. All I have said about model selection on standard models applies also here: good for predictions, rarely a good idea if your goal is causal inference.
+
+Regarding the random effect structure - my personal recommendation for most cases is the following:
+
+1. add random intercept on all abvious grouping variables
+2. check residuals per group (e.g. with the plot function below), add random slope if needed
+
+```{r, eval = F}
+m1 <- lmer(y ~ x + (1|group))
+
+plot(m1, 
+     resid(., scaled=TRUE) ~ fitted(.) | group, 
+     abline = 0)
+```
+
+If you absolutely want to do model selection on the RE structure
+
+* lmerTest::ranova performs an ANOVA with estimated df, adding entire RE groups
+* if you want to do details model selections on the RE structure, you should implement a simulated LRT based on a parametric bootstrap. See day 5, on the parametric bootstrap.
 
 ***Variance partitioning / ANOVA***
 
-Also variance partitioning is a bit tricky, as (see type I/II/III ANOVA discussion) fixed and random components of the model are in some way "correlated". The question is: Do you want to count the random effect variance as "explained", or "residual". The most common approach is the hierarchical partitioning proposed by by *Nakagawa & Schielzeth 2013, Nakagawa et al. (2017)*, which is implemented in the `MuMIn`.{R} package. With this, we can run 
+Also variance partitioning in mixed models is a bit tricky, as (see type I/II/III ANOVA discussion) fixed and random components of the model are in some way "correlated". Moreover, a key question is (see also interpreatio above): Do you want to count the random effect variance as "explained", or "residual". The most common approach is the hierarchical partitioning proposed by by *Nakagawa & Schielzeth 2013, Nakagawa et al. (2017)*, which is implemented in the `MuMIn`.{R} package. With this, we can run 
 
 ```{r chunk_chapter4_chunk33, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE}
 library(MuMIn)
@@ -593,7 +615,6 @@ Interpretation
 
 * **R2m**: Marginal ${R}^{2}$ value associated with fixed effects.
 * **R2c**: Conditional ${R}^{2}$ value associated with fixed effects plus the random effects.
-
 
 ## Case studies
 
@@ -617,9 +638,12 @@ In this data set, there are GPA measures on 6 consecutive **occasions**, with a 
   <strong><span style="color: #0011AA; font-size:25px;">Task</span></strong><br/>
 ```
 
-Analyze if GPA improves over time (**occasion**)! 
+Analyze if GPA improves over time (**occasion**)! Here a few hints to look at:
 
-Hint: The amount and trend of GPA from one student are not independent. Do a standard linear regression and a mixed effects regression, including random intercept and slope for the grouping variable **student**. Compare the confidence intervals, coefficients and p-values of the standard linear model and the mixed effects model. Look at the random effects estimates of the mixed effects model (hint: `?ranef`{.R}).
+* Consider which fixed effect structure you want to fit. For example, you might be interested if males and femals differ in their temporal trend
+* Student is the grouping variable -> RE. Which RE structure do you want to fit? A residual plot may help
+* For your benefit, have a look at the difference in the regression table (confidence intervals, coefficients and p-values) of mixed and corresponding fixed effects model. You can also look at the estimates of the mixed effects model (hint: `?ranef`{.R}).
+* After having specified the mixed model, have a look at residuals. You can model dispersion problems in mixed models with glmmTMB, same syntax for REs as lme4
 
 ```{=html}
   <details>
@@ -630,9 +654,16 @@ Hint: The amount and trend of GPA from one student are not independent. Do a sta
 ```
 
 ```{r chunk_chapter4_task_2, eval = F}
+library(lme4)
+library(glmmTMB)
+library(EcoData)
 # initial model with a random intercept and fixed effect structure based on
 # causal assumptions
-fit <- lmer(gpa ~ scale(occasion)*sex + as.numeric(job) + (1|student), data = gpa)
+
+gpa$sOccasion = scale(gpa$occasion)
+gpa$nJob = as.numeric(gpa$job)
+
+fit <- lmer(gpa ~ sOccasion*sex + nJob + (1|student), data = gpa)
 summary(fit)
 
 # plot seems to show a lot of differences still, so add random slope
@@ -640,9 +671,23 @@ plot(fit,
      resid(., scaled=TRUE) ~ fitted(.) | student, 
      abline = 0)
 
-# final model
-fit <- lmer(gpa ~ scale(occasion)*sex + as.numeric(job) + (scale(occasion)|student), data = gpa)
+# slope + intercept model
+fit <- lmer(gpa ~ sOccasion*sex + nJob + (sOccasion|student), data = gpa)
+sd(residuals(fit))
+
+# checking residuals - looks like heteroskedasticity
+plot(fit)
+
+fit <- glmmTMB(gpa ~ sOccasion*sex + nJob + (sOccasion|student), data = gpa, dispformula = ~ sOccasion)
 summary(fit)
+
+# unfortunately, the dispersion in this model cannot be reliably checked, because the functions for this 
+# are not (yet) implemented in glmmTMB
+plot(residuals(fit, type = "pearson") ~ predict(fit)) # not implemented
+library(DHARMa)
+simulateResiduals(fit, plot = T) # not very reliable because glmmTMB cannot do simulations conditional on the fitted REs
+
+# still, the variable dispersion model is highly supported by the data and clearly preferable over a fixed dispersion model
 ```
 
 ```{=html}
@@ -677,7 +722,16 @@ Perform the data analysis, according to the hypothesis discussed in the course.
 ```
 
 ```{r chunk_chapter4_task_4, message=FALSE, warning=FALSE}
+# adding BeesN as a possible confounder
 
+library(lme4)
+fit <- lmer(log(Spobee + 1) ~ Infection + BeesN + (1|Hive), data = bees)
+
+# residual plot shows that hives are either infected or not, thus 
+# doesn't make sense to add a random slope
+plot(fit, 
+     resid(., scaled=TRUE) ~ fitted(.) | Hive, 
+     abline = 0)
 ```
 
 ```{=html}
