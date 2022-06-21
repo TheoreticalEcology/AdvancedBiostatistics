@@ -215,7 +215,8 @@ code span.wa { color: #bf0303; } /* Warning */
 <li class="chapter" data-level="4.4" data-path="heteroskedasticity.html"><a href="heteroskedasticity.html#random-and-mixed-effects---motivation"><i class="fa fa-check"></i><b>4.4</b> Random and Mixed Effects - Motivation</a>
 <ul>
 <li class="chapter" data-level="4.4.1" data-path="heteroskedasticity.html"><a href="heteroskedasticity.html#fitting-random-effects-models"><i class="fa fa-check"></i><b>4.4.1</b> Fitting Random Effects Models</a></li>
-<li class="chapter" data-level="4.4.2" data-path="heteroskedasticity.html"><a href="heteroskedasticity.html#problems-with-mixed-models"><i class="fa fa-check"></i><b>4.4.2</b> Problems With Mixed Models</a></li>
+<li class="chapter" data-level="4.4.2" data-path="heteroskedasticity.html"><a href="heteroskedasticity.html#task-a-mixed-model-for-plantheight"><i class="fa fa-check"></i><b>4.4.2</b> Task: a mixed model for plantHeight</a></li>
+<li class="chapter" data-level="4.4.3" data-path="heteroskedasticity.html"><a href="heteroskedasticity.html#problems-with-mixed-models"><i class="fa fa-check"></i><b>4.4.3</b> Problems With Mixed Models</a></li>
 </ul></li>
 <li class="chapter" data-level="4.5" data-path="heteroskedasticity.html"><a href="heteroskedasticity.html#case-studies-1"><i class="fa fa-check"></i><b>4.5</b> Case studies</a>
 <ul>
@@ -4668,6 +4669,41 @@ Looks like we could have good fun to discuss / publish these results!</p>
       <strong><span style="color: #0011AA; font-size:25px;">Solution</span></strong>
     </summary>
     <p>
+<ul>
+<li>Nearly all other variables are confounders, gesund_org could als be a collider</li>
+<li>Might consider splitting data into single households, families, as effects could be very different. Alternatively, could add interactions with single, families and / or time to see if effects of income are different</li>
+</ul>
+<p>A possible simple model is</p>
+<div class="sourceCode" id="cb279"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb279-1"><a href="understanding_linear_regression.html#cb279-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(lebensz_org <span class="sc">~</span> <span class="fu">sqrt</span>(einkommenj1) <span class="sc">+</span> syear <span class="sc">+</span> sex <span class="sc">+</span> alter <span class="sc">+</span> anz_pers <span class="sc">+</span> bildung <span class="sc">+</span> erwerb <span class="sc">+</span> gesund_org, <span class="at">data =</span> soep)</span>
+<span id="cb279-2"><a href="understanding_linear_regression.html#cb279-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = lebensz_org ~ sqrt(einkommenj1) + syear + sex + 
+##     alter + anz_pers + bildung + erwerb + gesund_org, data = soep)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -8.7735 -0.7843  0.0966  0.9387  4.9146 
+## 
+## Coefficients:
+##                     Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)       -3.257e+01  1.443e+01  -2.256 0.024072 *  
+## sqrt(einkommenj1)  4.741e-04  1.661e-04   2.855 0.004307 ** 
+## syear              2.032e-02  7.158e-03   2.838 0.004541 ** 
+## sex                6.830e-02  2.073e-02   3.296 0.000984 ***
+## alter              1.272e-02  7.116e-04  17.882  &lt; 2e-16 ***
+## anz_pers           7.040e-02  7.753e-03   9.081  &lt; 2e-16 ***
+## bildung            2.027e-02  3.762e-03   5.387 7.23e-08 ***
+## erwerb            -1.267e-02  8.762e-03  -1.446 0.148277    
+## gesund_org        -8.283e-01  1.139e-02 -72.728  &lt; 2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 1.479 on 21611 degrees of freedom
+##   (1902 observations deleted due to missingness)
+## Multiple R-squared:  0.2172, Adjusted R-squared:  0.2169 
+## F-statistic: 749.6 on 8 and 21611 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>Note that you shouldn’t interpret the other variables (Table II fallacy) in a causal analysis, because the other variables aren’t analyzed / corrected for confounding.</p>
     </p>
   </details>
   <br/><hr/>

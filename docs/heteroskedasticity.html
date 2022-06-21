@@ -215,7 +215,8 @@ code span.wa { color: #bf0303; } /* Warning */
 <li class="chapter" data-level="4.4" data-path="heteroskedasticity.html"><a href="heteroskedasticity.html#random-and-mixed-effects---motivation"><i class="fa fa-check"></i><b>4.4</b> Random and Mixed Effects - Motivation</a>
 <ul>
 <li class="chapter" data-level="4.4.1" data-path="heteroskedasticity.html"><a href="heteroskedasticity.html#fitting-random-effects-models"><i class="fa fa-check"></i><b>4.4.1</b> Fitting Random Effects Models</a></li>
-<li class="chapter" data-level="4.4.2" data-path="heteroskedasticity.html"><a href="heteroskedasticity.html#problems-with-mixed-models"><i class="fa fa-check"></i><b>4.4.2</b> Problems With Mixed Models</a></li>
+<li class="chapter" data-level="4.4.2" data-path="heteroskedasticity.html"><a href="heteroskedasticity.html#task-a-mixed-model-for-plantheight"><i class="fa fa-check"></i><b>4.4.2</b> Task: a mixed model for plantHeight</a></li>
+<li class="chapter" data-level="4.4.3" data-path="heteroskedasticity.html"><a href="heteroskedasticity.html#problems-with-mixed-models"><i class="fa fa-check"></i><b>4.4.3</b> Problems With Mixed Models</a></li>
 </ul></li>
 <li class="chapter" data-level="4.5" data-path="heteroskedasticity.html"><a href="heteroskedasticity.html#case-studies-1"><i class="fa fa-check"></i><b>4.5</b> Case studies</a>
 <ul>
@@ -300,12 +301,12 @@ code span.wa { color: #bf0303; } /* Warning */
 <li>Residuals vs Leverage = Should we worry about certain outliers?</li>
 </ul>
 <p>Here an example for a linear regression of Ozone against Wind:</p>
-<div class="sourceCode" id="cb279"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb279-1"><a href="heteroskedasticity.html#cb279-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">lm</span>(Ozone <span class="sc">~</span> Temp , <span class="at">data =</span> airquality)</span>
-<span id="cb279-2"><a href="heteroskedasticity.html#cb279-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(Ozone <span class="sc">~</span> Temp, <span class="at">data =</span> airquality)</span>
-<span id="cb279-3"><a href="heteroskedasticity.html#cb279-3" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(fit)</span></code></pre></div>
+<div class="sourceCode" id="cb281"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb281-1"><a href="heteroskedasticity.html#cb281-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">lm</span>(Ozone <span class="sc">~</span> Temp , <span class="at">data =</span> airquality)</span>
+<span id="cb281-2"><a href="heteroskedasticity.html#cb281-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(Ozone <span class="sc">~</span> Temp, <span class="at">data =</span> airquality)</span>
+<span id="cb281-3"><a href="heteroskedasticity.html#cb281-3" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(fit)</span></code></pre></div>
 <p><img src="_main_files/figure-html/chunk_chapter4_chunk2-1.png" width="672" /></p>
-<div class="sourceCode" id="cb280"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb280-1"><a href="heteroskedasticity.html#cb280-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>))</span>
-<span id="cb280-2"><a href="heteroskedasticity.html#cb280-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fit)</span></code></pre></div>
+<div class="sourceCode" id="cb282"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb282-1"><a href="heteroskedasticity.html#cb282-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>))</span>
+<span id="cb282-2"><a href="heteroskedasticity.html#cb282-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fit)</span></code></pre></div>
 <p><img src="_main_files/figure-html/chunk_chapter4_chunk2-2.png" width="672" /></p>
 <p>The usual strategy now is to</p>
 <ol style="list-style-type: decimal">
@@ -320,25 +321,25 @@ code span.wa { color: #bf0303; } /* Warning */
 <div id="changing-the-regression-formular" class="section level3 hasAnchor" number="4.1.1">
 <h3><span class="header-section-number">4.1.1</span> Changing the regression formular<a href="heteroskedasticity.html#changing-the-regression-formular" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>The easiest strategy is to add complexity to the polynomial, e.g. quadratic terms, interactions etc.</p>
-<div class="sourceCode" id="cb281"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb281-1"><a href="heteroskedasticity.html#cb281-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(effects)</span>
-<span id="cb281-2"><a href="heteroskedasticity.html#cb281-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb281-3"><a href="heteroskedasticity.html#cb281-3" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">lm</span>(Ozone <span class="sc">~</span> Wind <span class="sc">*</span> Temp <span class="sc">+</span> <span class="fu">I</span>(Wind<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fu">I</span>(Temp<span class="sc">^</span><span class="dv">2</span>), <span class="at">data =</span> airquality)</span>
-<span id="cb281-4"><a href="heteroskedasticity.html#cb281-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb281-5"><a href="heteroskedasticity.html#cb281-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">allEffects</span>(fit, <span class="at">partial.residuals =</span> T), <span class="at">selection =</span> <span class="dv">1</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb283"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb283-1"><a href="heteroskedasticity.html#cb283-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(effects)</span>
+<span id="cb283-2"><a href="heteroskedasticity.html#cb283-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb283-3"><a href="heteroskedasticity.html#cb283-3" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">lm</span>(Ozone <span class="sc">~</span> Wind <span class="sc">*</span> Temp <span class="sc">+</span> <span class="fu">I</span>(Wind<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fu">I</span>(Temp<span class="sc">^</span><span class="dv">2</span>), <span class="at">data =</span> airquality)</span>
+<span id="cb283-4"><a href="heteroskedasticity.html#cb283-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb283-5"><a href="heteroskedasticity.html#cb283-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">allEffects</span>(fit, <span class="at">partial.residuals =</span> T), <span class="at">selection =</span> <span class="dv">1</span>)</span></code></pre></div>
 <p><img src="_main_files/figure-html/chunk_chapter4_chunk3-1.png" width="672" /></p>
-<div class="sourceCode" id="cb282"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb282-1"><a href="heteroskedasticity.html#cb282-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">allEffects</span>(fit, <span class="at">partial.residuals =</span> T), <span class="at">selection =</span> <span class="dv">2</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb284"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb284-1"><a href="heteroskedasticity.html#cb284-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">allEffects</span>(fit, <span class="at">partial.residuals =</span> T), <span class="at">selection =</span> <span class="dv">2</span>)</span></code></pre></div>
 <p><img src="_main_files/figure-html/chunk_chapter4_chunk3-2.png" width="672" /></p>
-<div class="sourceCode" id="cb283"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb283-1"><a href="heteroskedasticity.html#cb283-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">allEffects</span>(fit, <span class="at">partial.residuals =</span> T), <span class="at">selection =</span> <span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb285"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb285-1"><a href="heteroskedasticity.html#cb285-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">allEffects</span>(fit, <span class="at">partial.residuals =</span> T), <span class="at">selection =</span> <span class="dv">3</span>)</span></code></pre></div>
 <p><img src="_main_files/figure-html/chunk_chapter4_chunk3-3.png" width="672" /></p>
 <p>and see if the residuals are getting better. To avoid doing this totally randomly, it may be useful to plot residuals against individual predictors by hand!</p>
 </div>
 <div id="generalized-additive-models-gams" class="section level3 hasAnchor" number="4.1.2">
 <h3><span class="header-section-number">4.1.2</span> Generalized additive models (GAMs)<a href="heteroskedasticity.html#generalized-additive-models-gams" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Another options are GAMs = Generalized Additive Models. The idea is to fit a smooth function to data, to automatically find the “right” functional form. The smoothness of the function is automatically optimized.</p>
-<div class="sourceCode" id="cb284"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb284-1"><a href="heteroskedasticity.html#cb284-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mgcv)</span>
-<span id="cb284-2"><a href="heteroskedasticity.html#cb284-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb284-3"><a href="heteroskedasticity.html#cb284-3" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">gam</span>(Ozone <span class="sc">~</span> <span class="fu">s</span>(Wind) <span class="sc">+</span> <span class="fu">s</span>(Temp) <span class="sc">+</span> <span class="fu">s</span>(Solar.R) , <span class="at">data =</span> airquality)</span>
-<span id="cb284-4"><a href="heteroskedasticity.html#cb284-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code></pre></div>
+<div class="sourceCode" id="cb286"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb286-1"><a href="heteroskedasticity.html#cb286-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mgcv)</span>
+<span id="cb286-2"><a href="heteroskedasticity.html#cb286-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb286-3"><a href="heteroskedasticity.html#cb286-3" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">gam</span>(Ozone <span class="sc">~</span> <span class="fu">s</span>(Wind) <span class="sc">+</span> <span class="fu">s</span>(Temp) <span class="sc">+</span> <span class="fu">s</span>(Solar.R) , <span class="at">data =</span> airquality)</span>
+<span id="cb286-4"><a href="heteroskedasticity.html#cb286-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code></pre></div>
 <pre><code>## 
 ## Family: gaussian 
 ## Link function: identity 
@@ -362,19 +363,19 @@ code span.wa { color: #bf0303; } /* Warning */
 ## 
 ## R-sq.(adj) =  0.723   Deviance explained = 74.7%
 ## GCV =  338.9  Scale est. = 306.83    n = 111</code></pre>
-<div class="sourceCode" id="cb286"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb286-1"><a href="heteroskedasticity.html#cb286-1" aria-hidden="true" tabindex="-1"></a><span class="co"># allEffects doesn&#39;t work here.</span></span>
-<span id="cb286-2"><a href="heteroskedasticity.html#cb286-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fit, <span class="at">pages =</span> <span class="dv">0</span>, <span class="at">residuals =</span> T, <span class="at">pch =</span> <span class="dv">20</span>, <span class="at">lwd =</span> <span class="fl">1.8</span>, <span class="at">cex =</span> <span class="fl">0.7</span>,</span>
-<span id="cb286-3"><a href="heteroskedasticity.html#cb286-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">col =</span> <span class="fu">c</span>(<span class="st">&quot;black&quot;</span>, <span class="fu">rep</span>(<span class="st">&quot;red&quot;</span>, <span class="fu">length</span>(fit<span class="sc">$</span>residuals))))</span></code></pre></div>
+<div class="sourceCode" id="cb288"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb288-1"><a href="heteroskedasticity.html#cb288-1" aria-hidden="true" tabindex="-1"></a><span class="co"># allEffects doesn&#39;t work here.</span></span>
+<span id="cb288-2"><a href="heteroskedasticity.html#cb288-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fit, <span class="at">pages =</span> <span class="dv">0</span>, <span class="at">residuals =</span> T, <span class="at">pch =</span> <span class="dv">20</span>, <span class="at">lwd =</span> <span class="fl">1.8</span>, <span class="at">cex =</span> <span class="fl">0.7</span>,</span>
+<span id="cb288-3"><a href="heteroskedasticity.html#cb288-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">col =</span> <span class="fu">c</span>(<span class="st">&quot;black&quot;</span>, <span class="fu">rep</span>(<span class="st">&quot;red&quot;</span>, <span class="fu">length</span>(fit<span class="sc">$</span>residuals))))</span></code></pre></div>
 <p><img src="_main_files/figure-html/chunk_chapter4_chunk4-1.png" width="672" /><img src="_main_files/figure-html/chunk_chapter4_chunk4-2.png" width="672" /><img src="_main_files/figure-html/chunk_chapter4_chunk4-3.png" width="672" /></p>
-<div class="sourceCode" id="cb287"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb287-1"><a href="heteroskedasticity.html#cb287-1" aria-hidden="true" tabindex="-1"></a><span class="fu">AIC</span>(fit)</span></code></pre></div>
+<div class="sourceCode" id="cb289"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb289-1"><a href="heteroskedasticity.html#cb289-1" aria-hidden="true" tabindex="-1"></a><span class="fu">AIC</span>(fit)</span></code></pre></div>
 <pre><code>## [1] 962.596</code></pre>
 <p>Comparison to normal <code class="sourceCode r"><span class="fu">lm</span>()</code>:</p>
-<div class="sourceCode" id="cb289"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb289-1"><a href="heteroskedasticity.html#cb289-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">lm</span>(Ozone <span class="sc">~</span> Wind <span class="sc">+</span> Temp <span class="sc">+</span> Solar.R , <span class="at">data =</span> airquality)</span>
-<span id="cb289-2"><a href="heteroskedasticity.html#cb289-2" aria-hidden="true" tabindex="-1"></a><span class="fu">AIC</span>(fit)</span></code></pre></div>
+<div class="sourceCode" id="cb291"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb291-1"><a href="heteroskedasticity.html#cb291-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">lm</span>(Ozone <span class="sc">~</span> Wind <span class="sc">+</span> Temp <span class="sc">+</span> Solar.R , <span class="at">data =</span> airquality)</span>
+<span id="cb291-2"><a href="heteroskedasticity.html#cb291-2" aria-hidden="true" tabindex="-1"></a><span class="fu">AIC</span>(fit)</span></code></pre></div>
 <pre><code>## [1] 998.7171</code></pre>
 <p>Spline interaction is called a <strong>tensor spline</strong>:</p>
-<div class="sourceCode" id="cb291"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb291-1"><a href="heteroskedasticity.html#cb291-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">gam</span>(Ozone <span class="sc">~</span> <span class="fu">te</span>(Wind, Temp) <span class="sc">+</span> <span class="fu">s</span>(Solar.R) , <span class="at">data =</span> airquality)</span>
-<span id="cb291-2"><a href="heteroskedasticity.html#cb291-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code></pre></div>
+<div class="sourceCode" id="cb293"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb293-1"><a href="heteroskedasticity.html#cb293-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">gam</span>(Ozone <span class="sc">~</span> <span class="fu">te</span>(Wind, Temp) <span class="sc">+</span> <span class="fu">s</span>(Solar.R) , <span class="at">data =</span> airquality)</span>
+<span id="cb293-2"><a href="heteroskedasticity.html#cb293-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code></pre></div>
 <pre><code>## 
 ## Family: gaussian 
 ## Link function: identity 
@@ -397,13 +398,13 @@ code span.wa { color: #bf0303; } /* Warning */
 ## 
 ## R-sq.(adj) =  0.803   Deviance explained = 83.1%
 ## GCV = 258.06  Scale est. = 218.54    n = 111</code></pre>
-<div class="sourceCode" id="cb293"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb293-1"><a href="heteroskedasticity.html#cb293-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fit, <span class="at">pages =</span> <span class="dv">0</span>, <span class="at">residuals =</span> T, <span class="at">pch =</span> <span class="dv">20</span>, <span class="at">lwd =</span> <span class="fl">1.9</span>, <span class="at">cex =</span> <span class="fl">0.4</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb295"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb295-1"><a href="heteroskedasticity.html#cb295-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fit, <span class="at">pages =</span> <span class="dv">0</span>, <span class="at">residuals =</span> T, <span class="at">pch =</span> <span class="dv">20</span>, <span class="at">lwd =</span> <span class="fl">1.9</span>, <span class="at">cex =</span> <span class="fl">0.4</span>)</span></code></pre></div>
 <p><img src="_main_files/figure-html/chunk_chapter4_chunk6-1.png" width="672" /><img src="_main_files/figure-html/chunk_chapter4_chunk6-2.png" width="672" /></p>
-<div class="sourceCode" id="cb294"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb294-1"><a href="heteroskedasticity.html#cb294-1" aria-hidden="true" tabindex="-1"></a><span class="fu">AIC</span>(fit)</span></code></pre></div>
+<div class="sourceCode" id="cb296"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb296-1"><a href="heteroskedasticity.html#cb296-1" aria-hidden="true" tabindex="-1"></a><span class="fu">AIC</span>(fit)</span></code></pre></div>
 <pre><code>## [1] 930.5047</code></pre>
 <p>GAMs are particularly useful for confounders. If you have confounders, you usually don’t care that the fitted relationship is a bit hard to interpret, you just want the confounder effect to be removed. So, if you want to fit the causal relationship between Ozone ~ Wind, account for the other variables, a good strategy might be:</p>
-<div class="sourceCode" id="cb296"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb296-1"><a href="heteroskedasticity.html#cb296-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">gam</span>(Ozone <span class="sc">~</span> Wind <span class="sc">+</span> <span class="fu">s</span>(Temp) <span class="sc">+</span> <span class="fu">s</span>(Solar.R) , <span class="at">data =</span> airquality)</span>
-<span id="cb296-2"><a href="heteroskedasticity.html#cb296-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code></pre></div>
+<div class="sourceCode" id="cb298"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb298-1"><a href="heteroskedasticity.html#cb298-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">gam</span>(Ozone <span class="sc">~</span> Wind <span class="sc">+</span> <span class="fu">s</span>(Temp) <span class="sc">+</span> <span class="fu">s</span>(Solar.R) , <span class="at">data =</span> airquality)</span>
+<span id="cb298-2"><a href="heteroskedasticity.html#cb298-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code></pre></div>
 <pre><code>## 
 ## Family: gaussian 
 ## Link function: identity 
@@ -434,7 +435,7 @@ code span.wa { color: #bf0303; } /* Warning */
   <hr/>
   <strong><span style="color: #0011AA; font-size:25px;">Task</span></strong><br/>
 <p>Assume our base model is</p>
-<div class="sourceCode" id="cb298"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb298-1"><a href="heteroskedasticity.html#cb298-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(Ozone <span class="sc">~</span> Wind <span class="sc">+</span> Temp <span class="sc">+</span> Solar.R, <span class="at">data =</span> airquality)</span></code></pre></div>
+<div class="sourceCode" id="cb300"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb300-1"><a href="heteroskedasticity.html#cb300-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(Ozone <span class="sc">~</span> Wind <span class="sc">+</span> Temp <span class="sc">+</span> Solar.R, <span class="at">data =</span> airquality)</span></code></pre></div>
 <p>and we are mainly interested in the effect of wind (Temp - Solar.R are added as confounders).</p>
 <p>Adjust the functional form until the mean is fitted well!</p>
   <details>
@@ -450,16 +451,16 @@ code span.wa { color: #bf0303; } /* Warning */
 <div id="modelling-variance-terms" class="section level2 hasAnchor" number="4.2">
 <h2><span class="header-section-number">4.2</span> Modelling Variance Terms<a href="heteroskedasticity.html#modelling-variance-terms" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>After we have fixed the functional form, we want to look at the distribution of the residuals. We said yesterday that you can try to get them more normal by applying an appropriate transformation, e.g. the logarithm or square root. Without transformation, we often find that data shows heteroskedasticity, i.e. the residual variance changes with some predictor or the mean estimate (see also Scale - Location plot). Maybe your experimental data looks like this:</p>
-<div class="sourceCode" id="cb299"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb299-1"><a href="heteroskedasticity.html#cb299-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">125</span>)</span>
-<span id="cb299-2"><a href="heteroskedasticity.html#cb299-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb299-3"><a href="heteroskedasticity.html#cb299-3" aria-hidden="true" tabindex="-1"></a>data <span class="ot">=</span> <span class="fu">data.frame</span>(<span class="at">treatment =</span> <span class="fu">factor</span>(<span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">&quot;A&quot;</span>, <span class="st">&quot;B&quot;</span>, <span class="st">&quot;C&quot;</span>), <span class="at">each =</span> <span class="dv">15</span>)))</span>
-<span id="cb299-4"><a href="heteroskedasticity.html#cb299-4" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>observation <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">7</span>, <span class="dv">2</span> ,<span class="dv">4</span>)[<span class="fu">as.numeric</span>(data<span class="sc">$</span>treatment)] <span class="sc">+</span></span>
-<span id="cb299-5"><a href="heteroskedasticity.html#cb299-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rnorm</span>( <span class="fu">length</span>(data<span class="sc">$</span>treatment), <span class="at">sd =</span> <span class="fu">as.numeric</span>(data<span class="sc">$</span>treatment)<span class="sc">^</span><span class="dv">2</span> )</span>
-<span id="cb299-6"><a href="heteroskedasticity.html#cb299-6" aria-hidden="true" tabindex="-1"></a><span class="fu">boxplot</span>(observation <span class="sc">~</span> treatment, <span class="at">data =</span> data)</span></code></pre></div>
+<div class="sourceCode" id="cb301"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb301-1"><a href="heteroskedasticity.html#cb301-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">125</span>)</span>
+<span id="cb301-2"><a href="heteroskedasticity.html#cb301-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb301-3"><a href="heteroskedasticity.html#cb301-3" aria-hidden="true" tabindex="-1"></a>data <span class="ot">=</span> <span class="fu">data.frame</span>(<span class="at">treatment =</span> <span class="fu">factor</span>(<span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">&quot;A&quot;</span>, <span class="st">&quot;B&quot;</span>, <span class="st">&quot;C&quot;</span>), <span class="at">each =</span> <span class="dv">15</span>)))</span>
+<span id="cb301-4"><a href="heteroskedasticity.html#cb301-4" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>observation <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">7</span>, <span class="dv">2</span> ,<span class="dv">4</span>)[<span class="fu">as.numeric</span>(data<span class="sc">$</span>treatment)] <span class="sc">+</span></span>
+<span id="cb301-5"><a href="heteroskedasticity.html#cb301-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rnorm</span>( <span class="fu">length</span>(data<span class="sc">$</span>treatment), <span class="at">sd =</span> <span class="fu">as.numeric</span>(data<span class="sc">$</span>treatment)<span class="sc">^</span><span class="dv">2</span> )</span>
+<span id="cb301-6"><a href="heteroskedasticity.html#cb301-6" aria-hidden="true" tabindex="-1"></a><span class="fu">boxplot</span>(observation <span class="sc">~</span> treatment, <span class="at">data =</span> data)</span></code></pre></div>
 <p><img src="_main_files/figure-html/chunk_chapter4_chunk8-1.png" width="672" /></p>
 <p>Especially p-values and confidence intervals of <code class="sourceCode r"><span class="fu">lm</span>()</code> and ANOVA can react quite strongly to such differences in residual variation. So, running a standard <code class="sourceCode r"><span class="fu">lm</span>()</code> / ANOVA on this data is not a good idea - in this case, we see that all regression effects are not significant, as is the ANOVA, suggesting that there is no difference between groups.</p>
-<div class="sourceCode" id="cb300"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb300-1"><a href="heteroskedasticity.html#cb300-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">lm</span>(observation <span class="sc">~</span> treatment, <span class="at">data =</span> data)</span>
-<span id="cb300-2"><a href="heteroskedasticity.html#cb300-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code></pre></div>
+<div class="sourceCode" id="cb302"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb302-1"><a href="heteroskedasticity.html#cb302-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">lm</span>(observation <span class="sc">~</span> treatment, <span class="at">data =</span> data)</span>
+<span id="cb302-2"><a href="heteroskedasticity.html#cb302-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code></pre></div>
 <pre><code>## 
 ## Call:
 ## lm(formula = observation ~ treatment, data = data)
@@ -479,7 +480,7 @@ code span.wa { color: #bf0303; } /* Warning */
 ## Residual standard error: 6.704 on 42 degrees of freedom
 ## Multiple R-squared:  0.05973,    Adjusted R-squared:  0.01495 
 ## F-statistic: 1.334 on 2 and 42 DF,  p-value: 0.2744</code></pre>
-<div class="sourceCode" id="cb302"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb302-1"><a href="heteroskedasticity.html#cb302-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">aov</span>(fit))</span></code></pre></div>
+<div class="sourceCode" id="cb304"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb304-1"><a href="heteroskedasticity.html#cb304-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">aov</span>(fit))</span></code></pre></div>
 <pre><code>##             Df Sum Sq Mean Sq F value Pr(&gt;F)
 ## treatment    2  119.9   59.95   1.334  0.274
 ## Residuals   42 1887.6   44.94</code></pre>
@@ -491,10 +492,10 @@ code span.wa { color: #bf0303; } /* Warning */
 <div id="model-the-variance" class="section level3 hasAnchor" number="4.2.2">
 <h3><span class="header-section-number">4.2.2</span> Model the variance<a href="heteroskedasticity.html#model-the-variance" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>The second, more general option, is to model the variance - Modelling the variance to fit a model where the variance is not fixed. The basic option in R is <code class="sourceCode r">nlme<span class="sc">::</span>gls</code>. GLS = <em>Generalized Least Squares</em>. In this function, you can specify a dependency of the residual variance on a predictor or the response. See options via <code class="sourceCode r">?varFunc</code>. In our case, we will use the varIdent option, which allows to specify a different variance per treatment.</p>
-<div class="sourceCode" id="cb304"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb304-1"><a href="heteroskedasticity.html#cb304-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(nlme)</span>
-<span id="cb304-2"><a href="heteroskedasticity.html#cb304-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb304-3"><a href="heteroskedasticity.html#cb304-3" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">gls</span>(observation <span class="sc">~</span> treatment, <span class="at">data =</span> data, <span class="at">weights =</span> <span class="fu">varIdent</span>(<span class="at">form =</span> <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> treatment))</span>
-<span id="cb304-4"><a href="heteroskedasticity.html#cb304-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code></pre></div>
+<div class="sourceCode" id="cb306"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb306-1"><a href="heteroskedasticity.html#cb306-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(nlme)</span>
+<span id="cb306-2"><a href="heteroskedasticity.html#cb306-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb306-3"><a href="heteroskedasticity.html#cb306-3" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">gls</span>(observation <span class="sc">~</span> treatment, <span class="at">data =</span> data, <span class="at">weights =</span> <span class="fu">varIdent</span>(<span class="at">form =</span> <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> treatment))</span>
+<span id="cb306-4"><a href="heteroskedasticity.html#cb306-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code></pre></div>
 <pre><code>## Generalized least squares fit by REML
 ##   Model: observation ~ treatment 
 ##   Data: data 
@@ -526,17 +527,17 @@ code span.wa { color: #bf0303; } /* Warning */
 ## Residual standard error: 0.9095262 
 ## Degrees of freedom: 45 total; 42 residual</code></pre>
 <p>If you check the ANOVA, also the ANOVA is significant!</p>
-<div class="sourceCode" id="cb306"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb306-1"><a href="heteroskedasticity.html#cb306-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(fit)</span></code></pre></div>
+<div class="sourceCode" id="cb308"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb308-1"><a href="heteroskedasticity.html#cb308-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(fit)</span></code></pre></div>
 <pre><code>## Denom. DF: 42 
 ##             numDF  F-value p-value
 ## (Intercept)     1 899.3761  &lt;.0001
 ## treatment       2   6.0962  0.0047</code></pre>
 <p>The second option for modeling variances is to use the <code>glmmTMB</code>.{R} package, which we will use quite frequently this week. Here, you can specify an extra regression formula for the dispersion (= residual variance). If we fit this:</p>
-<div class="sourceCode" id="cb308"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb308-1"><a href="heteroskedasticity.html#cb308-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glmmTMB)</span>
-<span id="cb308-2"><a href="heteroskedasticity.html#cb308-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb308-3"><a href="heteroskedasticity.html#cb308-3" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">glmmTMB</span>(observation <span class="sc">~</span> treatment, <span class="at">data =</span> data, <span class="at">dispformula =</span> <span class="sc">~</span> treatment)</span></code></pre></div>
+<div class="sourceCode" id="cb310"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb310-1"><a href="heteroskedasticity.html#cb310-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glmmTMB)</span>
+<span id="cb310-2"><a href="heteroskedasticity.html#cb310-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb310-3"><a href="heteroskedasticity.html#cb310-3" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">glmmTMB</span>(observation <span class="sc">~</span> treatment, <span class="at">data =</span> data, <span class="at">dispformula =</span> <span class="sc">~</span> treatment)</span></code></pre></div>
 <p>We get 2 regression tables as outputs - one for the effects, and one for the dispersion (= residual variance). We see, as expected, that the dispersion is higher in groups B and C compared to A. An advantage over gls is that we get confidence intervals and p-values for these differences on top!</p>
-<div class="sourceCode" id="cb309"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb309-1"><a href="heteroskedasticity.html#cb309-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code></pre></div>
+<div class="sourceCode" id="cb311"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb311-1"><a href="heteroskedasticity.html#cb311-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code></pre></div>
 <pre><code>##  Family: gaussian  ( identity )
 ## Formula:          observation ~ treatment
 ## Dispersion:                   ~treatment
@@ -565,19 +566,19 @@ code span.wa { color: #bf0303; } /* Warning */
 <div id="exercise-variance-modelling" class="section level3 hasAnchor" number="4.2.3">
 <h3><span class="header-section-number">4.2.3</span> Exercise variance modelling<a href="heteroskedasticity.html#exercise-variance-modelling" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Take this plot of Ozone ~ Solar.R using the airquality data. Clearly there is heteroskedasticity in the relationship:</p>
-<div class="sourceCode" id="cb311"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb311-1"><a href="heteroskedasticity.html#cb311-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(Ozone <span class="sc">~</span> Solar.R, <span class="at">data =</span> airquality)</span></code></pre></div>
+<div class="sourceCode" id="cb313"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb313-1"><a href="heteroskedasticity.html#cb313-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(Ozone <span class="sc">~</span> Solar.R, <span class="at">data =</span> airquality)</span></code></pre></div>
 <p><img src="_main_files/figure-html/chunk_chapter4_chunk14-1.png" width="672" /></p>
 <p>We can also see this when we fit the regression model:</p>
-<div class="sourceCode" id="cb312"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb312-1"><a href="heteroskedasticity.html#cb312-1" aria-hidden="true" tabindex="-1"></a>m1 <span class="ot">=</span> <span class="fu">lm</span>(Ozone <span class="sc">~</span> Solar.R, <span class="at">data =</span> airquality)</span>
-<span id="cb312-2"><a href="heteroskedasticity.html#cb312-2" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>))</span>
-<span id="cb312-3"><a href="heteroskedasticity.html#cb312-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(m1)</span></code></pre></div>
+<div class="sourceCode" id="cb314"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb314-1"><a href="heteroskedasticity.html#cb314-1" aria-hidden="true" tabindex="-1"></a>m1 <span class="ot">=</span> <span class="fu">lm</span>(Ozone <span class="sc">~</span> Solar.R, <span class="at">data =</span> airquality)</span>
+<span id="cb314-2"><a href="heteroskedasticity.html#cb314-2" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>))</span>
+<span id="cb314-3"><a href="heteroskedasticity.html#cb314-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(m1)</span></code></pre></div>
 <p><img src="_main_files/figure-html/chunk_chapter4_chunk15-1.png" width="672" /></p>
   <hr/>
   <strong><span style="color: #0011AA; font-size:25px;">Task</span></strong><br/>
 <p>We could of course consider other predictors, but let’s say we want to fit this model specifically</p>
 <ol style="list-style-type: decimal">
 <li>Try to get the variance stable with a transformation.</li>
-<li>Use the <code class="sourceCode r">gls</code> function (package <code class="sourceCode r">nlme</code>) with the untransformed response to make the variance dependent on Solar.R. Hint: Read in <code>corClasses</code>.{R} and decide how to model this.</li>
+<li>Use the <code class="sourceCode r">gls</code> function (package <code class="sourceCode r">nlme</code>) with the untransformed response to make the variance dependent on Solar.R. Hint: Read in <code>varClasses</code>.{R} and decide how to model this.</li>
 <li>Use <code>glmmTMB</code>.{R} to model heteroskedasticity.</li>
 </ol>
   <details>
@@ -593,18 +594,18 @@ code span.wa { color: #bf0303; } /* Warning */
 <div id="non-normality-and-outliers" class="section level2 hasAnchor" number="4.3">
 <h2><span class="header-section-number">4.3</span> Non-normality and Outliers<a href="heteroskedasticity.html#non-normality-and-outliers" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>What can we do if, after accounting for the functional relationship, response transformation and variance modelling, residual diagnostic 2 shows non-normality, in particular strong outliers? Here simulated example data with strong outliers / deviations from normality:</p>
-<div class="sourceCode" id="cb313"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb313-1"><a href="heteroskedasticity.html#cb313-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb313-2"><a href="heteroskedasticity.html#cb313-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb313-3"><a href="heteroskedasticity.html#cb313-3" aria-hidden="true" tabindex="-1"></a>n <span class="ot">=</span> <span class="dv">100</span></span>
-<span id="cb313-4"><a href="heteroskedasticity.html#cb313-4" aria-hidden="true" tabindex="-1"></a>concentration <span class="ot">=</span> <span class="fu">runif</span>(n, <span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
-<span id="cb313-5"><a href="heteroskedasticity.html#cb313-5" aria-hidden="true" tabindex="-1"></a>growth <span class="ot">=</span> <span class="dv">2</span> <span class="sc">*</span> concentration <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="at">sd =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
-<span id="cb313-6"><a href="heteroskedasticity.html#cb313-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rbinom</span>(n, <span class="dv">1</span>, <span class="fl">0.05</span>) <span class="sc">*</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="dv">6</span><span class="sc">*</span>concentration, <span class="at">sd =</span> <span class="dv">6</span>)</span>
-<span id="cb313-7"><a href="heteroskedasticity.html#cb313-7" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(growth <span class="sc">~</span> concentration)</span></code></pre></div>
+<div class="sourceCode" id="cb315"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb315-1"><a href="heteroskedasticity.html#cb315-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb315-2"><a href="heteroskedasticity.html#cb315-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb315-3"><a href="heteroskedasticity.html#cb315-3" aria-hidden="true" tabindex="-1"></a>n <span class="ot">=</span> <span class="dv">100</span></span>
+<span id="cb315-4"><a href="heteroskedasticity.html#cb315-4" aria-hidden="true" tabindex="-1"></a>concentration <span class="ot">=</span> <span class="fu">runif</span>(n, <span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb315-5"><a href="heteroskedasticity.html#cb315-5" aria-hidden="true" tabindex="-1"></a>growth <span class="ot">=</span> <span class="dv">2</span> <span class="sc">*</span> concentration <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="at">sd =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb315-6"><a href="heteroskedasticity.html#cb315-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rbinom</span>(n, <span class="dv">1</span>, <span class="fl">0.05</span>) <span class="sc">*</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="dv">6</span><span class="sc">*</span>concentration, <span class="at">sd =</span> <span class="dv">6</span>)</span>
+<span id="cb315-7"><a href="heteroskedasticity.html#cb315-7" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(growth <span class="sc">~</span> concentration)</span></code></pre></div>
 <p><img src="_main_files/figure-html/chunk_chapter4_chunk16-1.png" width="672" /></p>
 <p>Fitting the model, we see that the distribution is to wide:</p>
-<div class="sourceCode" id="cb314"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb314-1"><a href="heteroskedasticity.html#cb314-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">lm</span>(growth <span class="sc">~</span> concentration)</span>
-<span id="cb314-2"><a href="heteroskedasticity.html#cb314-2" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>))</span>
-<span id="cb314-3"><a href="heteroskedasticity.html#cb314-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fit)</span></code></pre></div>
+<div class="sourceCode" id="cb316"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb316-1"><a href="heteroskedasticity.html#cb316-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">lm</span>(growth <span class="sc">~</span> concentration)</span>
+<span id="cb316-2"><a href="heteroskedasticity.html#cb316-2" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>))</span>
+<span id="cb316-3"><a href="heteroskedasticity.html#cb316-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fit)</span></code></pre></div>
 <p><img src="_main_files/figure-html/chunk_chapter4_chunk17-1.png" width="672" /></p>
 <p>What can we do to deal with such distributional problems and outliers?</p>
 <ul>
@@ -617,11 +618,11 @@ code span.wa { color: #bf0303; } /* Warning */
 <p>If we want to change the distribution, we have to go to a GLM, see Wednesday.</p>
 <p><strong><em>Robust regression</em></strong></p>
 <p>Robust methods generally refer to methods that are robust to violation of assumptions, e.g. outliers. More specifically, standard robust regressions typically downweight datap oints that have a too high influence on the fit. See <a href="https://cran.r-project.org/web/views/Robust.html" target="_blank" rel="noopener">https://cran.r-project.org/web/views/Robust.html</a> for a list of robust packages in R.</p>
-<div class="sourceCode" id="cb315"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb315-1"><a href="heteroskedasticity.html#cb315-1" aria-hidden="true" tabindex="-1"></a><span class="co"># This is the classic method.</span></span>
-<span id="cb315-2"><a href="heteroskedasticity.html#cb315-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MASS)</span>
-<span id="cb315-3"><a href="heteroskedasticity.html#cb315-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb315-4"><a href="heteroskedasticity.html#cb315-4" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">rlm</span>(growth <span class="sc">~</span> concentration) </span>
-<span id="cb315-5"><a href="heteroskedasticity.html#cb315-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code></pre></div>
+<div class="sourceCode" id="cb317"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb317-1"><a href="heteroskedasticity.html#cb317-1" aria-hidden="true" tabindex="-1"></a><span class="co"># This is the classic method.</span></span>
+<span id="cb317-2"><a href="heteroskedasticity.html#cb317-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MASS)</span>
+<span id="cb317-3"><a href="heteroskedasticity.html#cb317-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb317-4"><a href="heteroskedasticity.html#cb317-4" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">rlm</span>(growth <span class="sc">~</span> concentration) </span>
+<span id="cb317-5"><a href="heteroskedasticity.html#cb317-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code></pre></div>
 <pre><code>## 
 ## Call: rlm(formula = growth ~ concentration)
 ## Residuals:
@@ -634,19 +635,19 @@ code span.wa { color: #bf0303; } /* Warning */
 ## concentration  2.0724  0.1048    19.7721
 ## 
 ## Residual standard error: 0.534 on 98 degrees of freedom</code></pre>
-<div class="sourceCode" id="cb317"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb317-1"><a href="heteroskedasticity.html#cb317-1" aria-hidden="true" tabindex="-1"></a><span class="co"># No p-values and not sure if we can trust the confidence intervals.</span></span>
-<span id="cb317-2"><a href="heteroskedasticity.html#cb317-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Would need to boostrap by hand!</span></span>
-<span id="cb317-3"><a href="heteroskedasticity.html#cb317-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb317-4"><a href="heteroskedasticity.html#cb317-4" aria-hidden="true" tabindex="-1"></a><span class="co"># This is another option that gives us p-values directly.</span></span>
-<span id="cb317-5"><a href="heteroskedasticity.html#cb317-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(robustbase)</span></code></pre></div>
+<div class="sourceCode" id="cb319"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb319-1"><a href="heteroskedasticity.html#cb319-1" aria-hidden="true" tabindex="-1"></a><span class="co"># No p-values and not sure if we can trust the confidence intervals.</span></span>
+<span id="cb319-2"><a href="heteroskedasticity.html#cb319-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Would need to boostrap by hand!</span></span>
+<span id="cb319-3"><a href="heteroskedasticity.html#cb319-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb319-4"><a href="heteroskedasticity.html#cb319-4" aria-hidden="true" tabindex="-1"></a><span class="co"># This is another option that gives us p-values directly.</span></span>
+<span id="cb319-5"><a href="heteroskedasticity.html#cb319-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(robustbase)</span></code></pre></div>
 <pre><code>## Warning: package &#39;robustbase&#39; was built under R version 4.1.1</code></pre>
 <pre><code>## 
 ## Attaching package: &#39;robustbase&#39;</code></pre>
 <pre><code>## The following object is masked from &#39;package:survival&#39;:
 ## 
 ##     heart</code></pre>
-<div class="sourceCode" id="cb321"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb321-1"><a href="heteroskedasticity.html#cb321-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">lmrob</span>(growth <span class="sc">~</span> concentration) </span>
-<span id="cb321-2"><a href="heteroskedasticity.html#cb321-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code></pre></div>
+<div class="sourceCode" id="cb323"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb323-1"><a href="heteroskedasticity.html#cb323-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">lmrob</span>(growth <span class="sc">~</span> concentration) </span>
+<span id="cb323-2"><a href="heteroskedasticity.html#cb323-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code></pre></div>
 <pre><code>## 
 ## Call:
 ## lmrob(formula = growth ~ concentration)
@@ -690,14 +691,14 @@ code span.wa { color: #bf0303; } /* Warning */
 ## seed : int(0)</code></pre>
 <p><strong><em>Quantile regression</em></strong></p>
 <p>Quantile regressions don’t fit a line with an error spreading around it, but try to fit a quantile (e.g. the 0.5 quantile, the median) regardless of the distribution. Thus, they work even if the usual assumptions don’t hold.</p>
-<div class="sourceCode" id="cb323"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb323-1"><a href="heteroskedasticity.html#cb323-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(qgam)</span>
-<span id="cb323-2"><a href="heteroskedasticity.html#cb323-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb323-3"><a href="heteroskedasticity.html#cb323-3" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">=</span> <span class="fu">data.frame</span>(<span class="at">growth =</span> growth, <span class="at">concentration =</span> concentration)</span>
-<span id="cb323-4"><a href="heteroskedasticity.html#cb323-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb323-5"><a href="heteroskedasticity.html#cb323-5" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">qgam</span>(growth <span class="sc">~</span> concentration, <span class="at">data =</span> dat, <span class="at">qu =</span> <span class="fl">0.5</span>) </span></code></pre></div>
+<div class="sourceCode" id="cb325"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb325-1"><a href="heteroskedasticity.html#cb325-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(qgam)</span>
+<span id="cb325-2"><a href="heteroskedasticity.html#cb325-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb325-3"><a href="heteroskedasticity.html#cb325-3" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">=</span> <span class="fu">data.frame</span>(<span class="at">growth =</span> growth, <span class="at">concentration =</span> concentration)</span>
+<span id="cb325-4"><a href="heteroskedasticity.html#cb325-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb325-5"><a href="heteroskedasticity.html#cb325-5" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">qgam</span>(growth <span class="sc">~</span> concentration, <span class="at">data =</span> dat, <span class="at">qu =</span> <span class="fl">0.5</span>) </span></code></pre></div>
 <pre><code>## Estimating learning rate. Each dot corresponds to a loss evaluation. 
 ## qu = 0.5................done</code></pre>
-<div class="sourceCode" id="cb325"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb325-1"><a href="heteroskedasticity.html#cb325-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code></pre></div>
+<div class="sourceCode" id="cb327"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb327-1"><a href="heteroskedasticity.html#cb327-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code></pre></div>
 <pre><code>## 
 ## Family: elf 
 ## Link function: identity 
@@ -730,15 +731,15 @@ code span.wa { color: #bf0303; } /* Warning */
 <div id="random-and-mixed-effects---motivation" class="section level2 hasAnchor" number="4.4">
 <h2><span class="header-section-number">4.4</span> Random and Mixed Effects - Motivation<a href="heteroskedasticity.html#random-and-mixed-effects---motivation" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>Random effects are a very common addition to regression models that can be used for any type of grouping (categorical) variable. Lets look at the Month in airquality:</p>
-<div class="sourceCode" id="cb327"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb327-1"><a href="heteroskedasticity.html#cb327-1" aria-hidden="true" tabindex="-1"></a>airquality<span class="sc">$</span>fMonth <span class="ot">=</span> <span class="fu">as.factor</span>(airquality<span class="sc">$</span>Month)</span></code></pre></div>
+<div class="sourceCode" id="cb329"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb329-1"><a href="heteroskedasticity.html#cb329-1" aria-hidden="true" tabindex="-1"></a>airquality<span class="sc">$</span>fMonth <span class="ot">=</span> <span class="fu">as.factor</span>(airquality<span class="sc">$</span>Month)</span></code></pre></div>
 <p>Let’s say further that we are only interested in calculating the mean of Ozone:</p>
-<div class="sourceCode" id="cb328"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb328-1"><a href="heteroskedasticity.html#cb328-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">lm</span>(Ozone <span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> airquality)</span></code></pre></div>
+<div class="sourceCode" id="cb330"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb330-1"><a href="heteroskedasticity.html#cb330-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">lm</span>(Ozone <span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> airquality)</span></code></pre></div>
 <p>Problem: If we fit residuals, we see that they are correlated in Month, so we somehow have to account for Month:</p>
-<div class="sourceCode" id="cb329"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb329-1"><a href="heteroskedasticity.html#cb329-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">residuals</span>(fit) <span class="sc">~</span> airquality<span class="sc">$</span>fMonth[<span class="fu">as.numeric</span>(<span class="fu">row.names</span>(<span class="fu">model.frame</span>(fit)))])</span></code></pre></div>
+<div class="sourceCode" id="cb331"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb331-1"><a href="heteroskedasticity.html#cb331-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">residuals</span>(fit) <span class="sc">~</span> airquality<span class="sc">$</span>fMonth[<span class="fu">as.numeric</span>(<span class="fu">row.names</span>(<span class="fu">model.frame</span>(fit)))])</span></code></pre></div>
 <p><img src="_main_files/figure-html/chunk_chapter4_chunk22-1.png" width="672" /></p>
 <p>A fixed effect model for fMonth would be</p>
-<div class="sourceCode" id="cb330"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb330-1"><a href="heteroskedasticity.html#cb330-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">lm</span>(Ozone <span class="sc">~</span> fMonth, <span class="at">data =</span> airquality)</span>
-<span id="cb330-2"><a href="heteroskedasticity.html#cb330-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code></pre></div>
+<div class="sourceCode" id="cb332"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb332-1"><a href="heteroskedasticity.html#cb332-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">lm</span>(Ozone <span class="sc">~</span> fMonth, <span class="at">data =</span> airquality)</span>
+<span id="cb332-2"><a href="heteroskedasticity.html#cb332-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code></pre></div>
 <pre><code>## 
 ## Call:
 ## lm(formula = Ozone ~ fMonth, data = airquality)
@@ -784,16 +785,16 @@ Nomenclature:</p>
 <li>Predictor 2: “sex” of the student (F / M).</li>
 </ul>
 <p>If we analyze this with a simple lm, we get the following response:</p>
-<div class="sourceCode" id="cb332"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb332-1"><a href="heteroskedasticity.html#cb332-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mlmRev)</span>
-<span id="cb332-2"><a href="heteroskedasticity.html#cb332-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(effects)</span>
-<span id="cb332-3"><a href="heteroskedasticity.html#cb332-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb332-4"><a href="heteroskedasticity.html#cb332-4" aria-hidden="true" tabindex="-1"></a>mod0 <span class="ot">=</span> <span class="fu">lm</span>(normexam <span class="sc">~</span> standLRT <span class="sc">+</span> sex , <span class="at">data =</span> Exam)</span>
-<span id="cb332-5"><a href="heteroskedasticity.html#cb332-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">allEffects</span>(mod0))</span></code></pre></div>
+<div class="sourceCode" id="cb334"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb334-1"><a href="heteroskedasticity.html#cb334-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mlmRev)</span>
+<span id="cb334-2"><a href="heteroskedasticity.html#cb334-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(effects)</span>
+<span id="cb334-3"><a href="heteroskedasticity.html#cb334-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb334-4"><a href="heteroskedasticity.html#cb334-4" aria-hidden="true" tabindex="-1"></a>mod0 <span class="ot">=</span> <span class="fu">lm</span>(normexam <span class="sc">~</span> standLRT <span class="sc">+</span> sex , <span class="at">data =</span> Exam)</span>
+<span id="cb334-5"><a href="heteroskedasticity.html#cb334-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">allEffects</span>(mod0))</span></code></pre></div>
 <p><img src="_main_files/figure-html/chunk_chapter4_chunk24-1.png" width="672" /></p>
 <p><strong><em>Random intercept model</em></strong></p>
 <p>A random intercept model assumes that each school gets their own intercept. It’s pretty much identical to the fixed effect model <code class="sourceCode r"><span class="fu">lm</span>(normexam <span class="sc">~</span> standLRT <span class="sc">+</span> sex <span class="sc">+</span> school)</code>, except that instead of giving each school a separate independent intercept, we assume that the school effects come from a common normal distribution.</p>
-<div class="sourceCode" id="cb333"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb333-1"><a href="heteroskedasticity.html#cb333-1" aria-hidden="true" tabindex="-1"></a>mod1 <span class="ot">=</span> <span class="fu">lmer</span>(normexam <span class="sc">~</span> standLRT <span class="sc">+</span> sex <span class="sc">+</span>  (<span class="dv">1</span> <span class="sc">|</span> school), <span class="at">data =</span> Exam)</span>
-<span id="cb333-2"><a href="heteroskedasticity.html#cb333-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod1)</span></code></pre></div>
+<div class="sourceCode" id="cb335"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb335-1"><a href="heteroskedasticity.html#cb335-1" aria-hidden="true" tabindex="-1"></a>mod1 <span class="ot">=</span> <span class="fu">lmer</span>(normexam <span class="sc">~</span> standLRT <span class="sc">+</span> sex <span class="sc">+</span>  (<span class="dv">1</span> <span class="sc">|</span> school), <span class="at">data =</span> Exam)</span>
+<span id="cb335-2"><a href="heteroskedasticity.html#cb335-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod1)</span></code></pre></div>
 <pre><code>## Linear mixed model fit by REML [&#39;lmerMod&#39;]
 ## Formula: normexam ~ standLRT + sex + (1 | school)
 ##    Data: Exam
@@ -822,19 +823,19 @@ Nomenclature:</p>
 ## sexM     -0.337  0.061</code></pre>
 <p>If we look at the outputs, we see that the effects of school are not explicitly mentioned, i.e. we fit an average over the schools. This is also because we treat the random effects as error rather than as estimates.</p>
 <p>However, the school mean effects are estimated, and we can make them visible, e.g. via:</p>
-<div class="sourceCode" id="cb335"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb335-1"><a href="heteroskedasticity.html#cb335-1" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(Exam, {</span>
-<span id="cb335-2"><a href="heteroskedasticity.html#cb335-2" aria-hidden="true" tabindex="-1"></a>  randcoef <span class="ot">=</span> <span class="fu">ranef</span>(mod1)<span class="sc">$</span>school[,<span class="dv">1</span>]</span>
-<span id="cb335-3"><a href="heteroskedasticity.html#cb335-3" aria-hidden="true" tabindex="-1"></a>  fixedcoef <span class="ot">=</span> <span class="fu">fixef</span>(mod1)</span>
-<span id="cb335-4"><a href="heteroskedasticity.html#cb335-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(standLRT, normexam)</span>
-<span id="cb335-5"><a href="heteroskedasticity.html#cb335-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">65</span>){</span>
-<span id="cb335-6"><a href="heteroskedasticity.html#cb335-6" aria-hidden="true" tabindex="-1"></a>      <span class="fu">abline</span>(<span class="at">a =</span> fixedcoef[<span class="dv">1</span>] <span class="sc">+</span> randcoef[i], <span class="at">b =</span> fixedcoef[<span class="dv">2</span>], <span class="at">col =</span> i)</span>
-<span id="cb335-7"><a href="heteroskedasticity.html#cb335-7" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb335-8"><a href="heteroskedasticity.html#cb335-8" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div>
+<div class="sourceCode" id="cb337"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb337-1"><a href="heteroskedasticity.html#cb337-1" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(Exam, {</span>
+<span id="cb337-2"><a href="heteroskedasticity.html#cb337-2" aria-hidden="true" tabindex="-1"></a>  randcoef <span class="ot">=</span> <span class="fu">ranef</span>(mod1)<span class="sc">$</span>school[,<span class="dv">1</span>]</span>
+<span id="cb337-3"><a href="heteroskedasticity.html#cb337-3" aria-hidden="true" tabindex="-1"></a>  fixedcoef <span class="ot">=</span> <span class="fu">fixef</span>(mod1)</span>
+<span id="cb337-4"><a href="heteroskedasticity.html#cb337-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(standLRT, normexam)</span>
+<span id="cb337-5"><a href="heteroskedasticity.html#cb337-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">65</span>){</span>
+<span id="cb337-6"><a href="heteroskedasticity.html#cb337-6" aria-hidden="true" tabindex="-1"></a>      <span class="fu">abline</span>(<span class="at">a =</span> fixedcoef[<span class="dv">1</span>] <span class="sc">+</span> randcoef[i], <span class="at">b =</span> fixedcoef[<span class="dv">2</span>], <span class="at">col =</span> i)</span>
+<span id="cb337-7"><a href="heteroskedasticity.html#cb337-7" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb337-8"><a href="heteroskedasticity.html#cb337-8" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div>
 <p><img src="_main_files/figure-html/chunk_chapter4_chunk26-1.png" width="672" /></p>
 <p><strong><em>Random slope model</em></strong></p>
 <p>A random slope model assumes that each school also gets their own slope for a given parameter (per default we will always estimate slope and intercept, but you could overwrite this, not recommended!). Let’s do this for standLRT (you could of course do both as well).</p>
-<div class="sourceCode" id="cb336"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb336-1"><a href="heteroskedasticity.html#cb336-1" aria-hidden="true" tabindex="-1"></a>mod2 <span class="ot">=</span> <span class="fu">lmer</span>(normexam <span class="sc">~</span> standLRT <span class="sc">+</span> sex <span class="sc">+</span>  (standLRT <span class="sc">|</span> school), <span class="at">data =</span> Exam)</span>
-<span id="cb336-2"><a href="heteroskedasticity.html#cb336-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod2)</span></code></pre></div>
+<div class="sourceCode" id="cb338"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb338-1"><a href="heteroskedasticity.html#cb338-1" aria-hidden="true" tabindex="-1"></a>mod2 <span class="ot">=</span> <span class="fu">lmer</span>(normexam <span class="sc">~</span> standLRT <span class="sc">+</span> sex <span class="sc">+</span>  (standLRT <span class="sc">|</span> school), <span class="at">data =</span> Exam)</span>
+<span id="cb338-2"><a href="heteroskedasticity.html#cb338-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod2)</span></code></pre></div>
 <pre><code>## Linear mixed model fit by REML [&#39;lmerMod&#39;]
 ## Formula: normexam ~ standLRT + sex + (standLRT | school)
 ##    Data: Exam
@@ -865,15 +866,15 @@ Nomenclature:</p>
 <p>Fitting a random slope on standLRT is pretty much identical to fit the fixed effect model<br />
 <code class="sourceCode r"><span class="fu">lm</span>(normexam <span class="sc">~</span> standLRT<span class="sc">*</span>school <span class="sc">+</span> sex)</code>, except that school is a random effect, and therefore parameter estimates for the interaction sex:school are not independent. The results is similar to the random intercept model, except that we have an additional variance term.</p>
 <p>Here a visualization of the results</p>
-<div class="sourceCode" id="cb338"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb338-1"><a href="heteroskedasticity.html#cb338-1" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(Exam, {</span>
-<span id="cb338-2"><a href="heteroskedasticity.html#cb338-2" aria-hidden="true" tabindex="-1"></a>  randcoefI <span class="ot">=</span> <span class="fu">ranef</span>(mod2)<span class="sc">$</span>school[,<span class="dv">1</span>]</span>
-<span id="cb338-3"><a href="heteroskedasticity.html#cb338-3" aria-hidden="true" tabindex="-1"></a>  randcoefS <span class="ot">=</span> <span class="fu">ranef</span>(mod2)<span class="sc">$</span>school[,<span class="dv">2</span>]</span>
-<span id="cb338-4"><a href="heteroskedasticity.html#cb338-4" aria-hidden="true" tabindex="-1"></a>  fixedcoef <span class="ot">=</span> <span class="fu">fixef</span>(mod2)</span>
-<span id="cb338-5"><a href="heteroskedasticity.html#cb338-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(standLRT, normexam)</span>
-<span id="cb338-6"><a href="heteroskedasticity.html#cb338-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">65</span>){</span>
-<span id="cb338-7"><a href="heteroskedasticity.html#cb338-7" aria-hidden="true" tabindex="-1"></a>      <span class="fu">abline</span>(<span class="at">a =</span> fixedcoef[<span class="dv">1</span>] <span class="sc">+</span> randcoefI[i] , <span class="at">b =</span> fixedcoef[<span class="dv">2</span>] <span class="sc">+</span> randcoefS[i], <span class="at">col =</span> i)</span>
-<span id="cb338-8"><a href="heteroskedasticity.html#cb338-8" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb338-9"><a href="heteroskedasticity.html#cb338-9" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div>
+<div class="sourceCode" id="cb340"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb340-1"><a href="heteroskedasticity.html#cb340-1" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(Exam, {</span>
+<span id="cb340-2"><a href="heteroskedasticity.html#cb340-2" aria-hidden="true" tabindex="-1"></a>  randcoefI <span class="ot">=</span> <span class="fu">ranef</span>(mod2)<span class="sc">$</span>school[,<span class="dv">1</span>]</span>
+<span id="cb340-3"><a href="heteroskedasticity.html#cb340-3" aria-hidden="true" tabindex="-1"></a>  randcoefS <span class="ot">=</span> <span class="fu">ranef</span>(mod2)<span class="sc">$</span>school[,<span class="dv">2</span>]</span>
+<span id="cb340-4"><a href="heteroskedasticity.html#cb340-4" aria-hidden="true" tabindex="-1"></a>  fixedcoef <span class="ot">=</span> <span class="fu">fixef</span>(mod2)</span>
+<span id="cb340-5"><a href="heteroskedasticity.html#cb340-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(standLRT, normexam)</span>
+<span id="cb340-6"><a href="heteroskedasticity.html#cb340-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">65</span>){</span>
+<span id="cb340-7"><a href="heteroskedasticity.html#cb340-7" aria-hidden="true" tabindex="-1"></a>      <span class="fu">abline</span>(<span class="at">a =</span> fixedcoef[<span class="dv">1</span>] <span class="sc">+</span> randcoefI[i] , <span class="at">b =</span> fixedcoef[<span class="dv">2</span>] <span class="sc">+</span> randcoefS[i], <span class="at">col =</span> i)</span>
+<span id="cb340-8"><a href="heteroskedasticity.html#cb340-8" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb340-9"><a href="heteroskedasticity.html#cb340-9" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div>
 <p><img src="_main_files/figure-html/chunk_chapter4_chunk28-1.png" width="672" /></p>
 <p><strong><em>Syntax cheat sheet:</em></strong></p>
 <ul>
@@ -887,36 +888,40 @@ Nomenclature:</p>
 <code class="sourceCode r">(<span class="dv">1</span> <span class="sc">|</span> group1) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> group2)</code>.</li>
 </ul>
 </div>
-<div id="problems-with-mixed-models" class="section level3 hasAnchor" number="4.4.2">
-<h3><span class="header-section-number">4.4.2</span> Problems With Mixed Models<a href="heteroskedasticity.html#problems-with-mixed-models" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="task-a-mixed-model-for-plantheight" class="section level3 hasAnchor" number="4.4.2">
+<h3><span class="header-section-number">4.4.2</span> Task: a mixed model for plantHeight<a href="heteroskedasticity.html#task-a-mixed-model-for-plantheight" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Take our old plantHeight dataset that we worked with already a lot. Consider that the relationship height ~ temp may be different for each family. Some families may have larger plants in general (random intercept), but it may also be that the temperature relationship changes per family. Thus, you could include family as random intercept + slope in this relationship. Specify the model and run it!</p>
+</div>
+<div id="problems-with-mixed-models" class="section level3 hasAnchor" number="4.4.3">
+<h3><span class="header-section-number">4.4.3</span> Problems With Mixed Models<a href="heteroskedasticity.html#problems-with-mixed-models" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Specifying mixed models is quite simple, however, there is a large list of (partly quite complicate) issues in their practical application. Here, a (incomplete) list:</p>
 <p><strong><em>Interpretation of random effects</em></strong></p>
 <p>What do the random effects mean? The classical interpretation is that they are a structured error, so they are basically group residuals and are not of further importance.</p>
 <p>However, people increasingly see random effects also as a means to regularize fixed effect models. What does that mean? Note first that, conceptual, every random effect model corresponds to a fixed effect model. For a random intercept model, this would be</p>
-<div class="sourceCode" id="cb339"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb339-1"><a href="heteroskedasticity.html#cb339-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lmer</span>(y <span class="sc">~</span> x <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>group)) <span class="ot">=&gt;</span> <span class="fu">lm</span>(y <span class="sc">~</span> x <span class="sc">+</span> group)</span></code></pre></div>
+<div class="sourceCode" id="cb341"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb341-1"><a href="heteroskedasticity.html#cb341-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lmer</span>(y <span class="sc">~</span> x <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>group)) <span class="ot">=&gt;</span> <span class="fu">lm</span>(y <span class="sc">~</span> x <span class="sc">+</span> group)</span></code></pre></div>
 <p>and for the random slope, it would be</p>
-<div class="sourceCode" id="cb340"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb340-1"><a href="heteroskedasticity.html#cb340-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lmer</span>(y <span class="sc">~</span> x <span class="sc">+</span> (x<span class="sc">|</span>group)) <span class="ot">=&gt;</span> <span class="fu">lm</span>(y <span class="sc">~</span> x <span class="sc">*</span> group)</span></code></pre></div>
+<div class="sourceCode" id="cb342"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb342-1"><a href="heteroskedasticity.html#cb342-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lmer</span>(y <span class="sc">~</span> x <span class="sc">+</span> (x<span class="sc">|</span>group)) <span class="ot">=&gt;</span> <span class="fu">lm</span>(y <span class="sc">~</span> x <span class="sc">*</span> group)</span></code></pre></div>
 <p>So, you could alternatively always fit the fixed effect model. What’s the difference? First of all, for the fixed effect models, you would get many more estimates and p-values in the standard summary functions. But that’s not really a big difference. More importantly, however, estimates in the random effect model will be closer together, and if you have groups with very little data, they will still be fittable. So, in a random effect model, parameter estimates for groups with few data points are informed by the estimates of the other groups, because they are connected via the normal distribution.</p>
 <p>This is today often used by people that want to fit effects across groups with varying availability of data. For example, if we have data for common and rare species, and we are interested in the density dependence of the species, we could fit</p>
-<div class="sourceCode" id="cb341"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb341-1"><a href="heteroskedasticity.html#cb341-1" aria-hidden="true" tabindex="-1"></a>mortality <span class="sc">~</span> density <span class="sc">+</span> (density <span class="sc">|</span> species)</span></code></pre></div>
+<div class="sourceCode" id="cb343"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb343-1"><a href="heteroskedasticity.html#cb343-1" aria-hidden="true" tabindex="-1"></a>mortality <span class="sc">~</span> density <span class="sc">+</span> (density <span class="sc">|</span> species)</span></code></pre></div>
 <p>In such a model, we have the mean density effect across all species, and rare species with few data will be constrained by this effect, while common species with a lot of data can overrule the normal distribution imposed by the random slope and get their own estimate. In this picture, the random effect imposes an adaptive shrinkage, similar to a LASSO or ridge shrinkage estimator, with the shrinkage strength controlled by the standard deviation of the random effect.</p>
 <p><strong><em>Degrees of freedom for a random effect</em></strong></p>
 <p>The second problem is: How many parameters does a random effect model have? To know how many parameters the model hss is crucial for calculating p-values, AIC and all that. We can estimate roughly how many parameters we should have by looking at the fixed effect version of the models:</p>
-<div class="sourceCode" id="cb342"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb342-1"><a href="heteroskedasticity.html#cb342-1" aria-hidden="true" tabindex="-1"></a>mod1 <span class="ot">=</span> <span class="fu">lm</span>(normexam <span class="sc">~</span> standLRT <span class="sc">+</span> sex , <span class="at">data =</span> Exam)</span>
-<span id="cb342-2"><a href="heteroskedasticity.html#cb342-2" aria-hidden="true" tabindex="-1"></a>mod1<span class="sc">$</span>rank <span class="co"># 3 parameters.</span></span></code></pre></div>
+<div class="sourceCode" id="cb344"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb344-1"><a href="heteroskedasticity.html#cb344-1" aria-hidden="true" tabindex="-1"></a>mod1 <span class="ot">=</span> <span class="fu">lm</span>(normexam <span class="sc">~</span> standLRT <span class="sc">+</span> sex , <span class="at">data =</span> Exam)</span>
+<span id="cb344-2"><a href="heteroskedasticity.html#cb344-2" aria-hidden="true" tabindex="-1"></a>mod1<span class="sc">$</span>rank <span class="co"># 3 parameters.</span></span></code></pre></div>
 <pre><code>## [1] 3</code></pre>
-<div class="sourceCode" id="cb344"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb344-1"><a href="heteroskedasticity.html#cb344-1" aria-hidden="true" tabindex="-1"></a>mod2 <span class="ot">=</span> <span class="fu">lmer</span>(normexam <span class="sc">~</span> standLRT <span class="sc">+</span> sex <span class="sc">+</span>  (<span class="dv">1</span> <span class="sc">|</span> school), <span class="at">data =</span> Exam)</span>
-<span id="cb344-2"><a href="heteroskedasticity.html#cb344-2" aria-hidden="true" tabindex="-1"></a><span class="co"># No idea how many parameters.</span></span>
-<span id="cb344-3"><a href="heteroskedasticity.html#cb344-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb344-4"><a href="heteroskedasticity.html#cb344-4" aria-hidden="true" tabindex="-1"></a>mod3 <span class="ot">=</span> <span class="fu">lm</span>(normexam <span class="sc">~</span> standLRT <span class="sc">+</span> sex <span class="sc">+</span> school, <span class="at">data =</span> Exam)</span>
-<span id="cb344-5"><a href="heteroskedasticity.html#cb344-5" aria-hidden="true" tabindex="-1"></a>mod3<span class="sc">$</span>rank <span class="co"># 67 parameters.</span></span></code></pre></div>
+<div class="sourceCode" id="cb346"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb346-1"><a href="heteroskedasticity.html#cb346-1" aria-hidden="true" tabindex="-1"></a>mod2 <span class="ot">=</span> <span class="fu">lmer</span>(normexam <span class="sc">~</span> standLRT <span class="sc">+</span> sex <span class="sc">+</span>  (<span class="dv">1</span> <span class="sc">|</span> school), <span class="at">data =</span> Exam)</span>
+<span id="cb346-2"><a href="heteroskedasticity.html#cb346-2" aria-hidden="true" tabindex="-1"></a><span class="co"># No idea how many parameters.</span></span>
+<span id="cb346-3"><a href="heteroskedasticity.html#cb346-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb346-4"><a href="heteroskedasticity.html#cb346-4" aria-hidden="true" tabindex="-1"></a>mod3 <span class="ot">=</span> <span class="fu">lm</span>(normexam <span class="sc">~</span> standLRT <span class="sc">+</span> sex <span class="sc">+</span> school, <span class="at">data =</span> Exam)</span>
+<span id="cb346-5"><a href="heteroskedasticity.html#cb346-5" aria-hidden="true" tabindex="-1"></a>mod3<span class="sc">$</span>rank <span class="co"># 67 parameters.</span></span></code></pre></div>
 <pre><code>## [1] 67</code></pre>
 <p>What we can say is that the mixed model is more complicated than mod1, but less than mod2 (as it has the additional constraint), so the complexity must be somewhere in-between. But now much?</p>
 <p>In fact, the complexity is controlled by the estimated variance of the random effect. For a high variance, the model is nearly as complex as mod3, for a low variance, it is only as complex as mod1. Because of these issues, <code class="sourceCode r">lmer</code> by default does not return p-values. However, you can calculate p-values based on approximate degrees of freedom via the <code class="sourceCode r">lmerTest</code> package, which also corrects ANOVA for random effects, but not AIC.</p>
-<div class="sourceCode" id="cb346"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb346-1"><a href="heteroskedasticity.html#cb346-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lmerTest)</span>
-<span id="cb346-2"><a href="heteroskedasticity.html#cb346-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb346-3"><a href="heteroskedasticity.html#cb346-3" aria-hidden="true" tabindex="-1"></a>m2 <span class="ot">=</span> <span class="fu">lmer</span>(normexam <span class="sc">~</span> standLRT <span class="sc">+</span> sex <span class="sc">+</span>  (<span class="dv">1</span> <span class="sc">|</span> school), <span class="at">data =</span> Exam, <span class="at">REML =</span> F)</span>
-<span id="cb346-4"><a href="heteroskedasticity.html#cb346-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m2)</span></code></pre></div>
+<div class="sourceCode" id="cb348"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb348-1"><a href="heteroskedasticity.html#cb348-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lmerTest)</span>
+<span id="cb348-2"><a href="heteroskedasticity.html#cb348-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb348-3"><a href="heteroskedasticity.html#cb348-3" aria-hidden="true" tabindex="-1"></a>m2 <span class="ot">=</span> <span class="fu">lmer</span>(normexam <span class="sc">~</span> standLRT <span class="sc">+</span> sex <span class="sc">+</span>  (<span class="dv">1</span> <span class="sc">|</span> school), <span class="at">data =</span> Exam, <span class="at">REML =</span> F)</span>
+<span id="cb348-4"><a href="heteroskedasticity.html#cb348-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m2)</span></code></pre></div>
 <pre><code>## Linear mixed model fit by maximum likelihood . t-tests use Satterthwaite&#39;s
 ##   method [lmerModLmerTest]
 ## Formula: normexam ~ standLRT + sex + (1 | school)
@@ -949,9 +954,9 @@ Nomenclature:</p>
 ## sexM     -0.339  0.061</code></pre>
 <p><strong><em>Variance partitioning / ANOVA</em></strong></p>
 <p>Also variance partitioning is a bit tricky, as (see type I/II/III ANOVA discussion) fixed and random components of the model are in some way “correlated”. The question is: Do you want to count the random effect variance as “explained”, or “residual”. The most common approach is the hierarchical partitioning proposed by by <em>Nakagawa &amp; Schielzeth 2013, Nakagawa et al. (2017)</em>, which is implemented in the <code>MuMIn</code>.{R} package. With this, we can run</p>
-<div class="sourceCode" id="cb348"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb348-1"><a href="heteroskedasticity.html#cb348-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MuMIn)</span>
-<span id="cb348-2"><a href="heteroskedasticity.html#cb348-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb348-3"><a href="heteroskedasticity.html#cb348-3" aria-hidden="true" tabindex="-1"></a><span class="fu">r.squaredGLMM</span>(m2) </span></code></pre></div>
+<div class="sourceCode" id="cb350"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb350-1"><a href="heteroskedasticity.html#cb350-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MuMIn)</span>
+<span id="cb350-2"><a href="heteroskedasticity.html#cb350-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb350-3"><a href="heteroskedasticity.html#cb350-3" aria-hidden="true" tabindex="-1"></a><span class="fu">r.squaredGLMM</span>(m2) </span></code></pre></div>
 <pre><code>##            R2m       R2c
 ## [1,] 0.3303846 0.4210712</code></pre>
 <p>Interpretation</p>
@@ -967,9 +972,9 @@ Nomenclature:</p>
 <h3><span class="header-section-number">4.5.1</span> Case Study 1: College Student Performance Over Time<a href="heteroskedasticity.html#case-study-1-college-student-performance-over-time" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p><strong><em>Background and data structure</em></strong></p>
 <p>The GPA (college grade point average) data is a <strong>longitudinal</strong> data set (also named <strong>panel data</strong>, German: “Längsschnittstudie”. A study repeated at several different moments in time, compared to a <strong>cross-sectional study</strong> (German: “Querschnittstudie”) which has several participants at <em>one time</em>). In this data set, 200 college students and their GPA have been followed 6 consecutive semesters. Look at the GPA data set, which can be found in the <code class="sourceCode r">EcoData</code> package:</p>
-<div class="sourceCode" id="cb350"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb350-1"><a href="heteroskedasticity.html#cb350-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(EcoData)</span>
-<span id="cb350-2"><a href="heteroskedasticity.html#cb350-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb350-3"><a href="heteroskedasticity.html#cb350-3" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(gpa)</span></code></pre></div>
+<div class="sourceCode" id="cb352"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb352-1"><a href="heteroskedasticity.html#cb352-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(EcoData)</span>
+<span id="cb352-2"><a href="heteroskedasticity.html#cb352-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb352-3"><a href="heteroskedasticity.html#cb352-3" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(gpa)</span></code></pre></div>
 <pre><code>## &#39;data.frame&#39;:    1200 obs. of  10 variables:
 ##  $ student : Factor w/ 200 levels &quot;1&quot;,&quot;2&quot;,&quot;3&quot;,&quot;4&quot;,..: 1 1 1 1 1 1 2 2 2 2 ...
 ##  $ occas   : Factor w/ 6 levels &quot;year 1 semester 1&quot;,..: 1 2 3 4 5 6 1 2 3 4 ...
@@ -1011,9 +1016,9 @@ Nomenclature:</p>
   <hr/>
   <strong><span style="color: #0011AA; font-size:25px;">Task</span></strong><br/>
 <p>We use</p>
-<div class="sourceCode" id="cb352"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb352-1"><a href="heteroskedasticity.html#cb352-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(EcoData)</span>
-<span id="cb352-2"><a href="heteroskedasticity.html#cb352-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb352-3"><a href="heteroskedasticity.html#cb352-3" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(bees)</span></code></pre></div>
+<div class="sourceCode" id="cb354"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb354-1"><a href="heteroskedasticity.html#cb354-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(EcoData)</span>
+<span id="cb354-2"><a href="heteroskedasticity.html#cb354-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb354-3"><a href="heteroskedasticity.html#cb354-3" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(bees)</span></code></pre></div>
 <p>Perform the data analysis, according to the hypothesis above.</p>
   <details>
     <summary>

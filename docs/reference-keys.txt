@@ -48,6 +48,7 @@ exercise-variance-modelling
 non-normality-and-outliers
 random-and-mixed-effects---motivation
 fitting-random-effects-models
+task-a-mixed-model-for-plantheight
 problems-with-mixed-models
 case-studies-1
 case-study-1-college-student-performance-over-time

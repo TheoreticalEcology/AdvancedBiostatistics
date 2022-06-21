@@ -1671,9 +1671,17 @@ Perform a causal analysis of the effect of income on life satisfaction, consider
     <p>
 ```
 
-```{r chunk_chapter4_task_0, message=FALSE, warning=FALSE}
+* Nearly all other variables are confounders, gesund_org could als be a collider
+* Might consider splitting data into single households, families, as effects could be very different. Alternatively, could add interactions with single, families and / or time to see if effects of income are different
 
+A possible simple model is
+
+```{r chunk_chapter4_task_0, message=FALSE, warning=FALSE}
+fit <- lm(lebensz_org ~ sqrt(einkommenj1) + syear + sex + alter + anz_pers + bildung + erwerb + gesund_org, data = soep)
+summary(fit)
 ```
+
+Note that you shouldn't interpret the other variables (Table II fallacy) in a causal analysis, because the other variables aren't analyzed / corrected for confounding. 
 
 ```{=html}
     </p>

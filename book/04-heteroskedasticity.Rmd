@@ -229,7 +229,7 @@ plot(m1)
 We could of course consider other predictors, but let's say we want to fit this model specifically
 
 1. Try to get the variance stable with a transformation.
-2. Use the `gls`{.R} function (package `nlme`{.R}) with the untransformed response to make the variance dependent on Solar.R. Hint: Read in `corClasses`.{R} and decide how to model this.
+2. Use the `gls`{.R} function (package `nlme`{.R}) with the untransformed response to make the variance dependent on Solar.R. Hint: Read in `varClasses`.{R} and decide how to model this.
 3. Use `glmmTMB`.{R} to model heteroskedasticity.
 
 ```{=html}
@@ -456,6 +456,11 @@ with(Exam, {
 `(1 | group1) + (1 | group2)`{.R}. 
 
 
+### Task: a mixed model for plantHeight
+
+Take our old plantHeight dataset that we worked with already a lot. Consider that the relationship height ~ temp may be different for each family. Some families may have larger plants in general (random intercept), but it may also be that the temperature relationship changes per family. Thus, you could include family as random intercept + slope in this relationship. Specify the model and run it!
+
+
 ### Problems With Mixed Models
 
 Specifying mixed models is quite simple, however, there is a large list of (partly quite complicate) issues in their practical application. Here, a (incomplete) list: 
@@ -531,6 +536,7 @@ Interpretation
 
 
 ## Case studies
+
 
 
 ### Case Study 1: College Student Performance Over Time
