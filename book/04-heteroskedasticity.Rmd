@@ -451,7 +451,6 @@ with(Exam, {
 })
 ```
 
-
 ***Syntax cheat sheet:***
 
 * Random intercept: `(1 | group).
@@ -470,7 +469,24 @@ Specifying mixed models is quite simple, however, there is a large list of (part
 
 ***Interpretation of random effects***
 
-What do the random effects mean? The classical interpretation is that they are a structured error, so they are basically group residuals and are not of further importance. However, people increasingly see random effects also as a means to fit effects that could otherwise not be fittet. For example, if we have data for common and rare species, and we are interested in the density dependence of the species, we could fit
+What do the random effects mean? The classical interpretation is that they are a structured error, so they are basically group residuals and are not of further importance. 
+
+However, people increasingly see random effects also as a means to regularize fixed effect models. What does that mean? Note first that, conceptual, every random effect model corresponds to a fixed effect model. For a random intercept model, this would be 
+
+```{r, eval = F}
+lmer(y ~ x + (1|group)) => lm(y ~ x + group)
+```
+
+and for the random slope, it would be 
+
+
+```{r, eval = F}
+lmer(y ~ x + (x|group)) => lm(y ~ x * group)
+```
+
+So, you could alternatively always fit the fixed effect model. What's the difference? First of all, for the fixed effect models, you would get many more estimates and p-values in the standard summary functions. But that's not really a big difference. More importantly, however, estimates in the random effect model will be closer together, and if you have groups with very little data, they will still be fittable. So, in a random effect model, parameter estimates for groups with few data points are informed by the estimates of the other groups, because they are connected via the normal distribution. 
+
+This is today often used by people that want to fit effects across groups with varying availability of data. For example, if we have data for common and rare species, and we are interested in the density dependence of the species, we could fit
 
 ```{r chunk_chapter4_chunk30, echo=TRUE, eval=FALSE, purl=FALSE}
 mortality ~ density + (density | species)

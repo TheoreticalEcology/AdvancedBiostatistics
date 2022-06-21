@@ -23,7 +23,7 @@
 <meta name="author" content="Florian Hartig" />
 
 
-<meta name="date" content="2022-06-20" />
+<meta name="date" content="2022-06-21" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -1685,6 +1685,11 @@ Excellent explanations of the issues also in the attached paper<br />
     </p>
   </details>
   <br/>
+<ul>
+<li>Solar.R could affect both Temp, Ozone -&gt; Coufounder, include</li>
+<li>Wind could affect Temp, Ozone -&gt; Coufounder, include. Alternatively, one could assume that Temp is also affecting Wind, then it’s a mediator</li>
+<li>I would not include Month, as the Month itself should not affect Ozone, it’s the Temp, Solar.R of the month that must have the effect. It’s more like a placeholder, but if you include it it will nearly act as a collider, because it can snitch away some of the effects of the other variables.</li>
+</ul>
   <hr/>
   <strong><span style="color: #0011AA; font-size:25px;">Case study 2</span></strong><br/>
 <p>Perform a causal, a predictive and an exploratory analysis of the Swiss fertility data set called “swiss”, available in the standard R data sets. Target for the causal analysis is to estimate the causal (separate direct and indirect effects) of education on fertility, i.e. <code class="sourceCode r"><span class="fu">lm</span>(Fertility <span class="sc">~</span> Education, <span class="at">data =</span> swiss)</code>.</p>
@@ -1693,6 +1698,11 @@ Excellent explanations of the issues also in the attached paper<br />
       <strong><span style="color: #0011AA; font-size:25px;">Solution</span></strong>
     </summary>
     <p>
+<ul>
+<li>Agriculture, Catholic could be seen as confounders or mediators, depending on whether you think Education affects the number of people being in Agriculture or Catholic, or vice versa</li>
+<li>Infant mortality could be a mediator or a collider, depeding on whether you think fertility -&gt; infant mortality or infant mortality -&gt; fertility. I would tend to see it as a mediator.</li>
+</ul>
+<p>For all mediators: remember that if you want to get the total (indirect + direct) effect of education on fertility, you should not include mediators. If you want to get the direct effect only, they should be included.</p>
     </p>
   </details>
   <br/><hr/>
@@ -1998,13 +2008,7 @@ Excellent explanations of the issues also in the attached paper<br />
 ## 11  19.06 -0.01492 3.226               4 -544.891 1098.2 100.64  0.001
 ## 3   42.42 -0.01983                     3 -546.035 1098.3 100.77  0.001
 ## Models ranked by AICc(x)</code></pre>
-  <hr/>
-  <strong><span style="color: #0011AA; font-size:25px;">Task</span></strong><br/>
-<p>Discuss with your group: What are the problems with model selection? Concentrate on two points in particular:</p>
-<ul>
-<li>Causal structure.</li>
-<li>Validity of p-values / multiple testing. For the latter, see example below.</li>
-</ul>
+<p>Now, let’s have a look at what happens if we perform a model selection on this model</p>
 <div class="sourceCode" id="cb260"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb260-1"><a href="understanding_linear_regression.html#cb260-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MASS)</span>
 <span id="cb260-2"><a href="understanding_linear_regression.html#cb260-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
 <span id="cb260-3"><a href="understanding_linear_regression.html#cb260-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -2019,7 +2023,8 @@ Excellent explanations of the issues also in the attached paper<br />
 <span id="cb262-2"><a href="understanding_linear_regression.html#cb262-2" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(<span class="fu">summary</span>(fullModel)[[<span class="dv">4</span>]][,<span class="dv">4</span>][<span class="fu">summary</span>(fullModel)[[<span class="dv">4</span>]][,<span class="dv">4</span>] <span class="sc">&lt;=</span> <span class="fl">0.05</span>])</span></code></pre></div>
 <pre><code>## [1] 2</code></pre>
 <p>2 predictors out of 100are significant (on average, we expect 5 of 100 to be significant).</p>
-<div class="sourceCode" id="cb264"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb264-1"><a href="understanding_linear_regression.html#cb264-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(selection)</span></code></pre></div>
+<div class="sourceCode" id="cb264"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb264-1"><a href="understanding_linear_regression.html#cb264-1" aria-hidden="true" tabindex="-1"></a>selection <span class="ot">=</span> <span class="fu">stepAIC</span>(fullModel)</span></code></pre></div>
+<div class="sourceCode" id="cb265"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb265-1"><a href="understanding_linear_regression.html#cb265-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(selection)</span></code></pre></div>
 <pre><code>## 
 ## Call:
 ## lm(formula = y ~ X1 + X2 + X3 + X5 + X7 + X13 + X20 + X23 + X30 + 
@@ -2067,22 +2072,14 @@ Excellent explanations of the issues also in the attached paper<br />
 ## Residual standard error: 0.76 on 171 degrees of freedom
 ## Multiple R-squared:  0.3177, Adjusted R-squared:  0.2059 
 ## F-statistic: 2.843 on 28 and 171 DF,  p-value: 1.799e-05</code></pre>
-<div class="sourceCode" id="cb266"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb266-1"><a href="understanding_linear_regression.html#cb266-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Number of predictors + intercept:</span></span>
-<span id="cb266-2"><a href="understanding_linear_regression.html#cb266-2" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(selection<span class="sc">$</span>coefficients)</span></code></pre></div>
+<div class="sourceCode" id="cb267"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb267-1"><a href="understanding_linear_regression.html#cb267-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Number of predictors + intercept:</span></span>
+<span id="cb267-2"><a href="understanding_linear_regression.html#cb267-2" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(selection<span class="sc">$</span>coefficients)</span></code></pre></div>
 <pre><code>## [1] 29</code></pre>
-<div class="sourceCode" id="cb268"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb268-1"><a href="understanding_linear_regression.html#cb268-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Number of significant predictors:</span></span>
-<span id="cb268-2"><a href="understanding_linear_regression.html#cb268-2" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(<span class="fu">summary</span>(selection)[[<span class="dv">4</span>]][,<span class="dv">4</span>][<span class="fu">summary</span>(selection)[[<span class="dv">4</span>]][,<span class="dv">4</span>] <span class="sc">&lt;=</span> <span class="fl">0.05</span>])</span></code></pre></div>
+<div class="sourceCode" id="cb269"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb269-1"><a href="understanding_linear_regression.html#cb269-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Number of significant predictors:</span></span>
+<span id="cb269-2"><a href="understanding_linear_regression.html#cb269-2" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(<span class="fu">summary</span>(selection)[[<span class="dv">4</span>]][,<span class="dv">4</span>][<span class="fu">summary</span>(selection)[[<span class="dv">4</span>]][,<span class="dv">4</span>] <span class="sc">&lt;=</span> <span class="fl">0.05</span>])</span></code></pre></div>
 <pre><code>## [1] 15</code></pre>
 <p>Voila, 15 out of 28 (before 100) predictors significant.
 Looks like we could have good fun to discuss / publish these results!</p>
-  <details>
-    <summary>
-      <strong><span style="color: #0011AA; font-size:25px;">Solution</span></strong>
-    </summary>
-    <p>
-    </p>
-  </details>
-  <br/><hr/>
 <p>Conclusion: Stepwise selection + regression table is <strong>hidden multiple testing</strong> and has inflated Type I error rates! This is well-known in the stats literature. You <em>CAN</em> do hypothesis tests after model selection, but those require corrections and are not particularly popular, because they are even less significant than the full regression.</p>
 <p>That being said, those methods work excellent to generate <em>predictive</em> models!</p>
 </div>
@@ -2093,11 +2090,10 @@ Looks like we could have good fun to discuss / publish these results!</p>
 <h3><span class="header-section-number">3.4.1</span> Exercise: Global Plant Trait Analysis #3<a href="understanding_linear_regression.html#exercise-global-plant-trait-analysis-3" class="anchor-section" aria-label="Anchor link to header"></a></h3>
   <hr/>
   <strong><span style="color: #0011AA; font-size:25px;">Task</span></strong><br/>
-<p>Revisit exercises <a href="understanding_linear_regression.html#plantTrait1">3.1.5</a> / <a href="understanding_linear_regression.html#plantTrait2">3.2.5</a>, and discuss / analyze:</p>
-<ul>
-<li>Which would be the appropriate model, if we want to get a predictive model for plant height, based on the variables in the data set?</li>
-<li>Which would be the appropriate model, if we want to fit the <strong>causal</strong> effect of temp on height? Consider all variables in the data set!</li>
-</ul>
+<p>Revisit exercises <a href="understanding_linear_regression.html#plantTrait1">3.1.5</a> / <a href="understanding_linear_regression.html#plantTrait2">3.2.5</a> (using the dataset plantHeight), and discuss / analyze:</p>
+<p>Which would be the appropriate model, if we want to get a predictive model for plant height, based on all the variables in the data set? Note: some text-based variables may need to be included, so probably it’s the easiest if you start with a large model that you specify by hand. You can also include interactions. The syntax:</p>
+<div class="sourceCode" id="cb271"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb271-1"><a href="understanding_linear_regression.html#cb271-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>((x1 <span class="sc">+</span> x2 <span class="sc">+</span> x3)<span class="sc">^</span><span class="dv">2</span>)</span></code></pre></div>
+<p>includes all possible 2nd-order interactions between the variables in your model. You can extend this to x^3, x^4 but I would not recommend it, your model will get too large.</p>
   <details>
     <summary>
       <strong><span style="color: #0011AA; font-size:25px;">Solution</span></strong>
@@ -2110,11 +2106,11 @@ Looks like we could have good fun to discuss / publish these results!</p>
 <div id="case-study-life-satisfaction" class="section level3 hasAnchor" number="3.4.2">
 <h3><span class="header-section-number">3.4.2</span> Case study: Life satisfaction<a href="understanding_linear_regression.html#case-study-life-satisfaction" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>The following data set contains information about life satisfaction (lebensz_org) in Germany, based on the socio-economic panel.</p>
-<div class="sourceCode" id="cb270"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb270-1"><a href="understanding_linear_regression.html#cb270-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(EcoData)</span>
-<span id="cb270-2"><a href="understanding_linear_regression.html#cb270-2" aria-hidden="true" tabindex="-1"></a>?soep</span></code></pre></div>
+<div class="sourceCode" id="cb272"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb272-1"><a href="understanding_linear_regression.html#cb272-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(EcoData)</span>
+<span id="cb272-2"><a href="understanding_linear_regression.html#cb272-2" aria-hidden="true" tabindex="-1"></a>?soep</span></code></pre></div>
   <hr/>
   <strong><span style="color: #0011AA; font-size:25px;">Task</span></strong><br/>
-<p>Perform an exploratory causal analysis of the data to find out what determines life satisfaction and if the effect of those factors has changed over time.</p>
+<p>Perform a causal analysis of the effect of income on life satisfaction, considering possible confounding / mediation / colliders.</p>
   <details>
     <summary>
       <strong><span style="color: #0011AA; font-size:25px;">Solution</span></strong>

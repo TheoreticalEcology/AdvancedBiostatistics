@@ -1324,15 +1324,16 @@ Take the example of the past exercise (airquality) and assume, the goal is to un
     <p>
 ```
 
-```{r chunk_chapter3_task_31, message=FALSE, warning=FALSE}
-
-```
 
 ```{=html}
     </p>
   </details>
   <br/>
 ```
+
+* Solar.R could affect both Temp, Ozone -> Coufounder, include
+* Wind could affect Temp, Ozone -> Coufounder, include. Alternatively, one could assume that Temp is also affecting Wind, then it's a mediator
+* I would not include Month, as the Month itself should not affect Ozone, it's the Temp, Solar.R of the month that must have the effect. It's more like a placeholder, but if you include it it will nearly act as a collider, because it can snitch away some of the effects of the other variables. 
 
 ```{=html}
   <hr/>
@@ -1349,9 +1350,10 @@ Perform a causal, a predictive and an exploratory analysis of the Swiss fertilit
     <p>
 ```
 
-```{r chunk_chapter3_task_32, message=FALSE, warning=FALSE}
+* Agriculture, Catholic could be seen as confounders or mediators, depending on whether you think Education affects the number of people being in Agriculture or Catholic, or vice versa
+* Infant mortality could be a mediator or a collider, depeding on whether you think fertility -> infant mortality or infant mortality -> fertility. I would tend to see it as a mediator.
 
-```
+For all mediators: remember that if you want to get the total (indirect + direct) effect of education on fertility, you should not include mediators. If you want to get the direct effect only, they should be included. 
 
 ```{=html}
     </p>
@@ -1553,15 +1555,7 @@ head(out)
 tail(out)
 ```
 
-```{=html}
-  <hr/>
-  <strong><span style="color: #0011AA; font-size:25px;">Task</span></strong><br/>
-```
-
-Discuss with your group: What are the problems with model selection? Concentrate on two points in particular:
-
-* Causal structure.
-* Validity of p-values / multiple testing. For the latter, see example below.
+Now, let's have a look at what happens if we perform a model selection on this model
 
 ```{r chunk_chapter3_task_35, message=FALSE, warning=FALSE}
 library(MASS)
@@ -1580,6 +1574,10 @@ length(summary(fullModel)[[4]][,4][summary(fullModel)[[4]][,4] <= 0.05])
 
 2 predictors out of 100are significant (on average, we expect 5 of 100 to be significant).
 
+```{r, eval=FALSE}
+selection = stepAIC(fullModel)
+```
+
 ```{r chunk_chapter3_task_37, eval=TRUE, echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
 selection = stepAIC(fullModel)
 ```
@@ -1597,28 +1595,9 @@ length(summary(selection)[[4]][,4][summary(selection)[[4]][,4] <= 0.05])
 Voila, 15 out of 28 (before 100) predictors significant.
 Looks like we could have good fun to discuss / publish these results!
 
-```{=html}
-  <details>
-    <summary>
-      <strong><span style="color: #0011AA; font-size:25px;">Solution</span></strong>
-    </summary>
-    <p>
-```
-
-```{r chunk_chapter3_task_39, message=FALSE, warning=FALSE}
-
-```
-
-```{=html}
-    </p>
-  </details>
-  <br/><hr/>
-```
-
 Conclusion: Stepwise selection + regression table is **hidden multiple testing** and has inflated Type I error rates! This is well-known in the stats literature. You *CAN* do hypothesis tests after model selection, but those require corrections and are not particularly popular, because they are even less significant than the full regression.
 
 That being said, those methods work excellent to generate *predictive* models!
-
 
 ## Case studies
 
@@ -1629,10 +1608,16 @@ That being said, those methods work excellent to generate *predictive* models!
   <strong><span style="color: #0011AA; font-size:25px;">Task</span></strong><br/>
 ```
 
-Revisit exercises \@ref(plantTrait1) / \@ref(plantTrait2), and discuss / analyze:
+Revisit exercises \@ref(plantTrait1) / \@ref(plantTrait2) (using the dataset plantHeight), and discuss / analyze:
 
-* Which would be the appropriate model, if we want to get a predictive model for plant height, based on the variables in the data set?
-* Which would be the appropriate model, if we want to fit the **causal** effect of temp on height? Consider all variables in the data set!
+Which would be the appropriate model, if we want to get a predictive model for plant height, based on all the variables in the data set? Note: some text-based variables may need to be included, so probably it's the easiest if you start with a large model that you specify by hand. You can also include interactions. The syntax:
+
+```{r, eval = F}
+fit <- lm((x1 + x2 + x3)^2)
+```
+
+includes all possible 2nd-order interactions between the variables in your model. You can extend this to x^3, x^4 but I would not recommend it, your model will get too large. 
+
 
 ```{=html}
   <details>
@@ -1668,7 +1653,7 @@ library(EcoData)
   <strong><span style="color: #0011AA; font-size:25px;">Task</span></strong><br/>
 ```
 
-Perform an exploratory causal analysis of the data to find out what determines life satisfaction and if the effect of those factors has changed over time. 
+Perform a causal analysis of the effect of income on life satisfaction, considering possible confounding / mediation / colliders. 
 
 ```{=html}
   <details>
