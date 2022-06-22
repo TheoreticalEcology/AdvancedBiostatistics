@@ -673,7 +673,6 @@ plot(fit,
 
 # slope + intercept model
 fit <- lmer(gpa ~ sOccasion*sex + nJob + (sOccasion|student), data = gpa)
-sd(residuals(fit))
 
 # checking residuals - looks like heteroskedasticity
 plot(fit)
@@ -726,6 +725,7 @@ Perform the data analysis, according to the hypothesis discussed in the course.
 
 library(lme4)
 fit <- lmer(log(Spobee + 1) ~ Infection + BeesN + (1|Hive), data = bees)
+summary(fit)
 
 # residual plot shows that hives are either infected or not, thus 
 # doesn't make sense to add a random slope

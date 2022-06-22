@@ -100,11 +100,11 @@ Note:
 
 ***Residual checks***
 
-How can we check the residuals of a GLM? First of all: Due to an unfortunate programming choice in R (Nerds: Check class(m2)), the standard residual plots still work  
+How can we check the residuals of a GLM? First of all: Due to an unfortunate programming choice in R (Nerds: Check class(m1)), the standard residual plots still work  
 
 ```{r chunk_chapter5_chunk10, echo=TRUE, eval=TRUE}
 par(mfrow = c(2, 2))
-plot(m2)
+plot(m1)
 ```
 
 but they don't look any better than before, because they still check for normality of the residuals, while we are interested in the question of whether the residuals are binomially distributed. The `DHARMa`.{R} package solves this problem. Load the `DHARMa`.{R} package, which should have been installed with `EcoData`{.R} already:
@@ -112,7 +112,7 @@ but they don't look any better than before, because they still check for normali
 
 ```{r chunk_chapter5_chunk12, echo=TRUE, eval=TRUE}
 library(DHARMa)
-res = simulateResiduals(m2)
+res = simulateResiduals(m1)
 ```
 
 Standard plot:
@@ -135,18 +135,27 @@ Also residuals against predictors shows no particular problem:
 
 ```{r chunk_chapter5_chunk14, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE}
 par(mfrow = c(1, 2))
-plotResiduals(m2, form = model.frame(m2)$age)
-plotResiduals(m2, form = model.frame(m2)$sex)
+plotResiduals(m1, form = model.frame(m1)$age)
+plotResiduals(m1, form = model.frame(m1)$sex)
 ```
 
 Residuals against missing predictor show a clear problem:
 
 ```{r chunk_chapter5_chunk15, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE}
-dataUsed = as.numeric(rownames(model.frame(m2)))
-plotResiduals(m2, form = titanic$pclass[dataUsed])
+dataUsed = as.numeric(rownames(model.frame(m1)))
+plotResiduals(m1, form = titanic$pclass[dataUsed])
 ```
 
-We will talk about `DHARMa`.{R} more later, see also comments on testing binomial GLMs  
+Thus, I should add passenger class to the model
+
+```{r}
+m2 = glm(survived ~ sex*age + pclass, family = "binomial", data = titanic)
+summary(m2)
+
+plotResiduals(m2, form = model.frame(m2)$pclass)
+```
+
+Now, residuals look fine. We will talk about `DHARMa`.{R} more later, see also comments on testing binomial GLMs  
 <a href="https://cran.r-project.org/web/packages/DHARMa/vignettes/DHARMa.html#binomial-data" target="_blank" rel="noopener">here</a>.
 
 ### Poisson regression

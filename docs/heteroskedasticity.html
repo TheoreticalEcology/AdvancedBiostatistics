@@ -23,7 +23,7 @@
 <meta name="author" content="Florian Hartig" />
 
 
-<meta name="date" content="2022-06-21" />
+<meta name="date" content="2022-06-22" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -1070,21 +1070,20 @@ Nomenclature:</p>
 <span id="cb355-17"><a href="heteroskedasticity.html#cb355-17" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb355-18"><a href="heteroskedasticity.html#cb355-18" aria-hidden="true" tabindex="-1"></a><span class="co"># slope + intercept model</span></span>
 <span id="cb355-19"><a href="heteroskedasticity.html#cb355-19" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lmer</span>(gpa <span class="sc">~</span> sOccasion<span class="sc">*</span>sex <span class="sc">+</span> nJob <span class="sc">+</span> (sOccasion<span class="sc">|</span>student), <span class="at">data =</span> gpa)</span>
-<span id="cb355-20"><a href="heteroskedasticity.html#cb355-20" aria-hidden="true" tabindex="-1"></a><span class="fu">sd</span>(<span class="fu">residuals</span>(fit))</span>
-<span id="cb355-21"><a href="heteroskedasticity.html#cb355-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb355-22"><a href="heteroskedasticity.html#cb355-22" aria-hidden="true" tabindex="-1"></a><span class="co"># checking residuals - looks like heteroskedasticity</span></span>
-<span id="cb355-23"><a href="heteroskedasticity.html#cb355-23" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fit)</span>
-<span id="cb355-24"><a href="heteroskedasticity.html#cb355-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb355-25"><a href="heteroskedasticity.html#cb355-25" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(gpa <span class="sc">~</span> sOccasion<span class="sc">*</span>sex <span class="sc">+</span> nJob <span class="sc">+</span> (sOccasion<span class="sc">|</span>student), <span class="at">data =</span> gpa, <span class="at">dispformula =</span> <span class="sc">~</span> sOccasion)</span>
-<span id="cb355-26"><a href="heteroskedasticity.html#cb355-26" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span>
-<span id="cb355-27"><a href="heteroskedasticity.html#cb355-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb355-28"><a href="heteroskedasticity.html#cb355-28" aria-hidden="true" tabindex="-1"></a><span class="co"># unfortunately, the dispersion in this model cannot be reliably checked, because the functions for this </span></span>
-<span id="cb355-29"><a href="heteroskedasticity.html#cb355-29" aria-hidden="true" tabindex="-1"></a><span class="co"># are not (yet) implemented in glmmTMB</span></span>
-<span id="cb355-30"><a href="heteroskedasticity.html#cb355-30" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">residuals</span>(fit, <span class="at">type =</span> <span class="st">&quot;pearson&quot;</span>) <span class="sc">~</span> <span class="fu">predict</span>(fit)) <span class="co"># not implemented</span></span>
-<span id="cb355-31"><a href="heteroskedasticity.html#cb355-31" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DHARMa)</span>
-<span id="cb355-32"><a href="heteroskedasticity.html#cb355-32" aria-hidden="true" tabindex="-1"></a><span class="fu">simulateResiduals</span>(fit, <span class="at">plot =</span> T) <span class="co"># not very reliable because glmmTMB cannot do simulations conditional on the fitted REs</span></span>
-<span id="cb355-33"><a href="heteroskedasticity.html#cb355-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb355-34"><a href="heteroskedasticity.html#cb355-34" aria-hidden="true" tabindex="-1"></a><span class="co"># still, the variable dispersion model is highly supported by the data and clearly preferable over a fixed dispersion model</span></span></code></pre></div>
+<span id="cb355-20"><a href="heteroskedasticity.html#cb355-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb355-21"><a href="heteroskedasticity.html#cb355-21" aria-hidden="true" tabindex="-1"></a><span class="co"># checking residuals - looks like heteroskedasticity</span></span>
+<span id="cb355-22"><a href="heteroskedasticity.html#cb355-22" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fit)</span>
+<span id="cb355-23"><a href="heteroskedasticity.html#cb355-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb355-24"><a href="heteroskedasticity.html#cb355-24" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(gpa <span class="sc">~</span> sOccasion<span class="sc">*</span>sex <span class="sc">+</span> nJob <span class="sc">+</span> (sOccasion<span class="sc">|</span>student), <span class="at">data =</span> gpa, <span class="at">dispformula =</span> <span class="sc">~</span> sOccasion)</span>
+<span id="cb355-25"><a href="heteroskedasticity.html#cb355-25" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span>
+<span id="cb355-26"><a href="heteroskedasticity.html#cb355-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb355-27"><a href="heteroskedasticity.html#cb355-27" aria-hidden="true" tabindex="-1"></a><span class="co"># unfortunately, the dispersion in this model cannot be reliably checked, because the functions for this </span></span>
+<span id="cb355-28"><a href="heteroskedasticity.html#cb355-28" aria-hidden="true" tabindex="-1"></a><span class="co"># are not (yet) implemented in glmmTMB</span></span>
+<span id="cb355-29"><a href="heteroskedasticity.html#cb355-29" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">residuals</span>(fit, <span class="at">type =</span> <span class="st">&quot;pearson&quot;</span>) <span class="sc">~</span> <span class="fu">predict</span>(fit)) <span class="co"># not implemented</span></span>
+<span id="cb355-30"><a href="heteroskedasticity.html#cb355-30" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DHARMa)</span>
+<span id="cb355-31"><a href="heteroskedasticity.html#cb355-31" aria-hidden="true" tabindex="-1"></a><span class="fu">simulateResiduals</span>(fit, <span class="at">plot =</span> T) <span class="co"># not very reliable because glmmTMB cannot do simulations conditional on the fitted REs</span></span>
+<span id="cb355-32"><a href="heteroskedasticity.html#cb355-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb355-33"><a href="heteroskedasticity.html#cb355-33" aria-hidden="true" tabindex="-1"></a><span class="co"># still, the variable dispersion model is highly supported by the data and clearly preferable over a fixed dispersion model</span></span></code></pre></div>
     </p>
   </details>
   <br/><hr/>
@@ -1106,12 +1105,43 @@ Nomenclature:</p>
 <span id="cb357-2"><a href="heteroskedasticity.html#cb357-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb357-3"><a href="heteroskedasticity.html#cb357-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lme4)</span>
 <span id="cb357-4"><a href="heteroskedasticity.html#cb357-4" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lmer</span>(<span class="fu">log</span>(Spobee <span class="sc">+</span> <span class="dv">1</span>) <span class="sc">~</span> Infection <span class="sc">+</span> BeesN <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>Hive), <span class="at">data =</span> bees)</span>
-<span id="cb357-5"><a href="heteroskedasticity.html#cb357-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb357-6"><a href="heteroskedasticity.html#cb357-6" aria-hidden="true" tabindex="-1"></a><span class="co"># residual plot shows that hives are either infected or not, thus </span></span>
-<span id="cb357-7"><a href="heteroskedasticity.html#cb357-7" aria-hidden="true" tabindex="-1"></a><span class="co"># doesn&#39;t make sense to add a random slope</span></span>
-<span id="cb357-8"><a href="heteroskedasticity.html#cb357-8" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fit, </span>
-<span id="cb357-9"><a href="heteroskedasticity.html#cb357-9" aria-hidden="true" tabindex="-1"></a>     <span class="fu">resid</span>(., <span class="at">scaled=</span><span class="cn">TRUE</span>) <span class="sc">~</span> <span class="fu">fitted</span>(.) <span class="sc">|</span> Hive, </span>
-<span id="cb357-10"><a href="heteroskedasticity.html#cb357-10" aria-hidden="true" tabindex="-1"></a>     <span class="at">abline =</span> <span class="dv">0</span>)</span></code></pre></div>
+<span id="cb357-5"><a href="heteroskedasticity.html#cb357-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code></pre></div>
+<pre><code>## Linear mixed model fit by REML. t-tests use Satterthwaite&#39;s method [
+## lmerModLmerTest]
+## Formula: log(Spobee + 1) ~ Infection + BeesN + (1 | Hive)
+##    Data: bees
+## 
+## REML criterion at convergence: 260.8
+## 
+## Scaled residuals: 
+##      Min       1Q   Median       3Q      Max 
+## -2.27939 -0.45413  0.09209  0.52159  1.64023 
+## 
+## Random effects:
+##  Groups   Name        Variance Std.Dev.
+##  Hive     (Intercept) 4.8463   2.2014  
+##  Residual             0.6033   0.7767  
+## Number of obs: 72, groups:  Hive, 24
+## 
+## Fixed effects:
+##               Estimate Std. Error         df t value Pr(&gt;|t|)    
+## (Intercept)  5.583e+00  1.907e+00  2.100e+01   2.927  0.00805 ** 
+## Infection    2.663e+00  5.528e-01  2.100e+01   4.818 9.22e-05 ***
+## BeesN       -2.068e-05  2.558e-05  2.100e+01  -0.808  0.42804    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Correlation of Fixed Effects:
+##           (Intr) Infctn
+## Infection -0.476       
+## BeesN     -0.966  0.398
+## fit warnings:
+## Some predictor variables are on very different scales: consider rescaling</code></pre>
+<div class="sourceCode" id="cb359"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb359-1"><a href="heteroskedasticity.html#cb359-1" aria-hidden="true" tabindex="-1"></a><span class="co"># residual plot shows that hives are either infected or not, thus </span></span>
+<span id="cb359-2"><a href="heteroskedasticity.html#cb359-2" aria-hidden="true" tabindex="-1"></a><span class="co"># doesn&#39;t make sense to add a random slope</span></span>
+<span id="cb359-3"><a href="heteroskedasticity.html#cb359-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fit, </span>
+<span id="cb359-4"><a href="heteroskedasticity.html#cb359-4" aria-hidden="true" tabindex="-1"></a>     <span class="fu">resid</span>(., <span class="at">scaled=</span><span class="cn">TRUE</span>) <span class="sc">~</span> <span class="fu">fitted</span>(.) <span class="sc">|</span> Hive, </span>
+<span id="cb359-5"><a href="heteroskedasticity.html#cb359-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">abline =</span> <span class="dv">0</span>)</span></code></pre></div>
 <p><img src="_main_files/figure-html/chunk_chapter4_task_4-1.png" width="672" /></p>
     </p>
   </details>
