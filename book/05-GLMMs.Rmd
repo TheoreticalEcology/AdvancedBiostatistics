@@ -521,38 +521,3 @@ testZeroInflation(m1)
 ```
 
 
-### Marmots
-
-```{=html}
-  <hr/>
-  <strong><span style="color: #0011AA; font-size:25px;">Task</span></strong><br/>
-```
-
-Analyze the Marmot data you can find in `EcoData`{.R}. A description of the data is available <a href="https://elearning.uni-regensburg.de/pluginfile.php/1922323/mod_assign/introattachment/0/Marmots.pdf?forcedownload=1" target="_blank" rel="noopener">https://osf.io/9yh4x/</a>.
-
-Use the following snippet to read in the data:
-
-```{r chunk_chapter5_task_10, eval=TRUE, message=FALSE, warning=FALSE}
-library(EcoData)
-
-str(marmots)
-```
-
-```{=html}
-  <details>
-    <summary>
-      <strong><span style="color: #0011AA; font-size:25px;">Solution</span></strong>
-    </summary>
-    <p>
-```
-
-```{r chunk_chapter5_task_11, message=FALSE, warning=FALSE}
-
-```
-
-```{=html}
-    </p>
-  </details>
-  <br/><hr/>
-```
-
