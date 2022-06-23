@@ -68,9 +68,14 @@ ants
 owls
 correlation
 general-idea
-temporal-and-spatial-correlation-structures
+temporal-correlation-structures
+spatial-correlation-structures
+exercise
 phylogenetic-structures-pgls
-exercices
+exercise-1
+case-studies-2
+snouter
+covariance-structures-in-glmmtmb
 advanced_topics
 reminder-modelling-strategy
 thoughts-about-the-analysis-pipeline

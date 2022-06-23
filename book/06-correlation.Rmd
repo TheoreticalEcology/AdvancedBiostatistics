@@ -21,13 +21,13 @@ This chapter explains how to model correlation structures in the residuals.
 
 ## General Idea
 
-Except for the random effects, we have so far assumed that observations are independent. We will now relax this assumption. As a motivation, you can skim the following paper from <a href="https://onlinelibrary.wiley.com/doi/10.1111/ecog.02881" target="_blank" rel="noopener">Roberts et al., 2016</a>.
+Except for the random effects, we have so far assumed that observations are independent. However, there are a number of other common correlation structures that we may want to consider. Here a visualization from <a href="https://onlinelibrary.wiley.com/doi/10.1111/ecog.02881" target="_blank" rel="noopener">Roberts et al., 2016</a> (reproduced as OA, copyright: the authors).
 
 ```{r chunk_chapter6_chunk0, echo=FALSE, out.width="150%", out.height="150%"}
-knitr::include_graphics(c("images/correlation.jpg"))
+knitr::include_graphics(c("images/correlation.png"))
 ```
 
-We have already discussed random effects, which is a grouped correlation. All of the other three correlation structures discussed here are different. They are distance-based correlations between data points. Distance is expressed, e.g., by:
+The figure shows random effects, and a number of other correlation structures. In random effects, residuals are structured in groups. All of the other three correlation structures discussed here are different. They are distance-based correlations between data points. Distance is expressed, e.g., by:
 
 * Spatial distance.
 * Temporal distance.
@@ -48,7 +48,7 @@ Similar as for the variance modelling, we can add this structures
 The following pages provide examples and further comments on how to do this.
 
 
-## Temporal and Spatial Correlation Structures
+## Temporal Correlation Structures
 
 In principle, spatial and temporal correlation are quite similar, there are 2 options we can have:
 
@@ -56,10 +56,6 @@ In principle, spatial and temporal correlation are quite similar, there are 2 op
 2. There truly is a spatial correlation, after accounting for the trend.
 
 Unfortunately, the distinction between a larger trend and a correlation is quite fluid. Nevertheless, one should always first check for and remove the trend, typically by including time/space as a predictor, potentially in a flexible way (GAMs come in handy). After this is done, we can fit a model with a temporally/spatially correlated error.
-
-
-
-***Temporal correlation***
 
 As our first example, I look at the hurricane study from yesterday, which is, after all, temporal data. This data set is located in `DHARMa`{.R}.
 
@@ -103,35 +99,28 @@ summary(fm3Dial.gls)
 ```
 
 
+## Spatial Correlation Structures
 
-***Spatial models***
-
-We will use a data set with thick densities and a spatial (soil) predictor. Read in data
-
-```{r chunk_chapter6_chunk3, echo=TRUE, eval=TRUE}
-spdata = read.table("https://stats.idre.ucla.edu/stat/r/faq/thick.csv",
-                     header = T, sep = ",", row.names = 1)
-```
-
-Fit the model:
+We will use a data set with the thickness of coal seams, that we try to predict with a spatial (soil) predictor. Read in data
 
 ```{r chunk_chapter6_chunk4, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE}
+library(EcoData)
 library(DHARMa)
 library(gstat)
 
-plot(thick ~ soil, data = spdata)
-fit = lm(thick ~ soil, data = spdata)
+plot(thick ~ soil, data = thickness)
+fit = lm(thick ~ soil, data = thickness)
 summary(fit)
 
 # Quantile residuals are not actually needed in this case but
 # DHARMa includes a test for spatial autocorrelation which
 # will save us coding time
 res = simulateResiduals(fit)
-testSpatialAutocorrelation(res, x = spdata$north, y = spdata$east)
+testSpatialAutocorrelation(res, x = thickness$north, y = thickness$east)
 
 # Looking also at the directional variogram
 tann.dir.vgm = variogram(residuals(fit) ~ 1,
-                         loc =~ east + north, data = spdata,
+                         loc =~ east + north, data = thickness,
                          alpha = c(0, 45, 90, 135))
 plot(tann.dir.vgm)
 ```
@@ -166,6 +155,38 @@ summary(fit2)
 fit1 = gls(thick ~ soil + north + I(north^2), data = spdata)
 
 anova(fit1, fit2)
+```
+
+### Exercise
+
+```{=html}
+  <hr/>
+  <strong><span style="color: #0011AA; font-size:25px;">Task</span></strong><br/>
+```
+
+Use the dataset EcoData::plantcounts. Our scientific question is if richness ~ agrarea. Help on the dataset, as well as a few initial plots, is in the help of ?plantcounts.
+
+This is count data, so start with a Poisson or Neg Binom GLM. The quadrats are not all equally sized, so you should include an offest to account for area. Then, check for spatial autocorrelation.
+
+If you find autocorrelation that cannot be removed with a gam, the problem is that the gls function that we have used so far only extends lm, and not glm models. In this case, you can either read up in https://cran.r-project.org/web/packages/glmmTMB/vignettes/covstruct.html how to specify a spatial covariance in glmmTMB, or just log transform your counts + 1, and fit a gls. 
+
+
+```{=html}
+  <details>
+    <summary>
+      <strong><span style="color: #0011AA; font-size:25px;">Solution</span></strong>
+    </summary>
+    <p>
+```
+
+```{r message=FALSE, warning=FALSE}
+library(EcoData)
+```
+
+```{=html}
+    </p>
+  </details>
+  <br/><hr/>
 ```
 
 
@@ -303,19 +324,27 @@ Other example: <a href="http://schmitzlab.info/pgls.htmla" target="_blank" rel="
 For fitting PGLS with various models, you should also consider the `caper`{.R} package.
 
 
-## Exercices
+### Exercise
+
+Download the following two datasets
+
+http://www.phytools.org/Cordoba2017/data/BarbetTree.nex
+http://www.phytools.org/Cordoba2017/data/Barbetdata.csv
+
+These data are from a study by Corboda et al., 2017, which examined the influence of environmental factors on the evolution of song in an group of Asian bird species called “barbets.”
+
+Check if there is a relationship between altitude at which a species is found and the length of the note in its song, which uses the variables Lnote~Lnalt
+
+## Case studies
+
+### Snouter
 
 ```{=html}
   <hr/>
   <strong><span style="color: #0011AA; font-size:25px;">Task</span></strong><br/>
 ```
 
-Fit either
-
-* snouter
-* plantcounts
-
-from package `EcoData`{.R}, and check for spatial dependencies in the residuals. See the data set's help for details on the variables.
+Fit one of the responses in the snouter datset against the predictors rain + djungle (see ?snouter). Check for spatial autocorrelation and proceed to fitting a spatial model if needed. See the data set's help for details on the variables.
 
 ```{=html}
   <details>
@@ -327,8 +356,7 @@ from package `EcoData`{.R}, and check for spatial dependencies in the residuals.
 
 ```{r chunk_chapter6_task_0, message=FALSE, warning=FALSE}
 library(EcoData)
-
-str(plantcounts)
+str(snouter)
 ```
 
 ```{=html}
@@ -336,3 +364,15 @@ str(plantcounts)
   </details>
   <br/><hr/>
 ```
+
+
+### Covariance structures in glmmTMB
+
+gls only allows normally distributed responses. For GLMMs, you can use glmmTMB, which has (experimental) support for spatial, temporal or phylogenetic covariance structures on the REs. If you want to specific residual autocorrelation, you can create and observation-level RE and specify the covariance structure there. Take one of the examples that we had before (e.g. plantcount) and try to fit a spatial covariance with glmmTMB, using the tutorial here https://cran.r-project.org/web/packages/glmmTMB/vignettes/covstruct.html
+
+Alternative packages for spatial models are MASS::glmmPQL, BRMS, or INLA. 
+
+
+
+
+
