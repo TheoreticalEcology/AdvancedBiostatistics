@@ -343,47 +343,47 @@ code span.wa { color: #bf0303; } /* Warning */
 <li>…</li>
 </ul>
 <p>The way to check this is to run simulations. For example, the following function creates data that follows the assumptions of a linear regression with slope 0.5, then fits a linear regression, and returns the estimate</p>
-<div class="sourceCode" id="cb503"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb503-1"><a href="advanced_topics.html#cb503-1" aria-hidden="true" tabindex="-1"></a>getEstimate <span class="ot">=</span> <span class="cf">function</span>(<span class="at">n =</span> <span class="dv">100</span>){</span>
-<span id="cb503-2"><a href="advanced_topics.html#cb503-2" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">=</span> <span class="fu">runif</span>(n)</span>
-<span id="cb503-3"><a href="advanced_topics.html#cb503-3" aria-hidden="true" tabindex="-1"></a>  y <span class="ot">=</span> <span class="fl">0.5</span> <span class="sc">*</span> x <span class="sc">+</span> <span class="fu">rnorm</span>(n)</span>
-<span id="cb503-4"><a href="advanced_topics.html#cb503-4" aria-hidden="true" tabindex="-1"></a>  fit <span class="ot">=</span> <span class="fu">lm</span>(y <span class="sc">~</span> x)</span>
-<span id="cb503-5"><a href="advanced_topics.html#cb503-5" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">=</span> <span class="fu">summary</span>(fit)</span>
-<span id="cb503-6"><a href="advanced_topics.html#cb503-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(x<span class="sc">$</span>coefficients[<span class="dv">2</span>, <span class="dv">1</span>])  <span class="co"># Get fitted x weight (should be ~0.5).</span></span>
-<span id="cb503-7"><a href="advanced_topics.html#cb503-7" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb505"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb505-1"><a href="advanced_topics.html#cb505-1" aria-hidden="true" tabindex="-1"></a>getEstimate <span class="ot">=</span> <span class="cf">function</span>(<span class="at">n =</span> <span class="dv">100</span>){</span>
+<span id="cb505-2"><a href="advanced_topics.html#cb505-2" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">=</span> <span class="fu">runif</span>(n)</span>
+<span id="cb505-3"><a href="advanced_topics.html#cb505-3" aria-hidden="true" tabindex="-1"></a>  y <span class="ot">=</span> <span class="fl">0.5</span> <span class="sc">*</span> x <span class="sc">+</span> <span class="fu">rnorm</span>(n)</span>
+<span id="cb505-4"><a href="advanced_topics.html#cb505-4" aria-hidden="true" tabindex="-1"></a>  fit <span class="ot">=</span> <span class="fu">lm</span>(y <span class="sc">~</span> x)</span>
+<span id="cb505-5"><a href="advanced_topics.html#cb505-5" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">=</span> <span class="fu">summary</span>(fit)</span>
+<span id="cb505-6"><a href="advanced_topics.html#cb505-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(x<span class="sc">$</span>coefficients[<span class="dv">2</span>, <span class="dv">1</span>])  <span class="co"># Get fitted x weight (should be ~0.5).</span></span>
+<span id="cb505-7"><a href="advanced_topics.html#cb505-7" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 <p>The replicate function allows us to execute this 1000 times:</p>
-<div class="sourceCode" id="cb504"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb504-1"><a href="advanced_topics.html#cb504-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">543210</span>)</span>
-<span id="cb504-2"><a href="advanced_topics.html#cb504-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb504-3"><a href="advanced_topics.html#cb504-3" aria-hidden="true" tabindex="-1"></a>out <span class="ot">=</span> <span class="fu">replicate</span>(<span class="dv">1000</span>, <span class="fu">getEstimate</span>())</span></code></pre></div>
+<div class="sourceCode" id="cb506"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb506-1"><a href="advanced_topics.html#cb506-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">543210</span>)</span>
+<span id="cb506-2"><a href="advanced_topics.html#cb506-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb506-3"><a href="advanced_topics.html#cb506-3" aria-hidden="true" tabindex="-1"></a>out <span class="ot">=</span> <span class="fu">replicate</span>(<span class="dv">1000</span>, <span class="fu">getEstimate</span>())</span></code></pre></div>
 <p>Plotting the result, we can check whether the linear regression is an unbiased estimator for the slope.</p>
-<div class="sourceCode" id="cb505"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb505-1"><a href="advanced_topics.html#cb505-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(out, <span class="at">breaks =</span> <span class="dv">50</span>)</span>
-<span id="cb505-2"><a href="advanced_topics.html#cb505-2" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> <span class="fl">0.5</span>, <span class="at">col =</span> <span class="st">&quot;red&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb507"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb507-1"><a href="advanced_topics.html#cb507-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(out, <span class="at">breaks =</span> <span class="dv">50</span>)</span>
+<span id="cb507-2"><a href="advanced_topics.html#cb507-2" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> <span class="fl">0.5</span>, <span class="at">col =</span> <span class="st">&quot;red&quot;</span>)</span></code></pre></div>
 <p><img src="_main_files/figure-html/chunk_chapter7_chunk3-1.png" width="672" /></p>
 <p>“Unbiased” means that, while each single estimate will have some error, the mean of many estimates will spread around the true value.</p>
 <p><strong><em>Explicitly calculating these values</em></strong></p>
 <p><strong>Bias</strong></p>
-<div class="sourceCode" id="cb506"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb506-1"><a href="advanced_topics.html#cb506-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(out) <span class="sc">-</span> <span class="fl">0.5</span> <span class="co"># Should be ~0.</span></span></code></pre></div>
+<div class="sourceCode" id="cb508"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb508-1"><a href="advanced_topics.html#cb508-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(out) <span class="sc">-</span> <span class="fl">0.5</span> <span class="co"># Should be ~0.</span></span></code></pre></div>
 <pre><code>## [1] -0.001826401</code></pre>
 <p><strong>Variance / standard deviation of the estimator</strong></p>
-<div class="sourceCode" id="cb508"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb508-1"><a href="advanced_topics.html#cb508-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sd</span>(out)</span></code></pre></div>
+<div class="sourceCode" id="cb510"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb510-1"><a href="advanced_topics.html#cb510-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sd</span>(out)</span></code></pre></div>
 <pre><code>## [1] 0.3587717</code></pre>
 <p>To check p-values, we could run:</p>
-<div class="sourceCode" id="cb510"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb510-1"><a href="advanced_topics.html#cb510-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">12345</span>)</span>
-<span id="cb510-2"><a href="advanced_topics.html#cb510-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb510-3"><a href="advanced_topics.html#cb510-3" aria-hidden="true" tabindex="-1"></a>getEstimate <span class="ot">=</span> <span class="cf">function</span>(<span class="at">n =</span> <span class="dv">100</span>){  <span class="co"># Mind: Function has changed!</span></span>
-<span id="cb510-4"><a href="advanced_topics.html#cb510-4" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">=</span> <span class="fu">runif</span>(n)</span>
-<span id="cb510-5"><a href="advanced_topics.html#cb510-5" aria-hidden="true" tabindex="-1"></a>  y <span class="ot">=</span> <span class="fu">rnorm</span>(n)  <span class="co"># No dependence of x! Identical: y = 0 * x + rnorm(100).</span></span>
-<span id="cb510-6"><a href="advanced_topics.html#cb510-6" aria-hidden="true" tabindex="-1"></a>  fit <span class="ot">=</span> <span class="fu">lm</span>(y <span class="sc">~</span> x)</span>
-<span id="cb510-7"><a href="advanced_topics.html#cb510-7" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">=</span> <span class="fu">summary</span>(fit)</span>
-<span id="cb510-8"><a href="advanced_topics.html#cb510-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(x<span class="sc">$</span>coefficients[<span class="dv">2</span>, <span class="dv">4</span>])  <span class="co"># P-value for H0: Weight of x = 0.</span></span>
-<span id="cb510-9"><a href="advanced_topics.html#cb510-9" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb510-10"><a href="advanced_topics.html#cb510-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb510-11"><a href="advanced_topics.html#cb510-11" aria-hidden="true" tabindex="-1"></a>out <span class="ot">=</span> <span class="fu">replicate</span>(<span class="dv">2000</span>, <span class="fu">getEstimate</span>())</span>
-<span id="cb510-12"><a href="advanced_topics.html#cb510-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb510-13"><a href="advanced_topics.html#cb510-13" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(out) <span class="co"># Expected: Uniformly distributed p-values. -&gt; Check.</span></span></code></pre></div>
+<div class="sourceCode" id="cb512"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb512-1"><a href="advanced_topics.html#cb512-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">12345</span>)</span>
+<span id="cb512-2"><a href="advanced_topics.html#cb512-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb512-3"><a href="advanced_topics.html#cb512-3" aria-hidden="true" tabindex="-1"></a>getEstimate <span class="ot">=</span> <span class="cf">function</span>(<span class="at">n =</span> <span class="dv">100</span>){  <span class="co"># Mind: Function has changed!</span></span>
+<span id="cb512-4"><a href="advanced_topics.html#cb512-4" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">=</span> <span class="fu">runif</span>(n)</span>
+<span id="cb512-5"><a href="advanced_topics.html#cb512-5" aria-hidden="true" tabindex="-1"></a>  y <span class="ot">=</span> <span class="fu">rnorm</span>(n)  <span class="co"># No dependence of x! Identical: y = 0 * x + rnorm(100).</span></span>
+<span id="cb512-6"><a href="advanced_topics.html#cb512-6" aria-hidden="true" tabindex="-1"></a>  fit <span class="ot">=</span> <span class="fu">lm</span>(y <span class="sc">~</span> x)</span>
+<span id="cb512-7"><a href="advanced_topics.html#cb512-7" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">=</span> <span class="fu">summary</span>(fit)</span>
+<span id="cb512-8"><a href="advanced_topics.html#cb512-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(x<span class="sc">$</span>coefficients[<span class="dv">2</span>, <span class="dv">4</span>])  <span class="co"># P-value for H0: Weight of x = 0.</span></span>
+<span id="cb512-9"><a href="advanced_topics.html#cb512-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb512-10"><a href="advanced_topics.html#cb512-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb512-11"><a href="advanced_topics.html#cb512-11" aria-hidden="true" tabindex="-1"></a>out <span class="ot">=</span> <span class="fu">replicate</span>(<span class="dv">2000</span>, <span class="fu">getEstimate</span>())</span>
+<span id="cb512-12"><a href="advanced_topics.html#cb512-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb512-13"><a href="advanced_topics.html#cb512-13" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(out) <span class="co"># Expected: Uniformly distributed p-values. -&gt; Check.</span></span></code></pre></div>
 <p><img src="_main_files/figure-html/chunk_chapter7_chunk6-1.png" width="672" /></p>
-<div class="sourceCode" id="cb511"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb511-1"><a href="advanced_topics.html#cb511-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(out <span class="sc">&lt;</span> <span class="fl">0.05</span>) <span class="co"># Expected: ~0.05. But this is NO p-value... Check H0/H1!</span></span></code></pre></div>
+<div class="sourceCode" id="cb513"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb513-1"><a href="advanced_topics.html#cb513-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(out <span class="sc">&lt;</span> <span class="fl">0.05</span>) <span class="co"># Expected: ~0.05. But this is NO p-value... Check H0/H1!</span></span></code></pre></div>
 <pre><code>## [1] 0.0515</code></pre>
-<div class="sourceCode" id="cb513"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb513-1"><a href="advanced_topics.html#cb513-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Explanation of syntax: Logical vectors are interpreted as vectors of 0s and 1s.</span></span></code></pre></div>
+<div class="sourceCode" id="cb515"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb515-1"><a href="advanced_topics.html#cb515-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Explanation of syntax: Logical vectors are interpreted as vectors of 0s and 1s.</span></span></code></pre></div>
 <p>To check the properties of other, possibly more complicated pipelines, statisticians will typically use the same technique. I recommend doing this! For example, you could modify the function above to have a non-normal error. How much difference does that make? Simulating often beats recommendations in the books!</p>
 </div>
 <div id="nonparametric-estimators" class="section level2 hasAnchor" number="7.3">
@@ -392,33 +392,33 @@ code span.wa { color: #bf0303; } /* Warning */
 <h3><span class="header-section-number">7.3.1</span> The bootstrap<a href="advanced_topics.html#the-bootstrap" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p><strong><em>Standard (non-parametric) bootstrap</em></strong></p>
 <p>The <strong>bootstrap</strong> is a method to generate approximate confidence intervals based on resampling the data. Imagine you have some kind of weird data distribution:</p>
-<div class="sourceCode" id="cb514"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb514-1"><a href="advanced_topics.html#cb514-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb514-2"><a href="advanced_topics.html#cb514-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb514-3"><a href="advanced_topics.html#cb514-3" aria-hidden="true" tabindex="-1"></a>data <span class="ot">=</span> <span class="fu">ifelse</span>(<span class="fu">rbinom</span>(<span class="dv">100</span>, <span class="dv">1</span>, <span class="fl">0.5</span>) <span class="sc">==</span> <span class="dv">1</span>, <span class="fu">rexp</span>(<span class="dv">100</span>, <span class="dv">4</span>) , <span class="fu">rnorm</span>(<span class="dv">100</span>, <span class="sc">-</span><span class="dv">2</span>))</span>
-<span id="cb514-4"><a href="advanced_topics.html#cb514-4" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(data)</span></code></pre></div>
+<div class="sourceCode" id="cb516"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb516-1"><a href="advanced_topics.html#cb516-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb516-2"><a href="advanced_topics.html#cb516-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb516-3"><a href="advanced_topics.html#cb516-3" aria-hidden="true" tabindex="-1"></a>data <span class="ot">=</span> <span class="fu">ifelse</span>(<span class="fu">rbinom</span>(<span class="dv">100</span>, <span class="dv">1</span>, <span class="fl">0.5</span>) <span class="sc">==</span> <span class="dv">1</span>, <span class="fu">rexp</span>(<span class="dv">100</span>, <span class="dv">4</span>) , <span class="fu">rnorm</span>(<span class="dv">100</span>, <span class="sc">-</span><span class="dv">2</span>))</span>
+<span id="cb516-4"><a href="advanced_topics.html#cb516-4" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(data)</span></code></pre></div>
 <p><img src="_main_files/figure-html/chunk_chapter7_chunk7-1.png" width="672" /></p>
 <p>We want to calculate the mean and it’s uncertainty. The mean is simple, but what is the uncertainty of the mean? The standard error can’t be used, because this is not a normal distribution. If we don’t know the distribution, we can’t use a parametric method to calculate the confidence interval.</p>
 <p>The solution is the bootstrap. The idea is the following: We re-sample from the data to generate an estimation of the uncertainty of the mean. Let’s first do this by hand:</p>
-<div class="sourceCode" id="cb515"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb515-1"><a href="advanced_topics.html#cb515-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb515-2"><a href="advanced_topics.html#cb515-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb515-3"><a href="advanced_topics.html#cb515-3" aria-hidden="true" tabindex="-1"></a>performBootstrap <span class="ot">=</span> <span class="cf">function</span>(){</span>
-<span id="cb515-4"><a href="advanced_topics.html#cb515-4" aria-hidden="true" tabindex="-1"></a>  resampledData <span class="ot">=</span> <span class="fu">sample</span>(data, <span class="at">size =</span> <span class="fu">length</span>(data), <span class="at">replace =</span> T) </span>
-<span id="cb515-5"><a href="advanced_topics.html#cb515-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">mean</span>(resampledData))</span>
-<span id="cb515-6"><a href="advanced_topics.html#cb515-6" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb515-7"><a href="advanced_topics.html#cb515-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb515-8"><a href="advanced_topics.html#cb515-8" aria-hidden="true" tabindex="-1"></a>bootstrappedMean <span class="ot">=</span> <span class="fu">replicate</span>(<span class="dv">500</span>, <span class="fu">performBootstrap</span>())</span>
-<span id="cb515-9"><a href="advanced_topics.html#cb515-9" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(bootstrappedMean, <span class="at">breaks =</span> <span class="dv">50</span>)</span>
-<span id="cb515-10"><a href="advanced_topics.html#cb515-10" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> <span class="fu">mean</span>(data), <span class="at">col =</span> <span class="st">&quot;red&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb517"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb517-1"><a href="advanced_topics.html#cb517-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb517-2"><a href="advanced_topics.html#cb517-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb517-3"><a href="advanced_topics.html#cb517-3" aria-hidden="true" tabindex="-1"></a>performBootstrap <span class="ot">=</span> <span class="cf">function</span>(){</span>
+<span id="cb517-4"><a href="advanced_topics.html#cb517-4" aria-hidden="true" tabindex="-1"></a>  resampledData <span class="ot">=</span> <span class="fu">sample</span>(data, <span class="at">size =</span> <span class="fu">length</span>(data), <span class="at">replace =</span> T) </span>
+<span id="cb517-5"><a href="advanced_topics.html#cb517-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">mean</span>(resampledData))</span>
+<span id="cb517-6"><a href="advanced_topics.html#cb517-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb517-7"><a href="advanced_topics.html#cb517-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb517-8"><a href="advanced_topics.html#cb517-8" aria-hidden="true" tabindex="-1"></a>bootstrappedMean <span class="ot">=</span> <span class="fu">replicate</span>(<span class="dv">500</span>, <span class="fu">performBootstrap</span>())</span>
+<span id="cb517-9"><a href="advanced_topics.html#cb517-9" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(bootstrappedMean, <span class="at">breaks =</span> <span class="dv">50</span>)</span>
+<span id="cb517-10"><a href="advanced_topics.html#cb517-10" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> <span class="fu">mean</span>(data), <span class="at">col =</span> <span class="st">&quot;red&quot;</span>)</span></code></pre></div>
 <p><img src="_main_files/figure-html/chunk_chapter7_chunk8-1.png" width="672" /></p>
 <p>Roughly, this distribution is the confidence interval for the mean for this particular distribution.</p>
 <p>In detail, there are a few tricks to correct confidence intervals for the bootstrap, which are implemented in the <code>boot</code>.{R} package. Here is how you would do a boostrap with the boot package. The trick here is to implement the function <code>f()</code>.{R}, which must take the data as well as a selection of data points “k” (for example <code class="sourceCode r"><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>,<span class="dv">8</span>,<span class="dv">9</span>)</code>, or <code class="sourceCode r"><span class="dv">1</span><span class="sc">:</span><span class="dv">20</span></code>, etc.) as input, and calculate the desired statistics.</p>
-<div class="sourceCode" id="cb516"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb516-1"><a href="advanced_topics.html#cb516-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(boot)</span>
-<span id="cb516-2"><a href="advanced_topics.html#cb516-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb516-3"><a href="advanced_topics.html#cb516-3" aria-hidden="true" tabindex="-1"></a>f <span class="ot">=</span> <span class="cf">function</span>(d, k){ <span class="fu">mean</span>(d[k]) }</span>
-<span id="cb516-4"><a href="advanced_topics.html#cb516-4" aria-hidden="true" tabindex="-1"></a>out <span class="ot">=</span> <span class="fu">boot</span>(data, f, <span class="dv">500</span>)</span>
-<span id="cb516-5"><a href="advanced_topics.html#cb516-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(out)</span></code></pre></div>
+<div class="sourceCode" id="cb518"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb518-1"><a href="advanced_topics.html#cb518-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(boot)</span>
+<span id="cb518-2"><a href="advanced_topics.html#cb518-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb518-3"><a href="advanced_topics.html#cb518-3" aria-hidden="true" tabindex="-1"></a>f <span class="ot">=</span> <span class="cf">function</span>(d, k){ <span class="fu">mean</span>(d[k]) }</span>
+<span id="cb518-4"><a href="advanced_topics.html#cb518-4" aria-hidden="true" tabindex="-1"></a>out <span class="ot">=</span> <span class="fu">boot</span>(data, f, <span class="dv">500</span>)</span>
+<span id="cb518-5"><a href="advanced_topics.html#cb518-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(out)</span></code></pre></div>
 <p><img src="_main_files/figure-html/chunk_chapter7_chunk9-1.png" width="672" /></p>
-<div class="sourceCode" id="cb517"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb517-1"><a href="advanced_topics.html#cb517-1" aria-hidden="true" tabindex="-1"></a><span class="fu">boot.ci</span>(out)</span></code></pre></div>
+<div class="sourceCode" id="cb519"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb519-1"><a href="advanced_topics.html#cb519-1" aria-hidden="true" tabindex="-1"></a><span class="fu">boot.ci</span>(out)</span></code></pre></div>
 <pre><code>## BOOTSTRAP CONFIDENCE INTERVAL CALCULATIONS
 ## Based on 500 bootstrap replicates
 ## 
@@ -436,9 +436,9 @@ code span.wa { color: #bf0303; } /* Warning */
   <hr/>
   <strong><span style="color: #0011AA; font-size:25px;">Task</span></strong><br/>
 <p>Calculate a bootstrapped confidence interval for the mean of this exponential distribution. Compare it to the naive standard error:</p>
-<div class="sourceCode" id="cb519"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb519-1"><a href="advanced_topics.html#cb519-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
-<span id="cb519-2"><a href="advanced_topics.html#cb519-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb519-3"><a href="advanced_topics.html#cb519-3" aria-hidden="true" tabindex="-1"></a>data <span class="ot">=</span> <span class="fu">rexp</span>(<span class="dv">500</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb521"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb521-1"><a href="advanced_topics.html#cb521-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb521-2"><a href="advanced_topics.html#cb521-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb521-3"><a href="advanced_topics.html#cb521-3" aria-hidden="true" tabindex="-1"></a>data <span class="ot">=</span> <span class="fu">rexp</span>(<span class="dv">500</span>)</span></code></pre></div>
   <details>
     <summary>
       <strong><span style="color: #0011AA; font-size:25px;">Solution</span></strong>
@@ -459,26 +459,26 @@ code span.wa { color: #bf0303; } /* Warning */
 <blockquote>
 <p>The jackknife is a linear approximation of the bootstrap.</p>
 </blockquote>
-<div class="sourceCode" id="cb520"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb520-1"><a href="advanced_topics.html#cb520-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(bootstrap)</span>
-<span id="cb520-2"><a href="advanced_topics.html#cb520-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb520-3"><a href="advanced_topics.html#cb520-3" aria-hidden="true" tabindex="-1"></a>theta <span class="ot">=</span> <span class="cf">function</span>(x){ <span class="fu">mean</span>(x) }</span>
-<span id="cb520-4"><a href="advanced_topics.html#cb520-4" aria-hidden="true" tabindex="-1"></a>results <span class="ot">=</span> <span class="fu">jackknife</span>(data, theta)</span>
-<span id="cb520-5"><a href="advanced_topics.html#cb520-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb520-6"><a href="advanced_topics.html#cb520-6" aria-hidden="true" tabindex="-1"></a>results<span class="sc">$</span>jack.se</span></code></pre></div>
+<div class="sourceCode" id="cb522"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb522-1"><a href="advanced_topics.html#cb522-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(bootstrap)</span>
+<span id="cb522-2"><a href="advanced_topics.html#cb522-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb522-3"><a href="advanced_topics.html#cb522-3" aria-hidden="true" tabindex="-1"></a>theta <span class="ot">=</span> <span class="cf">function</span>(x){ <span class="fu">mean</span>(x) }</span>
+<span id="cb522-4"><a href="advanced_topics.html#cb522-4" aria-hidden="true" tabindex="-1"></a>results <span class="ot">=</span> <span class="fu">jackknife</span>(data, theta)</span>
+<span id="cb522-5"><a href="advanced_topics.html#cb522-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb522-6"><a href="advanced_topics.html#cb522-6" aria-hidden="true" tabindex="-1"></a>results<span class="sc">$</span>jack.se</span></code></pre></div>
 <pre><code>## [1] 0.04727612</code></pre>
-<div class="sourceCode" id="cb522"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb522-1"><a href="advanced_topics.html#cb522-1" aria-hidden="true" tabindex="-1"></a>results<span class="sc">$</span>jack.bias</span></code></pre></div>
+<div class="sourceCode" id="cb524"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb524-1"><a href="advanced_topics.html#cb524-1" aria-hidden="true" tabindex="-1"></a>results<span class="sc">$</span>jack.bias</span></code></pre></div>
 <pre><code>## [1] 0</code></pre>
 <p><strong><em>Parametric bootstrap</em></strong></p>
 <p>We call it a <strong>parametric bootstrap</strong> if we don’t re-sample the data to generate new data, but simulate from the fitted model. Simple example with a linear model:</p>
-<div class="sourceCode" id="cb524"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb524-1"><a href="advanced_topics.html#cb524-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb524-2"><a href="advanced_topics.html#cb524-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb524-3"><a href="advanced_topics.html#cb524-3" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> <span class="fu">runif</span>(<span class="dv">100</span>, <span class="sc">-</span><span class="dv">2</span>, <span class="dv">2</span>)</span>
-<span id="cb524-4"><a href="advanced_topics.html#cb524-4" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> <span class="fu">rnorm</span>(<span class="dv">100</span>, <span class="dv">1</span> <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span>x, <span class="dv">1</span>)</span>
-<span id="cb524-5"><a href="advanced_topics.html#cb524-5" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">=</span> <span class="fu">data.frame</span>(<span class="at">x =</span> x, <span class="at">y =</span> y)</span>
-<span id="cb524-6"><a href="advanced_topics.html#cb524-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb524-7"><a href="advanced_topics.html#cb524-7" aria-hidden="true" tabindex="-1"></a>m <span class="ot">=</span> <span class="fu">lm</span>(y <span class="sc">~</span> x)</span>
-<span id="cb524-8"><a href="advanced_topics.html#cb524-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb524-9"><a href="advanced_topics.html#cb524-9" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m)</span></code></pre></div>
+<div class="sourceCode" id="cb526"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb526-1"><a href="advanced_topics.html#cb526-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb526-2"><a href="advanced_topics.html#cb526-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb526-3"><a href="advanced_topics.html#cb526-3" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> <span class="fu">runif</span>(<span class="dv">100</span>, <span class="sc">-</span><span class="dv">2</span>, <span class="dv">2</span>)</span>
+<span id="cb526-4"><a href="advanced_topics.html#cb526-4" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> <span class="fu">rnorm</span>(<span class="dv">100</span>, <span class="dv">1</span> <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span>x, <span class="dv">1</span>)</span>
+<span id="cb526-5"><a href="advanced_topics.html#cb526-5" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">=</span> <span class="fu">data.frame</span>(<span class="at">x =</span> x, <span class="at">y =</span> y)</span>
+<span id="cb526-6"><a href="advanced_topics.html#cb526-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb526-7"><a href="advanced_topics.html#cb526-7" aria-hidden="true" tabindex="-1"></a>m <span class="ot">=</span> <span class="fu">lm</span>(y <span class="sc">~</span> x)</span>
+<span id="cb526-8"><a href="advanced_topics.html#cb526-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb526-9"><a href="advanced_topics.html#cb526-9" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m)</span></code></pre></div>
 <pre><code>## 
 ## Call:
 ## lm(formula = y ~ x)
@@ -498,31 +498,31 @@ code span.wa { color: #bf0303; } /* Warning */
 ## Multiple R-squared:  0.8453, Adjusted R-squared:  0.8437 
 ## F-statistic: 535.5 on 1 and 98 DF,  p-value: &lt; 2.2e-16</code></pre>
 <p>We are interested in getting the confidence intervals for the coefficients of the model:</p>
-<div class="sourceCode" id="cb526"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb526-1"><a href="advanced_topics.html#cb526-1" aria-hidden="true" tabindex="-1"></a>resampledParameters <span class="ot">=</span> <span class="cf">function</span>(){</span>
-<span id="cb526-2"><a href="advanced_topics.html#cb526-2" aria-hidden="true" tabindex="-1"></a>  newData <span class="ot">=</span> dat</span>
-<span id="cb526-3"><a href="advanced_topics.html#cb526-3" aria-hidden="true" tabindex="-1"></a>  newData<span class="sc">$</span>y <span class="ot">=</span> <span class="fu">unlist</span>(<span class="fu">simulate</span>(m))</span>
-<span id="cb526-4"><a href="advanced_topics.html#cb526-4" aria-hidden="true" tabindex="-1"></a>  mNew <span class="ot">=</span> <span class="fu">lm</span>(y <span class="sc">~</span> x, newData)</span>
-<span id="cb526-5"><a href="advanced_topics.html#cb526-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">coef</span>(mNew)[<span class="dv">1</span>])</span>
-<span id="cb526-6"><a href="advanced_topics.html#cb526-6" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb526-7"><a href="advanced_topics.html#cb526-7" aria-hidden="true" tabindex="-1"></a>bootstrappedIntercept <span class="ot">=</span> <span class="fu">replicate</span>(<span class="dv">500</span>, <span class="fu">resampledParameters</span>())</span>
-<span id="cb526-8"><a href="advanced_topics.html#cb526-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb526-9"><a href="advanced_topics.html#cb526-9" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(bootstrappedIntercept, <span class="at">breaks =</span> <span class="dv">50</span>)</span>
-<span id="cb526-10"><a href="advanced_topics.html#cb526-10" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> <span class="fu">coef</span>(m)[<span class="dv">1</span>], <span class="at">col =</span> <span class="st">&quot;red&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb528"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb528-1"><a href="advanced_topics.html#cb528-1" aria-hidden="true" tabindex="-1"></a>resampledParameters <span class="ot">=</span> <span class="cf">function</span>(){</span>
+<span id="cb528-2"><a href="advanced_topics.html#cb528-2" aria-hidden="true" tabindex="-1"></a>  newData <span class="ot">=</span> dat</span>
+<span id="cb528-3"><a href="advanced_topics.html#cb528-3" aria-hidden="true" tabindex="-1"></a>  newData<span class="sc">$</span>y <span class="ot">=</span> <span class="fu">unlist</span>(<span class="fu">simulate</span>(m))</span>
+<span id="cb528-4"><a href="advanced_topics.html#cb528-4" aria-hidden="true" tabindex="-1"></a>  mNew <span class="ot">=</span> <span class="fu">lm</span>(y <span class="sc">~</span> x, newData)</span>
+<span id="cb528-5"><a href="advanced_topics.html#cb528-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">coef</span>(mNew)[<span class="dv">1</span>])</span>
+<span id="cb528-6"><a href="advanced_topics.html#cb528-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb528-7"><a href="advanced_topics.html#cb528-7" aria-hidden="true" tabindex="-1"></a>bootstrappedIntercept <span class="ot">=</span> <span class="fu">replicate</span>(<span class="dv">500</span>, <span class="fu">resampledParameters</span>())</span>
+<span id="cb528-8"><a href="advanced_topics.html#cb528-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb528-9"><a href="advanced_topics.html#cb528-9" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(bootstrappedIntercept, <span class="at">breaks =</span> <span class="dv">50</span>)</span>
+<span id="cb528-10"><a href="advanced_topics.html#cb528-10" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> <span class="fu">coef</span>(m)[<span class="dv">1</span>], <span class="at">col =</span> <span class="st">&quot;red&quot;</span>)</span></code></pre></div>
 <p><img src="_main_files/figure-html/chunk_chapter7_chunk12-1.png" width="672" /></p>
 <p>The same with the <code>boot</code>.{R} package. We need a statistics:</p>
-<div class="sourceCode" id="cb527"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb527-1"><a href="advanced_topics.html#cb527-1" aria-hidden="true" tabindex="-1"></a>foo <span class="ot">=</span> <span class="cf">function</span>(out){</span>
-<span id="cb527-2"><a href="advanced_topics.html#cb527-2" aria-hidden="true" tabindex="-1"></a>  m <span class="ot">=</span> <span class="fu">lm</span>(y <span class="sc">~</span> x, out)</span>
-<span id="cb527-3"><a href="advanced_topics.html#cb527-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">coef</span>(m))</span>
-<span id="cb527-4"><a href="advanced_topics.html#cb527-4" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb529"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb529-1"><a href="advanced_topics.html#cb529-1" aria-hidden="true" tabindex="-1"></a>foo <span class="ot">=</span> <span class="cf">function</span>(out){</span>
+<span id="cb529-2"><a href="advanced_topics.html#cb529-2" aria-hidden="true" tabindex="-1"></a>  m <span class="ot">=</span> <span class="fu">lm</span>(y <span class="sc">~</span> x, out)</span>
+<span id="cb529-3"><a href="advanced_topics.html#cb529-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">coef</span>(m))</span>
+<span id="cb529-4"><a href="advanced_topics.html#cb529-4" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 <p>and a function to create new data</p>
-<div class="sourceCode" id="cb528"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb528-1"><a href="advanced_topics.html#cb528-1" aria-hidden="true" tabindex="-1"></a>rgen <span class="ot">=</span> <span class="cf">function</span>(dat, mle){</span>
-<span id="cb528-2"><a href="advanced_topics.html#cb528-2" aria-hidden="true" tabindex="-1"></a>  out <span class="ot">=</span> dat</span>
-<span id="cb528-3"><a href="advanced_topics.html#cb528-3" aria-hidden="true" tabindex="-1"></a>  out<span class="sc">$</span>y <span class="ot">=</span> <span class="fu">unlist</span>(<span class="fu">simulate</span>(mle))</span>
-<span id="cb528-4"><a href="advanced_topics.html#cb528-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(out)</span>
-<span id="cb528-5"><a href="advanced_topics.html#cb528-5" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb528-6"><a href="advanced_topics.html#cb528-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb528-7"><a href="advanced_topics.html#cb528-7" aria-hidden="true" tabindex="-1"></a>b2 <span class="ot">=</span> <span class="fu">boot</span>(dat, foo, <span class="at">R =</span> <span class="dv">1000</span>, <span class="at">sim =</span> <span class="st">&quot;parametric&quot;</span>, <span class="at">ran.gen =</span> rgen, <span class="at">mle =</span> m)</span>
-<span id="cb528-8"><a href="advanced_topics.html#cb528-8" aria-hidden="true" tabindex="-1"></a><span class="fu">boot.ci</span>(b2, <span class="at">type =</span> <span class="st">&quot;perc&quot;</span>, <span class="at">index =</span> <span class="dv">1</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb530"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb530-1"><a href="advanced_topics.html#cb530-1" aria-hidden="true" tabindex="-1"></a>rgen <span class="ot">=</span> <span class="cf">function</span>(dat, mle){</span>
+<span id="cb530-2"><a href="advanced_topics.html#cb530-2" aria-hidden="true" tabindex="-1"></a>  out <span class="ot">=</span> dat</span>
+<span id="cb530-3"><a href="advanced_topics.html#cb530-3" aria-hidden="true" tabindex="-1"></a>  out<span class="sc">$</span>y <span class="ot">=</span> <span class="fu">unlist</span>(<span class="fu">simulate</span>(mle))</span>
+<span id="cb530-4"><a href="advanced_topics.html#cb530-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(out)</span>
+<span id="cb530-5"><a href="advanced_topics.html#cb530-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb530-6"><a href="advanced_topics.html#cb530-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb530-7"><a href="advanced_topics.html#cb530-7" aria-hidden="true" tabindex="-1"></a>b2 <span class="ot">=</span> <span class="fu">boot</span>(dat, foo, <span class="at">R =</span> <span class="dv">1000</span>, <span class="at">sim =</span> <span class="st">&quot;parametric&quot;</span>, <span class="at">ran.gen =</span> rgen, <span class="at">mle =</span> m)</span>
+<span id="cb530-8"><a href="advanced_topics.html#cb530-8" aria-hidden="true" tabindex="-1"></a><span class="fu">boot.ci</span>(b2, <span class="at">type =</span> <span class="st">&quot;perc&quot;</span>, <span class="at">index =</span> <span class="dv">1</span>)</span></code></pre></div>
 <pre><code>## BOOTSTRAP CONFIDENCE INTERVAL CALCULATIONS
 ## Based on 1000 bootstrap replicates
 ## 
@@ -535,10 +535,10 @@ code span.wa { color: #bf0303; } /* Warning */
 ## Calculations and Intervals on Original Scale</code></pre>
 <p><strong><em>Application: Simulated likelihood ratio test</em></strong></p>
 <p>The parametric bootstrap can be used to generate simulated likelihood ratio tests for mixed models. This allows us to test for the significance of variance components without specifying degrees of freedom. We could program this ourselves, but here is a package:</p>
-<div class="sourceCode" id="cb530"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb530-1"><a href="advanced_topics.html#cb530-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(pbkrtest)</span>
-<span id="cb530-2"><a href="advanced_topics.html#cb530-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb530-3"><a href="advanced_topics.html#cb530-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(beets, <span class="at">package =</span> <span class="st">&quot;pbkrtest&quot;</span>)</span>
-<span id="cb530-4"><a href="advanced_topics.html#cb530-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(beets)</span></code></pre></div>
+<div class="sourceCode" id="cb532"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb532-1"><a href="advanced_topics.html#cb532-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(pbkrtest)</span>
+<span id="cb532-2"><a href="advanced_topics.html#cb532-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb532-3"><a href="advanced_topics.html#cb532-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(beets, <span class="at">package =</span> <span class="st">&quot;pbkrtest&quot;</span>)</span>
+<span id="cb532-4"><a href="advanced_topics.html#cb532-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(beets)</span></code></pre></div>
 <pre><code>##   harvest  block  sow yield sugpct
 ## 1   harv1 block1 sow3 128.0   17.1
 ## 2   harv1 block1 sow4 118.0   16.9
@@ -546,13 +546,13 @@ code span.wa { color: #bf0303; } /* Warning */
 ## 4   harv1 block1 sow2 131.0   17.0
 ## 5   harv1 block1 sow1 136.5   17.0
 ## 6   harv2 block2 sow3 136.5   17.0</code></pre>
-<div class="sourceCode" id="cb532"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb532-1"><a href="advanced_topics.html#cb532-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Linear mixed effects model:</span></span>
-<span id="cb532-2"><a href="advanced_topics.html#cb532-2" aria-hidden="true" tabindex="-1"></a>sug <span class="ot">=</span> <span class="fu">lmer</span>(sugpct <span class="sc">~</span> block <span class="sc">+</span> sow <span class="sc">+</span> harvest <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> block<span class="sc">:</span>harvest), <span class="at">data =</span> beets,</span>
-<span id="cb532-3"><a href="advanced_topics.html#cb532-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">REML =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb532-4"><a href="advanced_topics.html#cb532-4" aria-hidden="true" tabindex="-1"></a>sug.h <span class="ot">=</span> <span class="fu">update</span>(sug, .<span class="sc">~</span>. <span class="sc">-</span>harvest)</span>
-<span id="cb532-5"><a href="advanced_topics.html#cb532-5" aria-hidden="true" tabindex="-1"></a>sug.s <span class="ot">=</span> <span class="fu">update</span>(sug, .<span class="sc">~</span>. <span class="sc">-</span>sow)</span>
-<span id="cb532-6"><a href="advanced_topics.html#cb532-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb532-7"><a href="advanced_topics.html#cb532-7" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(sug, sug.h)</span></code></pre></div>
+<div class="sourceCode" id="cb534"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb534-1"><a href="advanced_topics.html#cb534-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Linear mixed effects model:</span></span>
+<span id="cb534-2"><a href="advanced_topics.html#cb534-2" aria-hidden="true" tabindex="-1"></a>sug <span class="ot">=</span> <span class="fu">lmer</span>(sugpct <span class="sc">~</span> block <span class="sc">+</span> sow <span class="sc">+</span> harvest <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> block<span class="sc">:</span>harvest), <span class="at">data =</span> beets,</span>
+<span id="cb534-3"><a href="advanced_topics.html#cb534-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">REML =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb534-4"><a href="advanced_topics.html#cb534-4" aria-hidden="true" tabindex="-1"></a>sug.h <span class="ot">=</span> <span class="fu">update</span>(sug, .<span class="sc">~</span>. <span class="sc">-</span>harvest)</span>
+<span id="cb534-5"><a href="advanced_topics.html#cb534-5" aria-hidden="true" tabindex="-1"></a>sug.s <span class="ot">=</span> <span class="fu">update</span>(sug, .<span class="sc">~</span>. <span class="sc">-</span>sow)</span>
+<span id="cb534-6"><a href="advanced_topics.html#cb534-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb534-7"><a href="advanced_topics.html#cb534-7" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(sug, sug.h)</span></code></pre></div>
 <pre><code>## Data: beets
 ## Models:
 ## sug.h: sugpct ~ block + sow + (1 | block:harvest)
@@ -562,7 +562,7 @@ code span.wa { color: #bf0303; } /* Warning */
 ## sug     10 -79.998 -65.986 49.999  -99.998 12.914  1  0.0003261 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
-<div class="sourceCode" id="cb534"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb534-1"><a href="advanced_topics.html#cb534-1" aria-hidden="true" tabindex="-1"></a><span class="fu">PBmodcomp</span>(sug, sug.h, <span class="at">nsim =</span> <span class="dv">50</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb536"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb536-1"><a href="advanced_topics.html#cb536-1" aria-hidden="true" tabindex="-1"></a><span class="fu">PBmodcomp</span>(sug, sug.h, <span class="at">nsim =</span> <span class="dv">50</span>)</span></code></pre></div>
 <pre><code>## Bootstrap test; time: 0.45 sec; samples: 50; extremes: 5;
 ## large : sugpct ~ block + sow + harvest + (1 | block:harvest)
 ## sugpct ~ block + sow + (1 | block:harvest)
@@ -571,7 +571,7 @@ code span.wa { color: #bf0303; } /* Warning */
 ## PBtest 12.914    0.1176471    
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
-<div class="sourceCode" id="cb536"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb536-1"><a href="advanced_topics.html#cb536-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(sug, sug.s)</span></code></pre></div>
+<div class="sourceCode" id="cb538"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb538-1"><a href="advanced_topics.html#cb538-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(sug, sug.s)</span></code></pre></div>
 <pre><code>## Data: beets
 ## Models:
 ## sug.s: sugpct ~ block + harvest + (1 | block:harvest)
@@ -581,7 +581,7 @@ code span.wa { color: #bf0303; } /* Warning */
 ## sug     10 -79.998 -65.986 49.999  -99.998 85.203  4  &lt; 2.2e-16 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
-<div class="sourceCode" id="cb538"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb538-1"><a href="advanced_topics.html#cb538-1" aria-hidden="true" tabindex="-1"></a><span class="fu">PBmodcomp</span>(sug, sug.s, <span class="at">nsim =</span> <span class="dv">50</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb540"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb540-1"><a href="advanced_topics.html#cb540-1" aria-hidden="true" tabindex="-1"></a><span class="fu">PBmodcomp</span>(sug, sug.s, <span class="at">nsim =</span> <span class="dv">50</span>)</span></code></pre></div>
 <pre><code>## Bootstrap test; time: 0.38 sec; samples: 50; extremes: 0;
 ## large : sugpct ~ block + sow + harvest + (1 | block:harvest)
 ## sugpct ~ block + harvest + (1 | block:harvest)
@@ -591,87 +591,87 @@ code span.wa { color: #bf0303; } /* Warning */
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 <p>A similar approach is taken in <code class="sourceCode r">RLRsim</code>:</p>
-<div class="sourceCode" id="cb540"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb540-1"><a href="advanced_topics.html#cb540-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(RLRsim)</span>
-<span id="cb540-2"><a href="advanced_topics.html#cb540-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lme4)</span>
-<span id="cb540-3"><a href="advanced_topics.html#cb540-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb540-4"><a href="advanced_topics.html#cb540-4" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
-<span id="cb540-5"><a href="advanced_topics.html#cb540-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb540-6"><a href="advanced_topics.html#cb540-6" aria-hidden="true" tabindex="-1"></a>g <span class="ot">=</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, <span class="at">e =</span> <span class="dv">10</span>)</span>
-<span id="cb540-7"><a href="advanced_topics.html#cb540-7" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> <span class="fu">rnorm</span>(<span class="dv">100</span>)</span>
-<span id="cb540-8"><a href="advanced_topics.html#cb540-8" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> <span class="fl">0.1</span> <span class="sc">*</span> x <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">100</span>)</span>
-<span id="cb540-9"><a href="advanced_topics.html#cb540-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb540-10"><a href="advanced_topics.html#cb540-10" aria-hidden="true" tabindex="-1"></a>m <span class="ot">=</span> <span class="fu">lmer</span>(y <span class="sc">~</span> x <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>g), <span class="at">REML =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb540-11"><a href="advanced_topics.html#cb540-11" aria-hidden="true" tabindex="-1"></a>m0 <span class="ot">=</span> <span class="fu">lm</span>(y <span class="sc">~</span> <span class="dv">1</span>)</span>
-<span id="cb540-12"><a href="advanced_topics.html#cb540-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb540-13"><a href="advanced_topics.html#cb540-13" aria-hidden="true" tabindex="-1"></a>obs.LRT <span class="ot">=</span> <span class="dv">2</span><span class="sc">*</span>(<span class="fu">logLik</span>(m) <span class="sc">-</span> <span class="fu">logLik</span>(m0))</span>
-<span id="cb540-14"><a href="advanced_topics.html#cb540-14" aria-hidden="true" tabindex="-1"></a>X <span class="ot">=</span> <span class="fu">getME</span>(m, <span class="st">&quot;X&quot;</span>)</span>
-<span id="cb540-15"><a href="advanced_topics.html#cb540-15" aria-hidden="true" tabindex="-1"></a>Z <span class="ot">=</span> <span class="fu">t</span>(<span class="fu">as.matrix</span>(<span class="fu">getME</span>(m, <span class="st">&quot;Zt&quot;</span>)))</span>
-<span id="cb540-16"><a href="advanced_topics.html#cb540-16" aria-hidden="true" tabindex="-1"></a>sim.LRT <span class="ot">=</span> <span class="fu">LRTSim</span>(X, Z, <span class="dv">1</span>, <span class="fu">diag</span>(<span class="dv">10</span>))</span>
-<span id="cb540-17"><a href="advanced_topics.html#cb540-17" aria-hidden="true" tabindex="-1"></a>pval <span class="ot">=</span> <span class="fu">mean</span>(sim.LRT <span class="sc">&gt;</span> obs.LRT)</span></code></pre></div>
+<div class="sourceCode" id="cb542"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb542-1"><a href="advanced_topics.html#cb542-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(RLRsim)</span>
+<span id="cb542-2"><a href="advanced_topics.html#cb542-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lme4)</span>
+<span id="cb542-3"><a href="advanced_topics.html#cb542-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb542-4"><a href="advanced_topics.html#cb542-4" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb542-5"><a href="advanced_topics.html#cb542-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb542-6"><a href="advanced_topics.html#cb542-6" aria-hidden="true" tabindex="-1"></a>g <span class="ot">=</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, <span class="at">e =</span> <span class="dv">10</span>)</span>
+<span id="cb542-7"><a href="advanced_topics.html#cb542-7" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> <span class="fu">rnorm</span>(<span class="dv">100</span>)</span>
+<span id="cb542-8"><a href="advanced_topics.html#cb542-8" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> <span class="fl">0.1</span> <span class="sc">*</span> x <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">100</span>)</span>
+<span id="cb542-9"><a href="advanced_topics.html#cb542-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb542-10"><a href="advanced_topics.html#cb542-10" aria-hidden="true" tabindex="-1"></a>m <span class="ot">=</span> <span class="fu">lmer</span>(y <span class="sc">~</span> x <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>g), <span class="at">REML =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb542-11"><a href="advanced_topics.html#cb542-11" aria-hidden="true" tabindex="-1"></a>m0 <span class="ot">=</span> <span class="fu">lm</span>(y <span class="sc">~</span> <span class="dv">1</span>)</span>
+<span id="cb542-12"><a href="advanced_topics.html#cb542-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb542-13"><a href="advanced_topics.html#cb542-13" aria-hidden="true" tabindex="-1"></a>obs.LRT <span class="ot">=</span> <span class="dv">2</span><span class="sc">*</span>(<span class="fu">logLik</span>(m) <span class="sc">-</span> <span class="fu">logLik</span>(m0))</span>
+<span id="cb542-14"><a href="advanced_topics.html#cb542-14" aria-hidden="true" tabindex="-1"></a>X <span class="ot">=</span> <span class="fu">getME</span>(m, <span class="st">&quot;X&quot;</span>)</span>
+<span id="cb542-15"><a href="advanced_topics.html#cb542-15" aria-hidden="true" tabindex="-1"></a>Z <span class="ot">=</span> <span class="fu">t</span>(<span class="fu">as.matrix</span>(<span class="fu">getME</span>(m, <span class="st">&quot;Zt&quot;</span>)))</span>
+<span id="cb542-16"><a href="advanced_topics.html#cb542-16" aria-hidden="true" tabindex="-1"></a>sim.LRT <span class="ot">=</span> <span class="fu">LRTSim</span>(X, Z, <span class="dv">1</span>, <span class="fu">diag</span>(<span class="dv">10</span>))</span>
+<span id="cb542-17"><a href="advanced_topics.html#cb542-17" aria-hidden="true" tabindex="-1"></a>pval <span class="ot">=</span> <span class="fu">mean</span>(sim.LRT <span class="sc">&gt;</span> obs.LRT)</span></code></pre></div>
 </div>
 <div id="cross-validation" class="section level3 hasAnchor" number="7.3.2">
 <h3><span class="header-section-number">7.3.2</span> Cross-validation<a href="advanced_topics.html#cross-validation" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Cross-validation is the non-parametric alternative to AIC. Note that AIC is asymptotically equal to leave-one-out cross-validation.</p>
 <p>For most advanced models, you will have to program the cross-validation by hand, but here an example for <code>glm</code>.{R}, using the <code class="sourceCode r">cv.glm</code> function:</p>
-<div class="sourceCode" id="cb541"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb541-1"><a href="advanced_topics.html#cb541-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(boot)</span>
-<span id="cb541-2"><a href="advanced_topics.html#cb541-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb541-3"><a href="advanced_topics.html#cb541-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Leave-one-out and 6-fold cross-validation prediction error for the mammals data set.</span></span>
-<span id="cb541-4"><a href="advanced_topics.html#cb541-4" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(mammals, <span class="at">package=</span><span class="st">&quot;MASS&quot;</span>)</span>
-<span id="cb541-5"><a href="advanced_topics.html#cb541-5" aria-hidden="true" tabindex="-1"></a>mammals.glm <span class="ot">=</span> <span class="fu">glm</span>(<span class="fu">log</span>(brain) <span class="sc">~</span> <span class="fu">log</span>(body), <span class="at">data =</span> mammals)</span>
-<span id="cb541-6"><a href="advanced_topics.html#cb541-6" aria-hidden="true" tabindex="-1"></a>(<span class="at">cv.err =</span> <span class="fu">cv.glm</span>(mammals, mammals.glm)<span class="sc">$</span>delta)</span></code></pre></div>
+<div class="sourceCode" id="cb543"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb543-1"><a href="advanced_topics.html#cb543-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(boot)</span>
+<span id="cb543-2"><a href="advanced_topics.html#cb543-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb543-3"><a href="advanced_topics.html#cb543-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Leave-one-out and 6-fold cross-validation prediction error for the mammals data set.</span></span>
+<span id="cb543-4"><a href="advanced_topics.html#cb543-4" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(mammals, <span class="at">package=</span><span class="st">&quot;MASS&quot;</span>)</span>
+<span id="cb543-5"><a href="advanced_topics.html#cb543-5" aria-hidden="true" tabindex="-1"></a>mammals.glm <span class="ot">=</span> <span class="fu">glm</span>(<span class="fu">log</span>(brain) <span class="sc">~</span> <span class="fu">log</span>(body), <span class="at">data =</span> mammals)</span>
+<span id="cb543-6"><a href="advanced_topics.html#cb543-6" aria-hidden="true" tabindex="-1"></a>(<span class="at">cv.err =</span> <span class="fu">cv.glm</span>(mammals, mammals.glm)<span class="sc">$</span>delta)</span></code></pre></div>
 <pre><code>## [1] 0.4918650 0.4916571</code></pre>
-<div class="sourceCode" id="cb543"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb543-1"><a href="advanced_topics.html#cb543-1" aria-hidden="true" tabindex="-1"></a>(<span class="at">cv.err.6 =</span> <span class="fu">cv.glm</span>(mammals, mammals.glm, <span class="at">K =</span> <span class="dv">6</span>)<span class="sc">$</span>delta)</span></code></pre></div>
+<div class="sourceCode" id="cb545"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb545-1"><a href="advanced_topics.html#cb545-1" aria-hidden="true" tabindex="-1"></a>(<span class="at">cv.err.6 =</span> <span class="fu">cv.glm</span>(mammals, mammals.glm, <span class="at">K =</span> <span class="dv">6</span>)<span class="sc">$</span>delta)</span></code></pre></div>
 <pre><code>## [1] 0.4787539 0.4776334</code></pre>
-<div class="sourceCode" id="cb545"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb545-1"><a href="advanced_topics.html#cb545-1" aria-hidden="true" tabindex="-1"></a><span class="co"># As this is a linear model we could calculate the leave-one-out </span></span>
-<span id="cb545-2"><a href="advanced_topics.html#cb545-2" aria-hidden="true" tabindex="-1"></a><span class="co"># cross-validation estimate without any extra model-fitting.</span></span>
-<span id="cb545-3"><a href="advanced_topics.html#cb545-3" aria-hidden="true" tabindex="-1"></a>muhat <span class="ot">=</span> <span class="fu">fitted</span>(mammals.glm)</span>
-<span id="cb545-4"><a href="advanced_topics.html#cb545-4" aria-hidden="true" tabindex="-1"></a>mammals.diag <span class="ot">=</span> <span class="fu">glm.diag</span>(mammals.glm)</span>
-<span id="cb545-5"><a href="advanced_topics.html#cb545-5" aria-hidden="true" tabindex="-1"></a>(<span class="at">cv.err =</span> <span class="fu">mean</span>((mammals.glm<span class="sc">$</span>y <span class="sc">-</span> muhat)<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span>(<span class="dv">1</span> <span class="sc">-</span> mammals.diag<span class="sc">$</span>h)<span class="sc">^</span><span class="dv">2</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb547"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb547-1"><a href="advanced_topics.html#cb547-1" aria-hidden="true" tabindex="-1"></a><span class="co"># As this is a linear model we could calculate the leave-one-out </span></span>
+<span id="cb547-2"><a href="advanced_topics.html#cb547-2" aria-hidden="true" tabindex="-1"></a><span class="co"># cross-validation estimate without any extra model-fitting.</span></span>
+<span id="cb547-3"><a href="advanced_topics.html#cb547-3" aria-hidden="true" tabindex="-1"></a>muhat <span class="ot">=</span> <span class="fu">fitted</span>(mammals.glm)</span>
+<span id="cb547-4"><a href="advanced_topics.html#cb547-4" aria-hidden="true" tabindex="-1"></a>mammals.diag <span class="ot">=</span> <span class="fu">glm.diag</span>(mammals.glm)</span>
+<span id="cb547-5"><a href="advanced_topics.html#cb547-5" aria-hidden="true" tabindex="-1"></a>(<span class="at">cv.err =</span> <span class="fu">mean</span>((mammals.glm<span class="sc">$</span>y <span class="sc">-</span> muhat)<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span>(<span class="dv">1</span> <span class="sc">-</span> mammals.diag<span class="sc">$</span>h)<span class="sc">^</span><span class="dv">2</span>))</span></code></pre></div>
 <pre><code>## [1] 0.491865</code></pre>
-<div class="sourceCode" id="cb547"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb547-1"><a href="advanced_topics.html#cb547-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Leave-one-out and 11-fold cross-validation prediction error for </span></span>
-<span id="cb547-2"><a href="advanced_topics.html#cb547-2" aria-hidden="true" tabindex="-1"></a><span class="co"># the nodal data set.  Since the response is a binary variable an</span></span>
-<span id="cb547-3"><a href="advanced_topics.html#cb547-3" aria-hidden="true" tabindex="-1"></a><span class="co"># appropriate cost function is</span></span>
-<span id="cb547-4"><a href="advanced_topics.html#cb547-4" aria-hidden="true" tabindex="-1"></a>cost <span class="ot">=</span> <span class="cf">function</span>(r, <span class="at">pi =</span> <span class="dv">0</span>){ <span class="fu">mean</span>(<span class="fu">abs</span>(r <span class="sc">-</span> pi) <span class="sc">&gt;</span> <span class="fl">0.5</span>) }</span>
-<span id="cb547-5"><a href="advanced_topics.html#cb547-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb547-6"><a href="advanced_topics.html#cb547-6" aria-hidden="true" tabindex="-1"></a>nodal.glm <span class="ot">=</span> <span class="fu">glm</span>(r <span class="sc">~</span> stage<span class="sc">+</span>xray<span class="sc">+</span>acid, binomial, <span class="at">data =</span> nodal)</span>
-<span id="cb547-7"><a href="advanced_topics.html#cb547-7" aria-hidden="true" tabindex="-1"></a>(<span class="at">cv.err =</span> <span class="fu">cv.glm</span>(nodal, nodal.glm, cost, <span class="at">K =</span> <span class="fu">nrow</span>(nodal))<span class="sc">$</span>delta)</span></code></pre></div>
+<div class="sourceCode" id="cb549"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb549-1"><a href="advanced_topics.html#cb549-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Leave-one-out and 11-fold cross-validation prediction error for </span></span>
+<span id="cb549-2"><a href="advanced_topics.html#cb549-2" aria-hidden="true" tabindex="-1"></a><span class="co"># the nodal data set.  Since the response is a binary variable an</span></span>
+<span id="cb549-3"><a href="advanced_topics.html#cb549-3" aria-hidden="true" tabindex="-1"></a><span class="co"># appropriate cost function is</span></span>
+<span id="cb549-4"><a href="advanced_topics.html#cb549-4" aria-hidden="true" tabindex="-1"></a>cost <span class="ot">=</span> <span class="cf">function</span>(r, <span class="at">pi =</span> <span class="dv">0</span>){ <span class="fu">mean</span>(<span class="fu">abs</span>(r <span class="sc">-</span> pi) <span class="sc">&gt;</span> <span class="fl">0.5</span>) }</span>
+<span id="cb549-5"><a href="advanced_topics.html#cb549-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb549-6"><a href="advanced_topics.html#cb549-6" aria-hidden="true" tabindex="-1"></a>nodal.glm <span class="ot">=</span> <span class="fu">glm</span>(r <span class="sc">~</span> stage<span class="sc">+</span>xray<span class="sc">+</span>acid, binomial, <span class="at">data =</span> nodal)</span>
+<span id="cb549-7"><a href="advanced_topics.html#cb549-7" aria-hidden="true" tabindex="-1"></a>(<span class="at">cv.err =</span> <span class="fu">cv.glm</span>(nodal, nodal.glm, cost, <span class="at">K =</span> <span class="fu">nrow</span>(nodal))<span class="sc">$</span>delta)</span></code></pre></div>
 <pre><code>## [1] 0.1886792 0.1886792</code></pre>
-<div class="sourceCode" id="cb549"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb549-1"><a href="advanced_topics.html#cb549-1" aria-hidden="true" tabindex="-1"></a>(<span class="at">cv.11.err =</span> <span class="fu">cv.glm</span>(nodal, nodal.glm, cost, <span class="at">K =</span> <span class="dv">11</span>)<span class="sc">$</span>delta)</span></code></pre></div>
+<div class="sourceCode" id="cb551"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb551-1"><a href="advanced_topics.html#cb551-1" aria-hidden="true" tabindex="-1"></a>(<span class="at">cv.11.err =</span> <span class="fu">cv.glm</span>(nodal, nodal.glm, cost, <span class="at">K =</span> <span class="dv">11</span>)<span class="sc">$</span>delta)</span></code></pre></div>
 <pre><code>## [1] 0.2264151 0.2228551</code></pre>
 <p>Note that cross-validation requires independence of data points. For non-independent data, it is possible to block the cross-validation, see Roberts, David R., et al. “Cross‐validation strategies for data with temporal, spatial, hierarchical, or phylogenetic structure.” <em>Ecography</em> 40.8 (2017): 913-929., methods implemented in package <code class="sourceCode r">blockCV</code>, see <a href="https://cran.r-project.org/web/packages/blockCV/vignettes/BlockCV_for_SDM.html" target="_blank" rel="noopener">https://cran.r-project.org/web/packages/blockCV/vignettes/BlockCV_for_SDM.html</a>.</p>
 </div>
 <div id="null-models" class="section level3 hasAnchor" number="7.3.3">
 <h3><span class="header-section-number">7.3.3</span> Null Models<a href="advanced_topics.html#null-models" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Parametric hypothesis tests usually make a fixed assumption about H0. A non-parametric method to get around this that is used for complicated situations are <strong>randomization null models</strong>. The idea of these is to shuffle around the data, and thus generate a null distribution</p>
-<div class="sourceCode" id="cb551"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb551-1"><a href="advanced_topics.html#cb551-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1337</span>)</span>
-<span id="cb551-2"><a href="advanced_topics.html#cb551-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb551-3"><a href="advanced_topics.html#cb551-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Permutation t-test.</span></span>
-<span id="cb551-4"><a href="advanced_topics.html#cb551-4" aria-hidden="true" tabindex="-1"></a><span class="co"># A hand-coded randomization test for comparing two groups with arbitrary distribution.</span></span>
-<span id="cb551-5"><a href="advanced_topics.html#cb551-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb551-6"><a href="advanced_topics.html#cb551-6" aria-hidden="true" tabindex="-1"></a>groupA <span class="ot">=</span> <span class="fu">rnorm</span>(<span class="dv">50</span>)</span>
-<span id="cb551-7"><a href="advanced_topics.html#cb551-7" aria-hidden="true" tabindex="-1"></a>groupB <span class="ot">=</span> <span class="fu">rlnorm</span>(<span class="dv">50</span>)</span>
-<span id="cb551-8"><a href="advanced_topics.html#cb551-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb551-9"><a href="advanced_topics.html#cb551-9" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">=</span> <span class="fu">data.frame</span>(<span class="at">value =</span> <span class="fu">c</span>(groupA, groupB), <span class="at">group =</span> <span class="fu">factor</span>(<span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">&quot;A&quot;</span>, <span class="st">&quot;B&quot;</span>), <span class="at">each =</span> <span class="dv">50</span>)))</span>
-<span id="cb551-10"><a href="advanced_topics.html#cb551-10" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(value <span class="sc">~</span> group, <span class="at">data =</span> dat)</span></code></pre></div>
-<p><img src="_main_files/figure-html/chunk_chapter7_chunk19-1.png" width="672" /></p>
-<div class="sourceCode" id="cb552"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb552-1"><a href="advanced_topics.html#cb552-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Point here is that we can&#39;t do a t-test, because groups are not normal. We could do</span></span>
-<span id="cb552-2"><a href="advanced_topics.html#cb552-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb552-3"><a href="advanced_topics.html#cb552-3" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(dat<span class="sc">$</span>value, <span class="at">breaks =</span> <span class="dv">40</span>)</span></code></pre></div>
-<p><img src="_main_files/figure-html/chunk_chapter7_chunk19-2.png" width="672" /></p>
-<div class="sourceCode" id="cb553"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb553-1"><a href="advanced_topics.html#cb553-1" aria-hidden="true" tabindex="-1"></a>reference <span class="ot">=</span> <span class="fu">mean</span>(groupA) <span class="sc">-</span> <span class="fu">mean</span>(groupB)</span>
+<div class="sourceCode" id="cb553"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb553-1"><a href="advanced_topics.html#cb553-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1337</span>)</span>
 <span id="cb553-2"><a href="advanced_topics.html#cb553-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb553-3"><a href="advanced_topics.html#cb553-3" aria-hidden="true" tabindex="-1"></a>nSim <span class="ot">=</span> <span class="dv">5000</span></span>
-<span id="cb553-4"><a href="advanced_topics.html#cb553-4" aria-hidden="true" tabindex="-1"></a>nullDistribution <span class="ot">=</span> <span class="fu">rep</span>(<span class="cn">NA</span>, nSim)</span>
+<span id="cb553-3"><a href="advanced_topics.html#cb553-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Permutation t-test.</span></span>
+<span id="cb553-4"><a href="advanced_topics.html#cb553-4" aria-hidden="true" tabindex="-1"></a><span class="co"># A hand-coded randomization test for comparing two groups with arbitrary distribution.</span></span>
 <span id="cb553-5"><a href="advanced_topics.html#cb553-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb553-6"><a href="advanced_topics.html#cb553-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>nSim){</span>
-<span id="cb553-7"><a href="advanced_topics.html#cb553-7" aria-hidden="true" tabindex="-1"></a>  sel <span class="ot">=</span> dat<span class="sc">$</span>value[<span class="fu">sample.int</span>(<span class="dv">100</span>, <span class="at">size =</span> <span class="dv">100</span>)]</span>
-<span id="cb553-8"><a href="advanced_topics.html#cb553-8" aria-hidden="true" tabindex="-1"></a>  nullDistribution[i] <span class="ot">=</span> <span class="fu">mean</span>(sel[<span class="dv">1</span><span class="sc">:</span><span class="dv">50</span>]) <span class="sc">-</span> <span class="fu">mean</span>(sel[<span class="dv">51</span><span class="sc">:</span><span class="dv">100</span>])</span>
-<span id="cb553-9"><a href="advanced_topics.html#cb553-9" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb553-10"><a href="advanced_topics.html#cb553-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb553-11"><a href="advanced_topics.html#cb553-11" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(nullDistribution, <span class="at">xlim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">2</span>,<span class="dv">2</span>))</span>
-<span id="cb553-12"><a href="advanced_topics.html#cb553-12" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> reference, <span class="at">col =</span> <span class="st">&quot;red&quot;</span>)</span></code></pre></div>
+<span id="cb553-6"><a href="advanced_topics.html#cb553-6" aria-hidden="true" tabindex="-1"></a>groupA <span class="ot">=</span> <span class="fu">rnorm</span>(<span class="dv">50</span>)</span>
+<span id="cb553-7"><a href="advanced_topics.html#cb553-7" aria-hidden="true" tabindex="-1"></a>groupB <span class="ot">=</span> <span class="fu">rlnorm</span>(<span class="dv">50</span>)</span>
+<span id="cb553-8"><a href="advanced_topics.html#cb553-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb553-9"><a href="advanced_topics.html#cb553-9" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">=</span> <span class="fu">data.frame</span>(<span class="at">value =</span> <span class="fu">c</span>(groupA, groupB), <span class="at">group =</span> <span class="fu">factor</span>(<span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">&quot;A&quot;</span>, <span class="st">&quot;B&quot;</span>), <span class="at">each =</span> <span class="dv">50</span>)))</span>
+<span id="cb553-10"><a href="advanced_topics.html#cb553-10" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(value <span class="sc">~</span> group, <span class="at">data =</span> dat)</span></code></pre></div>
+<p><img src="_main_files/figure-html/chunk_chapter7_chunk19-1.png" width="672" /></p>
+<div class="sourceCode" id="cb554"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb554-1"><a href="advanced_topics.html#cb554-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Point here is that we can&#39;t do a t-test, because groups are not normal. We could do</span></span>
+<span id="cb554-2"><a href="advanced_topics.html#cb554-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb554-3"><a href="advanced_topics.html#cb554-3" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(dat<span class="sc">$</span>value, <span class="at">breaks =</span> <span class="dv">40</span>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/chunk_chapter7_chunk19-2.png" width="672" /></p>
+<div class="sourceCode" id="cb555"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb555-1"><a href="advanced_topics.html#cb555-1" aria-hidden="true" tabindex="-1"></a>reference <span class="ot">=</span> <span class="fu">mean</span>(groupA) <span class="sc">-</span> <span class="fu">mean</span>(groupB)</span>
+<span id="cb555-2"><a href="advanced_topics.html#cb555-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb555-3"><a href="advanced_topics.html#cb555-3" aria-hidden="true" tabindex="-1"></a>nSim <span class="ot">=</span> <span class="dv">5000</span></span>
+<span id="cb555-4"><a href="advanced_topics.html#cb555-4" aria-hidden="true" tabindex="-1"></a>nullDistribution <span class="ot">=</span> <span class="fu">rep</span>(<span class="cn">NA</span>, nSim)</span>
+<span id="cb555-5"><a href="advanced_topics.html#cb555-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb555-6"><a href="advanced_topics.html#cb555-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>nSim){</span>
+<span id="cb555-7"><a href="advanced_topics.html#cb555-7" aria-hidden="true" tabindex="-1"></a>  sel <span class="ot">=</span> dat<span class="sc">$</span>value[<span class="fu">sample.int</span>(<span class="dv">100</span>, <span class="at">size =</span> <span class="dv">100</span>)]</span>
+<span id="cb555-8"><a href="advanced_topics.html#cb555-8" aria-hidden="true" tabindex="-1"></a>  nullDistribution[i] <span class="ot">=</span> <span class="fu">mean</span>(sel[<span class="dv">1</span><span class="sc">:</span><span class="dv">50</span>]) <span class="sc">-</span> <span class="fu">mean</span>(sel[<span class="dv">51</span><span class="sc">:</span><span class="dv">100</span>])</span>
+<span id="cb555-9"><a href="advanced_topics.html#cb555-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb555-10"><a href="advanced_topics.html#cb555-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb555-11"><a href="advanced_topics.html#cb555-11" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(nullDistribution, <span class="at">xlim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">2</span>,<span class="dv">2</span>))</span>
+<span id="cb555-12"><a href="advanced_topics.html#cb555-12" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> reference, <span class="at">col =</span> <span class="st">&quot;red&quot;</span>)</span></code></pre></div>
 <p><img src="_main_files/figure-html/chunk_chapter7_chunk19-3.png" width="672" /></p>
-<div class="sourceCode" id="cb554"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb554-1"><a href="advanced_topics.html#cb554-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ecdf</span>(nullDistribution)(reference)</span></code></pre></div>
+<div class="sourceCode" id="cb556"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb556-1"><a href="advanced_topics.html#cb556-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ecdf</span>(nullDistribution)(reference)</span></code></pre></div>
 <pre><code>## [1] 0</code></pre>
 <p>Null models are used abundant, e.g., in packages:</p>
 <ul>
@@ -683,15 +683,15 @@ code span.wa { color: #bf0303; } /* Warning */
 <div id="structural-equation-models-sems" class="section level2 hasAnchor" number="7.4">
 <h2><span class="header-section-number">7.4</span> Structural Equation Models (SEMs)<a href="advanced_topics.html#structural-equation-models-sems" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>Structural equation models (SEMs) are models that are designed to estimate entire causal diagrams. For GLMs responses, you will currently have to estimate the DAG (directed acyclic graph) piece-wise, e.g. with <a href="https://cran.r-project.org/web/packages/piecewiseSEM/vignettes/piecewiseSEM.html" target="_blank" rel="noopener">https://cran.r-project.org/web/packages/piecewiseSEM/vignettes/piecewiseSEM.html</a>.</p>
-<div class="sourceCode" id="cb556"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb556-1"><a href="advanced_topics.html#cb556-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(piecewiseSEM)</span>
-<span id="cb556-2"><a href="advanced_topics.html#cb556-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb556-3"><a href="advanced_topics.html#cb556-3" aria-hidden="true" tabindex="-1"></a>mod <span class="ot">=</span> <span class="fu">psem</span>(</span>
-<span id="cb556-4"><a href="advanced_topics.html#cb556-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lm</span>(rich <span class="sc">~</span> distance <span class="sc">+</span> elev <span class="sc">+</span> abiotic <span class="sc">+</span> age <span class="sc">+</span> hetero <span class="sc">+</span> firesev <span class="sc">+</span> cover, <span class="at">data =</span> keeley),</span>
-<span id="cb556-5"><a href="advanced_topics.html#cb556-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lm</span>(firesev <span class="sc">~</span> elev <span class="sc">+</span> age <span class="sc">+</span> cover, <span class="at">data =</span> keeley), </span>
-<span id="cb556-6"><a href="advanced_topics.html#cb556-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lm</span>(cover <span class="sc">~</span> age <span class="sc">+</span> elev <span class="sc">+</span> hetero <span class="sc">+</span> abiotic, <span class="at">data =</span> keeley)</span>
-<span id="cb556-7"><a href="advanced_topics.html#cb556-7" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb556-8"><a href="advanced_topics.html#cb556-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb556-9"><a href="advanced_topics.html#cb556-9" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod)</span></code></pre></div>
+<div class="sourceCode" id="cb558"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb558-1"><a href="advanced_topics.html#cb558-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(piecewiseSEM)</span>
+<span id="cb558-2"><a href="advanced_topics.html#cb558-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb558-3"><a href="advanced_topics.html#cb558-3" aria-hidden="true" tabindex="-1"></a>mod <span class="ot">=</span> <span class="fu">psem</span>(</span>
+<span id="cb558-4"><a href="advanced_topics.html#cb558-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lm</span>(rich <span class="sc">~</span> distance <span class="sc">+</span> elev <span class="sc">+</span> abiotic <span class="sc">+</span> age <span class="sc">+</span> hetero <span class="sc">+</span> firesev <span class="sc">+</span> cover, <span class="at">data =</span> keeley),</span>
+<span id="cb558-5"><a href="advanced_topics.html#cb558-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lm</span>(firesev <span class="sc">~</span> elev <span class="sc">+</span> age <span class="sc">+</span> cover, <span class="at">data =</span> keeley), </span>
+<span id="cb558-6"><a href="advanced_topics.html#cb558-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lm</span>(cover <span class="sc">~</span> age <span class="sc">+</span> elev <span class="sc">+</span> hetero <span class="sc">+</span> abiotic, <span class="at">data =</span> keeley)</span>
+<span id="cb558-7"><a href="advanced_topics.html#cb558-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb558-8"><a href="advanced_topics.html#cb558-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb558-9"><a href="advanced_topics.html#cb558-9" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod)</span></code></pre></div>
 <pre><code>## 
   |                                                                            
   |                                                                      |   0%
@@ -755,21 +755,21 @@ code span.wa { color: #bf0303; } /* Warning */
 ##       rich   none      0.57
 ##    firesev   none      0.30
 ##      cover   none      0.26</code></pre>
-<div class="sourceCode" id="cb559"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb559-1"><a href="advanced_topics.html#cb559-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod)</span></code></pre></div>
+<div class="sourceCode" id="cb561"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb561-1"><a href="advanced_topics.html#cb561-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod)</span></code></pre></div>
 <div id="htmlwidget-65da3a7014464ac4908f" style="width:672px;height:480px;" class="grViz html-widget"></div>
 <script type="application/json" data-for="htmlwidget-65da3a7014464ac4908f">{"x":{"diagram":"digraph {\n\ngraph [layout = \"neato\",\n       outputorder = \"edgesfirst\",\n       bgcolor = \"white\"]\n\nnode [fontname = \"Helvetica\",\n      fontsize = \"10\",\n      shape = \"circle\",\n      fixedsize = \"true\",\n      width = \"0.5\",\n      style = \"filled\",\n      fillcolor = \"aliceblue\",\n      color = \"gray70\",\n      fontcolor = \"gray50\"]\n\nedge [fontname = \"Helvetica\",\n     fontsize = \"8\",\n     len = \"1.5\",\n     color = \"gray80\",\n     arrowsize = \"0.5\"]\n\n  \"1\" [label = \"rich\", shape = \"rectangle\", color = \"black\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"2\" [label = \"firesev\", shape = \"rectangle\", color = \"black\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"3\" [label = \"cover\", shape = \"rectangle\", color = \"black\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"4\" [label = \"distance\", shape = \"rectangle\", color = \"black\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"5\" [label = \"elev\", shape = \"rectangle\", color = \"black\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"6\" [label = \"abiotic\", shape = \"rectangle\", color = \"black\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"7\" [label = \"age\", shape = \"rectangle\", color = \"black\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"8\" [label = \"hetero\", shape = \"rectangle\", color = \"black\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n\"4\"->\"1\" [style = \"solid\", color = \"black\", label = \" 0.36 \"] \n\"5\"->\"1\" [style = \"dashed\", color = \"black\", label = \" -0.157 \"] \n\"6\"->\"1\" [style = \"solid\", color = \"black\", label = \" 0.248 \"] \n\"7\"->\"1\" [style = \"dashed\", color = \"black\", label = \" 0.02 \"] \n\"8\"->\"1\" [style = \"solid\", color = \"black\", label = \" 0.338 \"] \n\"2\"->\"1\" [style = \"dashed\", color = \"black\", label = \" -0.111 \"] \n\"3\"->\"1\" [style = \"solid\", color = \"black\", label = \" 0.26 \"] \n\"5\"->\"2\" [style = \"dashed\", color = \"black\", label = \" -0.087 \"] \n\"7\"->\"2\" [style = \"solid\", color = \"black\", label = \" 0.36 \"] \n\"3\"->\"2\" [style = \"solid\", color = \"black\", label = \" -0.292 \"] \n\"7\"->\"3\" [style = \"solid\", color = \"black\", label = \" -0.399 \"] \n\"5\"->\"3\" [style = \"solid\", color = \"black\", label = \" 0.3 \"] \n\"8\"->\"3\" [style = \"solid\", color = \"black\", label = \" -0.285 \"] \n\"6\"->\"3\" [style = \"dashed\", color = \"black\", label = \" 0.05 \"] \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 <p>For linear SEMs, we can estimate the entire DAG in one go. This also allows to have unobserved variables in the DAG. One of the most popular packages for this is <code>lavaan</code>.{R}:</p>
-<div class="sourceCode" id="cb560"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb560-1"><a href="advanced_topics.html#cb560-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lavaan)</span>
-<span id="cb560-2"><a href="advanced_topics.html#cb560-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb560-3"><a href="advanced_topics.html#cb560-3" aria-hidden="true" tabindex="-1"></a>mod <span class="ot">=</span> <span class="st">&quot;</span></span>
-<span id="cb560-4"><a href="advanced_topics.html#cb560-4" aria-hidden="true" tabindex="-1"></a><span class="st">  rich ~ distance + elev + abiotic + age + hetero + firesev + cover</span></span>
-<span id="cb560-5"><a href="advanced_topics.html#cb560-5" aria-hidden="true" tabindex="-1"></a><span class="st">  firesev ~ elev + age + cover</span></span>
-<span id="cb560-6"><a href="advanced_topics.html#cb560-6" aria-hidden="true" tabindex="-1"></a><span class="st">  cover ~ age + elev + abiotic </span></span>
-<span id="cb560-7"><a href="advanced_topics.html#cb560-7" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;</span></span>
-<span id="cb560-8"><a href="advanced_topics.html#cb560-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb560-9"><a href="advanced_topics.html#cb560-9" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">sem</span>(mod, <span class="at">data =</span> keeley)</span>
-<span id="cb560-10"><a href="advanced_topics.html#cb560-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb560-11"><a href="advanced_topics.html#cb560-11" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code></pre></div>
+<div class="sourceCode" id="cb562"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb562-1"><a href="advanced_topics.html#cb562-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lavaan)</span>
+<span id="cb562-2"><a href="advanced_topics.html#cb562-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb562-3"><a href="advanced_topics.html#cb562-3" aria-hidden="true" tabindex="-1"></a>mod <span class="ot">=</span> <span class="st">&quot;</span></span>
+<span id="cb562-4"><a href="advanced_topics.html#cb562-4" aria-hidden="true" tabindex="-1"></a><span class="st">  rich ~ distance + elev + abiotic + age + hetero + firesev + cover</span></span>
+<span id="cb562-5"><a href="advanced_topics.html#cb562-5" aria-hidden="true" tabindex="-1"></a><span class="st">  firesev ~ elev + age + cover</span></span>
+<span id="cb562-6"><a href="advanced_topics.html#cb562-6" aria-hidden="true" tabindex="-1"></a><span class="st">  cover ~ age + elev + abiotic </span></span>
+<span id="cb562-7"><a href="advanced_topics.html#cb562-7" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;</span></span>
+<span id="cb562-8"><a href="advanced_topics.html#cb562-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb562-9"><a href="advanced_topics.html#cb562-9" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">sem</span>(mod, <span class="at">data =</span> keeley)</span>
+<span id="cb562-10"><a href="advanced_topics.html#cb562-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb562-11"><a href="advanced_topics.html#cb562-11" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code></pre></div>
 <pre><code>## lavaan 0.6-11 ended normally after 1 iterations
 ## 
 ##   Estimator                                         ML
@@ -815,14 +815,14 @@ code span.wa { color: #bf0303; } /* Warning */
 ##    .firesev            1.887    0.281    6.708    0.000
 ##    .cover              0.081    0.012    6.708    0.000</code></pre>
 <p>Plot options … not so nice as before.</p>
-<div class="sourceCode" id="cb562"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb562-1"><a href="advanced_topics.html#cb562-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lavaanPlot)</span></code></pre></div>
+<div class="sourceCode" id="cb564"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb564-1"><a href="advanced_topics.html#cb564-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lavaanPlot)</span></code></pre></div>
 <pre><code>## Warning: package &#39;lavaanPlot&#39; was built under R version 4.1.1</code></pre>
-<div class="sourceCode" id="cb564"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb564-1"><a href="advanced_topics.html#cb564-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lavaanPlot</span>(<span class="at">model =</span> fit)</span></code></pre></div>
+<div class="sourceCode" id="cb566"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb566-1"><a href="advanced_topics.html#cb566-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lavaanPlot</span>(<span class="at">model =</span> fit)</span></code></pre></div>
 <div id="htmlwidget-19b491392b565770f3c0" style="width:672px;height:480px;" class="grViz html-widget"></div>
 <script type="application/json" data-for="htmlwidget-19b491392b565770f3c0">{"x":{"diagram":" digraph plot { \n graph [ overlap = true, fontsize = 10 ] \n node [ shape = box ] \n node [shape = box] \n distance; elev; abiotic; age; hetero; firesev; cover; rich \n node [shape = oval] \n  \n \n edge [ color = black ] \n distance->rich elev->rich abiotic->rich age->rich hetero->rich firesev->rich cover->rich elev->firesev age->firesev cover->firesev age->cover elev->cover abiotic->cover  \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
-<div class="sourceCode" id="cb565"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb565-1"><a href="advanced_topics.html#cb565-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(semPlot)</span></code></pre></div>
+<div class="sourceCode" id="cb567"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb567-1"><a href="advanced_topics.html#cb567-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(semPlot)</span></code></pre></div>
 <pre><code>## Warning: package &#39;semPlot&#39; was built under R version 4.1.1</code></pre>
-<div class="sourceCode" id="cb567"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb567-1"><a href="advanced_topics.html#cb567-1" aria-hidden="true" tabindex="-1"></a><span class="fu">semPaths</span>(fit)</span></code></pre></div>
+<div class="sourceCode" id="cb569"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb569-1"><a href="advanced_topics.html#cb569-1" aria-hidden="true" tabindex="-1"></a><span class="fu">semPaths</span>(fit)</span></code></pre></div>
 <p><img src="_main_files/figure-html/chunk_chapter7_chunk22-2.png" width="672" /></p>
 </div>
 <div id="intro-bayes" class="section level2 hasAnchor" number="7.5">
@@ -831,30 +831,30 @@ code span.wa { color: #bf0303; } /* Warning */
 <p>To fit Bayesian models, for full flexibility, most people use <strong>Stan</strong>. Stan is a completely new modelling specification language, therefore we won’t do this here.</p>
 <p>However, there is the <code class="sourceCode r">brms</code> package. <code class="sourceCode r">brms</code> allows you to specify regression models in the same syntax as <code class="sourceCode r">lme4</code> / <code class="sourceCode r">glmmTMB</code>, but translates then to Stan code and fits them. Here a comparison:</p>
 <p><em>Non-Bayesian (GLMM) with</em> <code class="sourceCode r">lme4</code>:</p>
-<div class="sourceCode" id="cb568"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb568-1"><a href="advanced_topics.html#cb568-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lme4)</span>
-<span id="cb568-2"><a href="advanced_topics.html#cb568-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb568-3"><a href="advanced_topics.html#cb568-3" aria-hidden="true" tabindex="-1"></a>mod0 <span class="ot">=</span> <span class="fu">glmer</span>(real <span class="sc">~</span> corpus <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> sound) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> id),</span>
-<span id="cb568-4"><a href="advanced_topics.html#cb568-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">data =</span> df, <span class="at">family =</span> <span class="st">&quot;binomial&quot;</span>)</span></code></pre></div>
-<p><em>Bayesian with</em> <code class="sourceCode r">brms</code>:</p>
-<div class="sourceCode" id="cb569"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb569-1"><a href="advanced_topics.html#cb569-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(brms)</span>
-<span id="cb569-2"><a href="advanced_topics.html#cb569-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb569-3"><a href="advanced_topics.html#cb569-3" aria-hidden="true" tabindex="-1"></a>mod1 <span class="ot">=</span> <span class="fu">brm</span>(real <span class="sc">~</span> corpus <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> sound) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> id),</span>
-<span id="cb569-4"><a href="advanced_topics.html#cb569-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">data =</span> df, <span class="at">family =</span> <span class="st">&quot;bernoulli&quot;</span>, ...)</span></code></pre></div>
-<p><strong>Extended syntax:</strong></p>
-<p><em>Non-Bayesian (GLMM) with</em> <code class="sourceCode r">lme4</code>:</p>
 <div class="sourceCode" id="cb570"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb570-1"><a href="advanced_topics.html#cb570-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lme4)</span>
 <span id="cb570-2"><a href="advanced_topics.html#cb570-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb570-3"><a href="advanced_topics.html#cb570-3" aria-hidden="true" tabindex="-1"></a>mod0 <span class="ot">=</span> <span class="fu">glmer</span>(real <span class="sc">~</span> corpus <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> sound) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> id),</span>
-<span id="cb570-4"><a href="advanced_topics.html#cb570-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">data =</span> df, <span class="at">family =</span> <span class="st">&quot;binomial&quot;</span>)</span>
-<span id="cb570-5"><a href="advanced_topics.html#cb570-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Running time: 6 s.</span></span></code></pre></div>
+<span id="cb570-4"><a href="advanced_topics.html#cb570-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">data =</span> df, <span class="at">family =</span> <span class="st">&quot;binomial&quot;</span>)</span></code></pre></div>
 <p><em>Bayesian with</em> <code class="sourceCode r">brms</code>:</p>
 <div class="sourceCode" id="cb571"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb571-1"><a href="advanced_topics.html#cb571-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(brms)</span>
 <span id="cb571-2"><a href="advanced_topics.html#cb571-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb571-3"><a href="advanced_topics.html#cb571-3" aria-hidden="true" tabindex="-1"></a>mod1 <span class="ot">=</span> <span class="fu">brm</span>(real <span class="sc">~</span> corpus <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> sound) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> id),</span>
-<span id="cb571-4"><a href="advanced_topics.html#cb571-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">data =</span> df, <span class="at">family =</span> <span class="st">&quot;bernoulli&quot;</span>,</span>
-<span id="cb571-5"><a href="advanced_topics.html#cb571-5" aria-hidden="true" tabindex="-1"></a>           <span class="at">prior =</span> <span class="fu">set_prior</span>(<span class="st">&quot;normal(0, 3)&quot;</span>),</span>
-<span id="cb571-6"><a href="advanced_topics.html#cb571-6" aria-hidden="true" tabindex="-1"></a>           <span class="at">iter =</span> <span class="dv">1000</span>, <span class="at">chains =</span> <span class="dv">4</span>, <span class="at">cores =</span> <span class="dv">4</span>)</span>
-<span id="cb571-7"><a href="advanced_topics.html#cb571-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Running time: 40 s compilation + 50 s sampling = 1.5 min.</span></span></code></pre></div>
+<span id="cb571-4"><a href="advanced_topics.html#cb571-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">data =</span> df, <span class="at">family =</span> <span class="st">&quot;bernoulli&quot;</span>, ...)</span></code></pre></div>
+<p><strong>Extended syntax:</strong></p>
+<p><em>Non-Bayesian (GLMM) with</em> <code class="sourceCode r">lme4</code>:</p>
+<div class="sourceCode" id="cb572"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb572-1"><a href="advanced_topics.html#cb572-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lme4)</span>
+<span id="cb572-2"><a href="advanced_topics.html#cb572-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb572-3"><a href="advanced_topics.html#cb572-3" aria-hidden="true" tabindex="-1"></a>mod0 <span class="ot">=</span> <span class="fu">glmer</span>(real <span class="sc">~</span> corpus <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> sound) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> id),</span>
+<span id="cb572-4"><a href="advanced_topics.html#cb572-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">data =</span> df, <span class="at">family =</span> <span class="st">&quot;binomial&quot;</span>)</span>
+<span id="cb572-5"><a href="advanced_topics.html#cb572-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Running time: 6 s.</span></span></code></pre></div>
+<p><em>Bayesian with</em> <code class="sourceCode r">brms</code>:</p>
+<div class="sourceCode" id="cb573"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb573-1"><a href="advanced_topics.html#cb573-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(brms)</span>
+<span id="cb573-2"><a href="advanced_topics.html#cb573-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb573-3"><a href="advanced_topics.html#cb573-3" aria-hidden="true" tabindex="-1"></a>mod1 <span class="ot">=</span> <span class="fu">brm</span>(real <span class="sc">~</span> corpus <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> sound) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> id),</span>
+<span id="cb573-4"><a href="advanced_topics.html#cb573-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">data =</span> df, <span class="at">family =</span> <span class="st">&quot;bernoulli&quot;</span>,</span>
+<span id="cb573-5"><a href="advanced_topics.html#cb573-5" aria-hidden="true" tabindex="-1"></a>           <span class="at">prior =</span> <span class="fu">set_prior</span>(<span class="st">&quot;normal(0, 3)&quot;</span>),</span>
+<span id="cb573-6"><a href="advanced_topics.html#cb573-6" aria-hidden="true" tabindex="-1"></a>           <span class="at">iter =</span> <span class="dv">1000</span>, <span class="at">chains =</span> <span class="dv">4</span>, <span class="at">cores =</span> <span class="dv">4</span>)</span>
+<span id="cb573-7"><a href="advanced_topics.html#cb573-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Running time: 40 s compilation + 50 s sampling = 1.5 min.</span></span></code></pre></div>
   <hr/>
   <strong><span style="color: #0011AA; font-size:25px;">Task</span></strong><br/>
 <p>Take any of our simpler models, and run them with <code class="sourceCode r">brms</code>!</p>
@@ -863,7 +863,7 @@ code span.wa { color: #bf0303; } /* Warning */
       <strong><span style="color: #0011AA; font-size:25px;">Solution</span></strong>
     </summary>
     <p>
-<div class="sourceCode" id="cb572"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb572-1"><a href="advanced_topics.html#cb572-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(brms)</span></code></pre></div>
+<div class="sourceCode" id="cb574"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb574-1"><a href="advanced_topics.html#cb574-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(brms)</span></code></pre></div>
     </p>
   </details>
   <br/><hr/>

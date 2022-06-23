@@ -131,28 +131,27 @@ Remove trend via a GAM:
 library(mgcv)
 library(modEvA)
 
-fit1 = gam(thick ~ soil + te(east, north) , data = spdata)
+fit1 = gam(thick ~ soil + te(east, north) , data = thickness)
 summary(fit1)
 plot(fit1, pages = 0, lwd = 2)
 
-col = colorRamp(c("red", "white", "blue"))(range01(residuals(fit1)))
-
-plot(spdata$east, spdata$north, col = rgb(col, maxColorValue = 255) )
+res = simulateResiduals(fit1)
+testSpatialAutocorrelation(res, x = thickness$north, y = thickness$east)
 ```
 
 Almost the same, but simpler:
 
 ```{r chunk_chapter6_chunk6, echo=TRUE, eval=TRUE}
-fit = lm(thick ~ soil + north + I(north^2), data = spdata)
+fit = lm(thick ~ soil + north + I(north^2), data = thickness)
 ```
 
 Alternatively, fit an autoregressive model. Of course, both options can be combined.
 
 ```{r chunk_chapter6_chunk7, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE}
-fit2 = gls(thick ~ soil , correlation = corExp(form =~ east + north) , data = spdata)
+fit2 = gls(thick ~ soil , correlation = corExp(form =~ east + north) , data = thickness)
 summary(fit2)
 
-fit1 = gls(thick ~ soil + north + I(north^2), data = spdata)
+fit1 = gls(thick ~ soil + north + I(north^2), data = thickness)
 
 anova(fit1, fit2)
 ```
@@ -334,6 +333,43 @@ http://www.phytools.org/Cordoba2017/data/Barbetdata.csv
 These data are from a study by Corboda et al., 2017, which examined the influence of environmental factors on the evolution of song in an group of Asian bird species called “barbets.”
 
 Check if there is a relationship between altitude at which a species is found and the length of the note in its song, which uses the variables Lnote~Lnalt
+
+Help: you need to clean the data a bit, there are some species in the tree for which we have no observations
+```{r, eval = F}
+dat<-read.csv("Barbetdata.csv",header=TRUE,row.names=1)
+tree<-read.nexus("BarbetTree.nex")
+obj<-name.check(tree,dat)
+obj
+reducedTree<-drop.tip(tree, obj$tree_not_data)
+name.check(reducedTree,dat)
+# now you should be able to work with this data as in our example
+```
+
+
+
+One useful step that we haven't covered so far is to ensure that all the species in the data are in the tree & vice versa.
+
+Remeber that if there are any spelling differences, even small, then the tree & dataset will not coincide.
+
+To establish that we have the same species in our data as in the tree, or vice versa, we can use a function in the geiger package called name.check.
+
+obj<-name.check(arbol,datos)
+obj
+## $tree_not_data
+## [1] "M_asiatica_chersonesus"    "M_australis_australis"    
+## [3] "M_haemacephala_celestinoi" "M_haemacephala_delica"    
+## [5] "M_haemacephala_intermedia" "M_haemacephala_rosea"     
+## [7] "M_lineata_lineata"         "M_oorti_faber"            
+## [9] "M_oorti_sini"             
+## 
+## $data_not_tree
+## character(0)
+We should see that there are 9 species in the tree for which we do not have data. We have to prune these species from the tree to proceed with the analysis. We can do this using the function drop.tip as we learned:
+
+
+Now the data & the tree should coincide in both number of species and names. We can verify this using name.check:
+
+
 
 ## Case studies
 
