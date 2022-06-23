@@ -967,22 +967,6 @@ For example, we can include a discrete predictor:</p>
 <span id="cb502-5"><a href="correlation.html#cb502-5" aria-hidden="true" tabindex="-1"></a>reducedTree<span class="ot">&lt;-</span><span class="fu">drop.tip</span>(tree, obj<span class="sc">$</span>tree_not_data)</span>
 <span id="cb502-6"><a href="correlation.html#cb502-6" aria-hidden="true" tabindex="-1"></a><span class="fu">name.check</span>(reducedTree,dat)</span>
 <span id="cb502-7"><a href="correlation.html#cb502-7" aria-hidden="true" tabindex="-1"></a><span class="co"># now you should be able to work with this data as in our example</span></span></code></pre></div>
-<p>One useful step that we haven’t covered so far is to ensure that all the species in the data are in the tree &amp; vice versa.</p>
-<p>Remeber that if there are any spelling differences, even small, then the tree &amp; dataset will not coincide.</p>
-<p>To establish that we have the same species in our data as in the tree, or vice versa, we can use a function in the geiger package called name.check.</p>
-<p>obj&lt;-name.check(arbol,datos)
-obj
-## $tree_not_data
-## [1] “M_asiatica_chersonesus” “M_australis_australis”<br />
-## [3] “M_haemacephala_celestinoi” “M_haemacephala_delica”<br />
-## [5] “M_haemacephala_intermedia” “M_haemacephala_rosea”<br />
-## [7] “M_lineata_lineata” “M_oorti_faber”<br />
-## [9] “M_oorti_sini”<br />
-##
-## $data_not_tree
-## character(0)
-We should see that there are 9 species in the tree for which we do not have data. We have to prune these species from the tree to proceed with the analysis. We can do this using the function drop.tip as we learned:</p>
-<p>Now the data &amp; the tree should coincide in both number of species and names. We can verify this using name.check:</p>
 </div>
 </div>
 <div id="case-studies-2" class="section level2 hasAnchor" number="6.5">

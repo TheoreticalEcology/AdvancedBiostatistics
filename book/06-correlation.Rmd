@@ -346,31 +346,6 @@ name.check(reducedTree,dat)
 ```
 
 
-
-One useful step that we haven't covered so far is to ensure that all the species in the data are in the tree & vice versa.
-
-Remeber that if there are any spelling differences, even small, then the tree & dataset will not coincide.
-
-To establish that we have the same species in our data as in the tree, or vice versa, we can use a function in the geiger package called name.check.
-
-obj<-name.check(arbol,datos)
-obj
-## $tree_not_data
-## [1] "M_asiatica_chersonesus"    "M_australis_australis"    
-## [3] "M_haemacephala_celestinoi" "M_haemacephala_delica"    
-## [5] "M_haemacephala_intermedia" "M_haemacephala_rosea"     
-## [7] "M_lineata_lineata"         "M_oorti_faber"            
-## [9] "M_oorti_sini"             
-## 
-## $data_not_tree
-## character(0)
-We should see that there are 9 species in the tree for which we do not have data. We have to prune these species from the tree to proceed with the analysis. We can do this using the function drop.tip as we learned:
-
-
-Now the data & the tree should coincide in both number of species and names. We can verify this using name.check:
-
-
-
 ## Case studies
 
 ### Snouter
