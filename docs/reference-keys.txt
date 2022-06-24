@@ -80,8 +80,8 @@ advanced_topics
 reminder-modelling-strategy
 thoughts-about-the-analysis-pipeline
 nonparametric-estimators
-the-bootstrap
-cross-validation
-null-models
+non-parametric-p-values-null-models
+non-parametric-ci---the-bootstrap
+non-parametric-r2---cross-validation
 structural-equation-models-sems
 intro-bayes

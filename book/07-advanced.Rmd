@@ -143,9 +143,47 @@ To check the properties of other, possibly more complicated pipelines, statistic
 ## Nonparametric estimators
 
 
-### The bootstrap
+### Non-parametric p-values: Null Models
 
+Parametric hypothesis tests usually make a fixed assumption about H0. A non-parametric method to get around this that is used for complicated situations are **randomization null models**. The idea of these is to shuffle around the data, and thus generate a null distribution 
 
+```{r chunk_chapter7_chunk19, echo=TRUE, eval=TRUE}
+set.seed(1337)
+
+# Permutation t-test.
+# A hand-coded randomization test for comparing two groups with arbitrary distribution.
+
+groupA = rnorm(50)
+groupB = rlnorm(50)
+
+dat = data.frame(value = c(groupA, groupB), group = factor(rep(c("A", "B"), each = 50)))
+plot(value ~ group, data = dat)
+
+# We can't do a t-test, because groups are not normal. So, let's create a non-parametric p-value
+
+# test statistic: difference of the means
+reference = mean(groupA) - mean(groupB)
+
+# now, we generate the null expecation of the test statistic by re-shuffling the data
+nSim = 5000
+nullDistribution = rep(NA, nSim)
+
+for(i in 1:nSim){
+  sel = dat$value[sample.int(100, size = 100)]
+  nullDistribution[i] = mean(sel[1:50]) - mean(sel[51:100])
+}
+
+hist(nullDistribution, xlim = c(-2,2))
+abline(v = reference, col = "red")
+ecdf(nullDistribution)(reference) # 1-sided p-value
+```
+
+Null models are used in many R packages where analytical p-values are not available, e.g., in:
+
+* `library(vegan)`.{R}
+* `library(bipartide)`.{R}
+
+### Non-parametric CI - the bootstrap
 
 ***Standard (non-parametric) bootstrap***
 
@@ -197,7 +235,6 @@ Calculate a bootstrapped confidence interval for the mean of this exponential di
 
 ```{r chunk_chapter7_task_0, message=FALSE, warning=FALSE}
 set.seed(1234)
-
 data = rexp(500)
 ```
 
@@ -218,7 +255,6 @@ data = rexp(500)
   </details>
   <br/><hr/>
 ```
-
 
 
 ***Jacknife***
@@ -242,8 +278,6 @@ results = jackknife(data, theta)
 results$jack.se
 results$jack.bias
 ```
-
-
 
 ***Parametric bootstrap***
 
@@ -299,7 +333,6 @@ boot.ci(b2, type = "perc", index = 1)
 ```
 
 
-
 ***Application: Simulated likelihood ratio test***
 
 The parametric bootstrap can be used to generate simulated likelihood ratio tests for mixed models. This allows us to test for the significance of variance components without specifying degrees of freedom. We could program this ourselves, but here is a package:
@@ -345,7 +378,7 @@ pval = mean(sim.LRT > obs.LRT)
 ```
 
 
-### Cross-validation
+### Non-parametric R2 - cross-validation
 
 Cross-validation is the non-parametric alternative to AIC. Note that AIC is asymptotically equal to leave-one-out cross-validation. 
 
@@ -357,8 +390,8 @@ library(boot)
 # Leave-one-out and 6-fold cross-validation prediction error for the mammals data set.
 data(mammals, package="MASS")
 mammals.glm = glm(log(brain) ~ log(body), data = mammals)
-(cv.err = cv.glm(mammals, mammals.glm)$delta)
-(cv.err.6 = cv.glm(mammals, mammals.glm, K = 6)$delta)
+cv.err = cv.glm(mammals, mammals.glm, K = 5)$delta
+
 
 # As this is a linear model we could calculate the leave-one-out 
 # cross-validation estimate without any extra model-fitting.
@@ -379,50 +412,31 @@ nodal.glm = glm(r ~ stage+xray+acid, binomial, data = nodal)
 Note that cross-validation requires independence of data points. For non-independent data, it is possible to block the cross-validation, see Roberts, David R., et al. "Cross‐validation strategies for data with temporal, spatial, hierarchical, or phylogenetic structure." *Ecography* 40.8 (2017): 913-929., methods implemented in package `blockCV`{.R}, see <a href="https://cran.r-project.org/web/packages/blockCV/vignettes/BlockCV_for_SDM.html" target="_blank" rel="noopener">https://cran.r-project.org/web/packages/blockCV/vignettes/BlockCV_for_SDM.html</a>.
 
 
-### Null Models
-
-Parametric hypothesis tests usually make a fixed assumption about H0. A non-parametric method to get around this that is used for complicated situations are **randomization null models**. The idea of these is to shuffle around the data, and thus generate a null distribution 
-
-```{r chunk_chapter7_chunk19, echo=TRUE, eval=TRUE}
-set.seed(1337)
-
-# Permutation t-test.
-# A hand-coded randomization test for comparing two groups with arbitrary distribution.
-
-groupA = rnorm(50)
-groupB = rlnorm(50)
-
-dat = data.frame(value = c(groupA, groupB), group = factor(rep(c("A", "B"), each = 50)))
-plot(value ~ group, data = dat)
-
-# Point here is that we can't do a t-test, because groups are not normal. We could do
-
-hist(dat$value, breaks = 40)
-
-reference = mean(groupA) - mean(groupB)
-
-nSim = 5000
-nullDistribution = rep(NA, nSim)
-
-for(i in 1:nSim){
-  sel = dat$value[sample.int(100, size = 100)]
-  nullDistribution[i] = mean(sel[1:50]) - mean(sel[51:100])
-}
-
-hist(nullDistribution, xlim = c(-2,2))
-abline(v = reference, col = "red")
-ecdf(nullDistribution)(reference)
-```
-
-Null models are used abundant, e.g., in packages:
-
-* `library(vegan)`.{R}
-* `library(bipartide)`.{R}
-
-
 ## Structural Equation Models (SEMs)
 
 Structural equation models (SEMs) are models that are designed to estimate entire causal diagrams. For GLMs responses, you will currently have to estimate the DAG (directed acyclic graph) piece-wise, e.g. with <a href="https://cran.r-project.org/web/packages/piecewiseSEM/vignettes/piecewiseSEM.html" target="_blank" rel="noopener">https://cran.r-project.org/web/packages/piecewiseSEM/vignettes/piecewiseSEM.html</a>.
+
+
+```{r}
+library(ggdag)
+library(ggplot2)
+theme_set(theme_dag())
+
+dag <- dagify(rich ~ distance + elev + abiotic + age + hetero + firesev + cover,
+  firesev ~ elev + age + cover,
+  cover ~ age + elev + abiotic ,
+  exposure = "age",
+  outcome = "rich"
+  )
+
+ggdag(dag)
+
+ggdag_paths(dag)
+
+#ggdag_adjustment_set(dag)
+#ggdag_dseparated(dag, controlling_for = c("cover", "hetero"))
+```
+
 
 ```{r chunk_chapter7_chunk20, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE}
 library(piecewiseSEM)
@@ -458,16 +472,70 @@ Plot options ... not so nice as before.
 ```{r chunk_chapter7_chunk22, echo=TRUE, eval=TRUE}
 library(lavaanPlot)
 lavaanPlot(model = fit)
-
-library(semPlot)
-semPaths(fit)
 ```
 
 ## Intro Bayes
 
-Intro Bayes will be done via a <a href="https://www.dropbox.com/s/27zp86y2wnxpdp7/1.1-FlorianHartig_Intro-Bayes.pdf?dl=0" target="_blank" rel="noopener">lecture</a> Code for the lecture <a href="https://www.dropbox.com/s/xjpvdsygy12sffu/1.1-practical.R?dl=0" target="_blank" rel="noopener">here</a>.
+Intro Bayes will be done via Slides. Here a simple scrip that exemplifies the basic difference between frequentist and Bayesian parameter estimates, for a coin flip example:
 
-To fit Bayesian models, for full flexibility, most people use **Stan**. Stan is a completely new modelling specification language, therefore we won't do this here.
+```{r}
+# extended commented version of this example at
+# https://github.com/florianhartig/LearningBayes/blob/master/CommentedCode/01-Principles/InferenceMethods.md
+
+# Assume we flipped a coin 10 times, and want to find out if
+# it is biased - what can we learn about the probability to
+# obtain heads with this coin?
+
+trials = 10
+success = 7
+
+# For all three statistical methods, we use the same statistical model
+# which is the binomial model. The probability density is available in R
+# throught he function dbinom - dbinom(6,10,0.9) gives you the probability
+# density of obtaining 6/10 heads when the true probability of heads is 0.9
+
+dbinom(8,10, 0.5)
+
+# We will now use this model to calculate the three classical inferential
+# outputps of statistics - tests, MLE and Bayes
+
+########### NHST #####################
+
+# assume the coin is random (0.5), p-value is p >= observed
+barplot(dbinom(0:10,10, 0.5), names.arg = 0:10, col = c(rep("grey", 7), rep("red", 4)))
+
+# have to do 6 because R's diosyncrasies with lower.tail
+pbinom(6,10,0.5, lower.tail = F)
+
+binom.test(7,10,alternative = "greater")
+
+############ MLE ######################
+
+likelihood = function(x) dbinom(7,10, x)
+parameterValues = seq(0,1,length.out = 100)
+
+# assume data is fixed, true probability unknown
+plot(parameterValues, likelihood(parameterValues), type = "l")
+# calculate MLE 
+abline(v = parameterValues[which.max(likelihood(parameterValues))], col = "red")
+
+############# Bayes ##################
+
+# posterior
+
+prior = function(x) dnorm(x, 0, 0.1)
+
+par(mfrow = c(2,2))
+
+plot(parameterValues, prior(parameterValues), type = "l", main = "Prior")
+
+plot(parameterValues, likelihood(parameterValues), type = "l", main = "Likelihood")
+plot(parameterValues, prior(parameterValues) * likelihood(parameterValues), type = "l", main = "Posterior")
+```
+
+Note in the example above that the outcome of the estimating is a point estimate for the MLE, but a distribution for the posterior. 
+
+To fit Bayesian models in practice, for full flexibility, most people use **Stan**. Stan is a completely new modelling specification language, therefore we won't do this here.
 
 However, there is the `brms`{.R} package. `brms`{.R} allows you to specify regression models in the same syntax as `lme4`{.R} / `glmmTMB`{.R}, but translates then to Stan code and fits them. Here a comparison:
 
@@ -475,9 +543,8 @@ However, there is the `brms`{.R} package. `brms`{.R} allows you to specify regre
 
 ```{r chunk_chapter6_chunk16, echo=TRUE, eval=FALSE, purl=FALSE}
 library(lme4)
-
-mod0 = glmer(real ~ corpus + (1 | sound) + (1 | id),
-             data = df, family = "binomial")
+m1 = glmer(SiblingNegotiation ~ FoodTreatment + (1|Nest),
+         data = Owls , family = poisson)
 ```
 
 *Bayesian with* `brms`{.R}:
@@ -485,33 +552,12 @@ mod0 = glmer(real ~ corpus + (1 | sound) + (1 | id),
 ```{r chunk_chapter6_chunk17, echo=TRUE, eval=FALSE, purl=FALSE}
 library(brms)
 
-mod1 = brm(real ~ corpus + (1 | sound) + (1 | id),
-           data = df, family = "bernoulli", ...)
+mod1 = brm(SiblingNegotiation ~ FoodTreatment + (1|Nest),
+         data = Owls , family = poisson)
+summary(mod1)
 ```
 
-**Extended syntax:**
-
-*Non-Bayesian (GLMM) with* `lme4`{.R}:
-
-```{r chunk_chapter6_chunk18, echo=TRUE, eval=FALSE, purl=FALSE}
-library(lme4)
-
-mod0 = glmer(real ~ corpus + (1 | sound) + (1 | id),
-             data = df, family = "binomial")
-# Running time: 6 s.
-```
-
-*Bayesian with* `brms`{.R}:
-
-```{r chunk_chapter6_chunk19, echo=TRUE, eval=FALSE, purl=FALSE}
-library(brms)
-
-mod1 = brm(real ~ corpus + (1 | sound) + (1 | id),
-           data = df, family = "bernoulli",
-           prior = set_prior("normal(0, 3)"),
-           iter = 1000, chains = 4, cores = 4)
-# Running time: 40 s compilation + 50 s sampling = 1.5 min.
-```
+For how to set priors, and modify sampler settings, see help!
 
 ```{=html}
   <hr/>
@@ -538,7 +584,6 @@ library(brms)
   </details>
   <br/><hr/>
 ```
-
 
 
 ***Bayesian model comparison:***

@@ -325,6 +325,14 @@ For fitting PGLS with various models, you should also consider the `caper`{.R} p
 
 ### Exercise
 
+
+
+```{=html}
+  <hr/>
+  <strong><span style="color: #0011AA; font-size:25px;">Task</span></strong><br/>
+```
+
+
 Download the following two datasets
 
 http://www.phytools.org/Cordoba2017/data/BarbetTree.nex
@@ -344,6 +352,25 @@ reducedTree<-drop.tip(tree, obj$tree_not_data)
 name.check(reducedTree,dat)
 # now you should be able to work with this data as in our example
 ```
+
+
+
+```{=html}
+  <details>
+    <summary>
+      <strong><span style="color: #0011AA; font-size:25px;">Solution</span></strong>
+    </summary>
+    <p>
+```
+
+
+
+```{=html}
+    </p>
+  </details>
+  <br/><hr/>
+```
+
 
 
 ## Case studies
