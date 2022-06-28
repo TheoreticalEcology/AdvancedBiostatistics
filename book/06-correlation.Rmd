@@ -394,24 +394,30 @@ Task: Check if there is a relationship between altitude at which a species is fo
     <p>
 ```
 
-Relationship is nonlinear, to get a good fit, after playing around, I added an interaction with a quadratic effect - you can probably also find other solutions. 
 
 ```{r}
 plot(Lnote~Lnalt, data = dat)
+fit <- lm(Lnote~ scale(Lnalt), data = dat)
+summary(fit)
+plot(allEffects(fit,partial.residuals = T))
+```
+
+Bit of a misfit, to get a good fit, after playing around, I added an interaction with a quadratic effect - you can probably also find other solutions. 
+
+```{r}
 fit <- lm(Lnote~ scale(Lnalt) * I(scale(Lnalt)^2), data = dat)
 summary(fit)
 plot(allEffects(fit,partial.residuals = T))
-
 ```
 
-How to we see if there is an overall effect of Lnalt? Easiest option is to do a LRT:
+Now, with a more complex polynomial for Lnalt, how to we see if there is an overall effect of Lnalt? Easiest option is to do a LRT:
 
 ```{r}
 fit0 = lm(Lnote~ 1, data = dat)
 anova(fit0, fit)
 ```
 
-Now, check residuals for phylogenetic correlation
+Check residuals for phylogenetic correlation
 
 ```{r}
 w = 1/cophenetic(reducedTree)

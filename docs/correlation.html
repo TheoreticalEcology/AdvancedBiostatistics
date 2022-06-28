@@ -1087,11 +1087,35 @@ For example, we can include a discrete predictor:</p>
       <strong><span style="color: #0011AA; font-size:25px;">Solution</span></strong>
     </summary>
     <p>
-<p>Relationship is nonlinear, to get a good fit, after playing around, I added an interaction with a quadratic effect - you can probably also find other solutions.</p>
 <div class="sourceCode" id="cb550"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb550-1"><a href="correlation.html#cb550-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(Lnote<span class="sc">~</span>Lnalt, <span class="at">data =</span> dat)</span></code></pre></div>
 <p><img src="_main_files/figure-html/unnamed-chunk-25-1.png" width="672" /></p>
-<div class="sourceCode" id="cb551"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb551-1"><a href="correlation.html#cb551-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(Lnote<span class="sc">~</span> <span class="fu">scale</span>(Lnalt) <span class="sc">*</span> <span class="fu">I</span>(<span class="fu">scale</span>(Lnalt)<span class="sc">^</span><span class="dv">2</span>), <span class="at">data =</span> dat)</span>
+<div class="sourceCode" id="cb551"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb551-1"><a href="correlation.html#cb551-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(Lnote<span class="sc">~</span> <span class="fu">scale</span>(Lnalt), <span class="at">data =</span> dat)</span>
 <span id="cb551-2"><a href="correlation.html#cb551-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = Lnote ~ scale(Lnalt), data = dat)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.11597 -0.06798 -0.03097  0.01019  0.34676 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)   0.11652    0.01994   5.844 1.91e-06 ***
+## scale(Lnalt)  0.02870    0.02025   1.418    0.166    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.1145 on 31 degrees of freedom
+## Multiple R-squared:  0.06087,    Adjusted R-squared:  0.03058 
+## F-statistic: 2.009 on 1 and 31 DF,  p-value: 0.1663</code></pre>
+<div class="sourceCode" id="cb553"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb553-1"><a href="correlation.html#cb553-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">allEffects</span>(fit,<span class="at">partial.residuals =</span> T))</span></code></pre></div>
+<pre><code>## Warning in Analyze.model(focal.predictors, mod, xlevels, default.levels, : the
+## predictor scale(Lnalt) is a one-column matrix that was converted to a vector</code></pre>
+<p><img src="_main_files/figure-html/unnamed-chunk-25-2.png" width="672" /></p>
+<p>Bit of a misfit, to get a good fit, after playing around, I added an interaction with a quadratic effect - you can probably also find other solutions.</p>
+<div class="sourceCode" id="cb555"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb555-1"><a href="correlation.html#cb555-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(Lnote<span class="sc">~</span> <span class="fu">scale</span>(Lnalt) <span class="sc">*</span> <span class="fu">I</span>(<span class="fu">scale</span>(Lnalt)<span class="sc">^</span><span class="dv">2</span>), <span class="at">data =</span> dat)</span>
+<span id="cb555-2"><a href="correlation.html#cb555-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code></pre></div>
 <pre><code>## 
 ## Call:
 ## lm(formula = Lnote ~ scale(Lnalt) * I(scale(Lnalt)^2), data = dat)
@@ -1112,14 +1136,14 @@ For example, we can include a discrete predictor:</p>
 ## Residual standard error: 0.0978 on 29 degrees of freedom
 ## Multiple R-squared:  0.3594, Adjusted R-squared:  0.2931 
 ## F-statistic: 5.423 on 3 and 29 DF,  p-value: 0.00437</code></pre>
-<div class="sourceCode" id="cb553"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb553-1"><a href="correlation.html#cb553-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">allEffects</span>(fit,<span class="at">partial.residuals =</span> T))</span></code></pre></div>
+<div class="sourceCode" id="cb557"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb557-1"><a href="correlation.html#cb557-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">allEffects</span>(fit,<span class="at">partial.residuals =</span> T))</span></code></pre></div>
 <pre><code>## Warning in Analyze.model(focal.predictors, mod, xlevels, default.levels, : the
 ## predictors scale(Lnalt), I(scale(Lnalt)^2) are one-column matrices that were
 ## converted to vectors</code></pre>
-<p><img src="_main_files/figure-html/unnamed-chunk-25-2.png" width="672" /></p>
-<p>How to we see if there is an overall effect of Lnalt? Easiest option is to do a LRT:</p>
-<div class="sourceCode" id="cb555"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb555-1"><a href="correlation.html#cb555-1" aria-hidden="true" tabindex="-1"></a>fit0 <span class="ot">=</span> <span class="fu">lm</span>(Lnote<span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> dat)</span>
-<span id="cb555-2"><a href="correlation.html#cb555-2" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(fit0, fit)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-26-1.png" width="672" /></p>
+<p>Now, with a more complex polynomial for Lnalt, how to we see if there is an overall effect of Lnalt? Easiest option is to do a LRT:</p>
+<div class="sourceCode" id="cb559"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb559-1"><a href="correlation.html#cb559-1" aria-hidden="true" tabindex="-1"></a>fit0 <span class="ot">=</span> <span class="fu">lm</span>(Lnote<span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> dat)</span>
+<span id="cb559-2"><a href="correlation.html#cb559-2" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(fit0, fit)</span></code></pre></div>
 <pre><code>## Analysis of Variance Table
 ## 
 ## Model 1: Lnote ~ 1
@@ -1129,10 +1153,10 @@ For example, we can include a discrete predictor:</p>
 ## 2     29 0.27736  3   0.15561 5.4235 0.00437 **
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
-<p>Now, check residuals for phylogenetic correlation</p>
-<div class="sourceCode" id="cb557"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb557-1"><a href="correlation.html#cb557-1" aria-hidden="true" tabindex="-1"></a>w <span class="ot">=</span> <span class="dv">1</span><span class="sc">/</span><span class="fu">cophenetic</span>(reducedTree)</span>
-<span id="cb557-2"><a href="correlation.html#cb557-2" aria-hidden="true" tabindex="-1"></a><span class="fu">diag</span>(w) <span class="ot">=</span> <span class="dv">0</span></span>
-<span id="cb557-3"><a href="correlation.html#cb557-3" aria-hidden="true" tabindex="-1"></a><span class="fu">Moran.I</span>(<span class="fu">residuals</span>(fit), w)</span></code></pre></div>
+<p>Check residuals for phylogenetic correlation</p>
+<div class="sourceCode" id="cb561"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb561-1"><a href="correlation.html#cb561-1" aria-hidden="true" tabindex="-1"></a>w <span class="ot">=</span> <span class="dv">1</span><span class="sc">/</span><span class="fu">cophenetic</span>(reducedTree)</span>
+<span id="cb561-2"><a href="correlation.html#cb561-2" aria-hidden="true" tabindex="-1"></a><span class="fu">diag</span>(w) <span class="ot">=</span> <span class="dv">0</span></span>
+<span id="cb561-3"><a href="correlation.html#cb561-3" aria-hidden="true" tabindex="-1"></a><span class="fu">Moran.I</span>(<span class="fu">residuals</span>(fit), w)</span></code></pre></div>
 <pre><code>## $observed
 ## [1] -0.0495236
 ## 
@@ -1145,23 +1169,23 @@ For example, we can include a discrete predictor:</p>
 ## $p.value
 ## [1] 0.5804485</code></pre>
 <p>Nothing! So we could leave the model as it is. Just for completeness, fit the same comparison with a PGLS, effect remains significant, but p-value a bit larger.</p>
-<div class="sourceCode" id="cb559"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb559-1"><a href="correlation.html#cb559-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">gls</span>(Lnote<span class="sc">~</span> <span class="fu">scale</span>(Lnalt) <span class="sc">*</span> <span class="fu">I</span>(<span class="fu">scale</span>(Lnalt)<span class="sc">^</span><span class="dv">2</span>), </span>
-<span id="cb559-2"><a href="correlation.html#cb559-2" aria-hidden="true" tabindex="-1"></a>           <span class="at">correlation =</span> <span class="fu">corBrownian</span>(<span class="at">phy =</span> reducedTree, </span>
-<span id="cb559-3"><a href="correlation.html#cb559-3" aria-hidden="true" tabindex="-1"></a>                                     <span class="at">form =</span><span class="sc">~</span> species), <span class="at">data =</span> dat, </span>
-<span id="cb559-4"><a href="correlation.html#cb559-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">method =</span> <span class="st">&quot;ML&quot;</span>)</span>
-<span id="cb559-5"><a href="correlation.html#cb559-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb559-6"><a href="correlation.html#cb559-6" aria-hidden="true" tabindex="-1"></a>fit0 <span class="ot">&lt;-</span> <span class="fu">gls</span>(Lnote<span class="sc">~</span> <span class="dv">1</span>, </span>
-<span id="cb559-7"><a href="correlation.html#cb559-7" aria-hidden="true" tabindex="-1"></a>           <span class="at">correlation =</span> <span class="fu">corBrownian</span>(<span class="at">phy =</span> reducedTree, </span>
-<span id="cb559-8"><a href="correlation.html#cb559-8" aria-hidden="true" tabindex="-1"></a>                                     <span class="at">form =</span><span class="sc">~</span> species), <span class="at">data =</span> dat, </span>
-<span id="cb559-9"><a href="correlation.html#cb559-9" aria-hidden="true" tabindex="-1"></a>           <span class="at">method =</span> <span class="st">&quot;ML&quot;</span>)</span>
-<span id="cb559-10"><a href="correlation.html#cb559-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb559-11"><a href="correlation.html#cb559-11" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(fit0, fit)</span></code></pre></div>
+<div class="sourceCode" id="cb563"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb563-1"><a href="correlation.html#cb563-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">gls</span>(Lnote<span class="sc">~</span> <span class="fu">scale</span>(Lnalt) <span class="sc">*</span> <span class="fu">I</span>(<span class="fu">scale</span>(Lnalt)<span class="sc">^</span><span class="dv">2</span>), </span>
+<span id="cb563-2"><a href="correlation.html#cb563-2" aria-hidden="true" tabindex="-1"></a>           <span class="at">correlation =</span> <span class="fu">corBrownian</span>(<span class="at">phy =</span> reducedTree, </span>
+<span id="cb563-3"><a href="correlation.html#cb563-3" aria-hidden="true" tabindex="-1"></a>                                     <span class="at">form =</span><span class="sc">~</span> species), <span class="at">data =</span> dat, </span>
+<span id="cb563-4"><a href="correlation.html#cb563-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">method =</span> <span class="st">&quot;ML&quot;</span>)</span>
+<span id="cb563-5"><a href="correlation.html#cb563-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb563-6"><a href="correlation.html#cb563-6" aria-hidden="true" tabindex="-1"></a>fit0 <span class="ot">&lt;-</span> <span class="fu">gls</span>(Lnote<span class="sc">~</span> <span class="dv">1</span>, </span>
+<span id="cb563-7"><a href="correlation.html#cb563-7" aria-hidden="true" tabindex="-1"></a>           <span class="at">correlation =</span> <span class="fu">corBrownian</span>(<span class="at">phy =</span> reducedTree, </span>
+<span id="cb563-8"><a href="correlation.html#cb563-8" aria-hidden="true" tabindex="-1"></a>                                     <span class="at">form =</span><span class="sc">~</span> species), <span class="at">data =</span> dat, </span>
+<span id="cb563-9"><a href="correlation.html#cb563-9" aria-hidden="true" tabindex="-1"></a>           <span class="at">method =</span> <span class="st">&quot;ML&quot;</span>)</span>
+<span id="cb563-10"><a href="correlation.html#cb563-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb563-11"><a href="correlation.html#cb563-11" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(fit0, fit)</span></code></pre></div>
 <pre><code>##      Model df       AIC       BIC   logLik   Test  L.Ratio p-value
 ## fit0     1  2 -73.47388 -70.48087 38.73694                        
 ## fit      2  5 -76.95977 -69.47723 43.47988 1 vs 2 9.485883  0.0235</code></pre>
 <p>Addition: what would happen if we do the same with a misspecified model? Have a look at the p-values of the fitted models. Can you explain what’s going on here?</p>
-<div class="sourceCode" id="cb561"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb561-1"><a href="correlation.html#cb561-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(Lnote<span class="sc">~</span> <span class="fu">scale</span>(Lnalt), <span class="at">data =</span> dat)</span>
-<span id="cb561-2"><a href="correlation.html#cb561-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code></pre></div>
+<div class="sourceCode" id="cb565"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb565-1"><a href="correlation.html#cb565-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(Lnote<span class="sc">~</span> <span class="fu">scale</span>(Lnalt), <span class="at">data =</span> dat)</span>
+<span id="cb565-2"><a href="correlation.html#cb565-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code></pre></div>
 <pre><code>## 
 ## Call:
 ## lm(formula = Lnote ~ scale(Lnalt), data = dat)
@@ -1180,13 +1204,13 @@ For example, we can include a discrete predictor:</p>
 ## Residual standard error: 0.1145 on 31 degrees of freedom
 ## Multiple R-squared:  0.06087,    Adjusted R-squared:  0.03058 
 ## F-statistic: 2.009 on 1 and 31 DF,  p-value: 0.1663</code></pre>
-<div class="sourceCode" id="cb563"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb563-1"><a href="correlation.html#cb563-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">allEffects</span>(fit, <span class="at">partial.residuals =</span> T))</span></code></pre></div>
+<div class="sourceCode" id="cb567"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb567-1"><a href="correlation.html#cb567-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">allEffects</span>(fit, <span class="at">partial.residuals =</span> T))</span></code></pre></div>
 <pre><code>## Warning in Analyze.model(focal.predictors, mod, xlevels, default.levels, : the
 ## predictor scale(Lnalt) is a one-column matrix that was converted to a vector</code></pre>
-<p><img src="_main_files/figure-html/unnamed-chunk-29-1.png" width="672" /></p>
-<div class="sourceCode" id="cb565"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb565-1"><a href="correlation.html#cb565-1" aria-hidden="true" tabindex="-1"></a>w <span class="ot">=</span> <span class="dv">1</span><span class="sc">/</span><span class="fu">cophenetic</span>(reducedTree)</span>
-<span id="cb565-2"><a href="correlation.html#cb565-2" aria-hidden="true" tabindex="-1"></a><span class="fu">diag</span>(w) <span class="ot">=</span> <span class="dv">0</span></span>
-<span id="cb565-3"><a href="correlation.html#cb565-3" aria-hidden="true" tabindex="-1"></a><span class="fu">Moran.I</span>(<span class="fu">residuals</span>(fit), w)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-30-1.png" width="672" /></p>
+<div class="sourceCode" id="cb569"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb569-1"><a href="correlation.html#cb569-1" aria-hidden="true" tabindex="-1"></a>w <span class="ot">=</span> <span class="dv">1</span><span class="sc">/</span><span class="fu">cophenetic</span>(reducedTree)</span>
+<span id="cb569-2"><a href="correlation.html#cb569-2" aria-hidden="true" tabindex="-1"></a><span class="fu">diag</span>(w) <span class="ot">=</span> <span class="dv">0</span></span>
+<span id="cb569-3"><a href="correlation.html#cb569-3" aria-hidden="true" tabindex="-1"></a><span class="fu">Moran.I</span>(<span class="fu">residuals</span>(fit), w)</span></code></pre></div>
 <pre><code>## $observed
 ## [1] -0.05831654
 ## 
@@ -1198,11 +1222,11 @@ For example, we can include a discrete predictor:</p>
 ## 
 ## $p.value
 ## [1] 0.4189142</code></pre>
-<div class="sourceCode" id="cb567"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb567-1"><a href="correlation.html#cb567-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">gls</span>(Lnote<span class="sc">~</span> <span class="fu">scale</span>(Lnalt), </span>
-<span id="cb567-2"><a href="correlation.html#cb567-2" aria-hidden="true" tabindex="-1"></a>           <span class="at">correlation =</span> <span class="fu">corBrownian</span>(<span class="at">phy =</span> reducedTree, </span>
-<span id="cb567-3"><a href="correlation.html#cb567-3" aria-hidden="true" tabindex="-1"></a>                                     <span class="at">form =</span><span class="sc">~</span> species), <span class="at">data =</span> dat, </span>
-<span id="cb567-4"><a href="correlation.html#cb567-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">method =</span> <span class="st">&quot;ML&quot;</span>)</span>
-<span id="cb567-5"><a href="correlation.html#cb567-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code></pre></div>
+<div class="sourceCode" id="cb571"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb571-1"><a href="correlation.html#cb571-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">gls</span>(Lnote<span class="sc">~</span> <span class="fu">scale</span>(Lnalt), </span>
+<span id="cb571-2"><a href="correlation.html#cb571-2" aria-hidden="true" tabindex="-1"></a>           <span class="at">correlation =</span> <span class="fu">corBrownian</span>(<span class="at">phy =</span> reducedTree, </span>
+<span id="cb571-3"><a href="correlation.html#cb571-3" aria-hidden="true" tabindex="-1"></a>                                     <span class="at">form =</span><span class="sc">~</span> species), <span class="at">data =</span> dat, </span>
+<span id="cb571-4"><a href="correlation.html#cb571-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">method =</span> <span class="st">&quot;ML&quot;</span>)</span>
+<span id="cb571-5"><a href="correlation.html#cb571-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code></pre></div>
 <pre><code>## Generalized least squares fit by maximum likelihood
 ##   Model: Lnote ~ scale(Lnalt) 
 ##   Data: dat 
@@ -1247,8 +1271,8 @@ For example, we can include a discrete predictor:</p>
       <strong><span style="color: #0011AA; font-size:25px;">Solution</span></strong>
     </summary>
     <p>
-<div class="sourceCode" id="cb569"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb569-1"><a href="correlation.html#cb569-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(EcoData)</span>
-<span id="cb569-2"><a href="correlation.html#cb569-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(snouter)</span></code></pre></div>
+<div class="sourceCode" id="cb573"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb573-1"><a href="correlation.html#cb573-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(EcoData)</span>
+<span id="cb573-2"><a href="correlation.html#cb573-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(snouter)</span></code></pre></div>
 <pre><code>## &#39;data.frame&#39;:    1108 obs. of  34 variables:
 ##  $ X          : int  14 15 16 17 18 19 13 14 15 16 ...
 ##  $ Y          : int  1 1 1 1 1 1 2 2 2 2 ...
