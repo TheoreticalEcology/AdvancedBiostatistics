@@ -677,14 +677,17 @@ fit <- lmer(gpa ~ sOccasion*sex + nJob + (sOccasion|student), data = gpa)
 # checking residuals - looks like heteroskedasticity
 plot(fit)
 
+
+fit <- lmer(gpa ~ sOccasion*sex + nJob + (sOccasion|student), data = gpa)
+
+# I'm using here glmmTMB, alternatively could add weights nlme::lme, which also allows specificying mixed models with all variance modelling options that we discussed for gls, but random effect specification is different than here
 fit <- glmmTMB(gpa ~ sOccasion*sex + nJob + (sOccasion|student), data = gpa, dispformula = ~ sOccasion)
 summary(fit)
 
-# unfortunately, the dispersion in this model cannot be reliably checked, because the functions for this 
-# are not (yet) implemented in glmmTMB
+# unfortunately, the dispersion in this model cannot be reliably checked, because the functions for this are not (yet) implemented in glmmTMB
 plot(residuals(fit, type = "pearson") ~ predict(fit)) # not implemented
 library(DHARMa)
-simulateResiduals(fit, plot = T) # not very reliable because glmmTMB cannot do simulations conditional on the fitted REs
+simulateResiduals(fit, plot = T) 
 
 # still, the variable dispersion model is highly supported by the data and clearly preferable over a fixed dispersion model
 ```

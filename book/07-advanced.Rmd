@@ -335,48 +335,42 @@ boot.ci(b2, type = "perc", index = 1)
 
 ***Application: Simulated likelihood ratio test***
 
-The parametric bootstrap can be used to generate simulated likelihood ratio tests for mixed models. This allows us to test for the significance of variance components without specifying degrees of freedom. We could program this ourselves, but here is a package:
+The parametric bootstrap can be used to generate simulated likelihood ratio tests for mixed models. This allows us to test for the significance of variance components without specifying degrees of freedom. 
 
-```{r chunk_chapter7_chunk16, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE}
-library(pbkrtest)
+To demonstrate this, let's simulated some Poisson data under a model with a random intercept, and fit with am appropriate mixed model (M1) and a standard GLM (M0):
 
-data(beets, package = "pbkrtest")
-head(beets)
+```{r}
+set.seed(123)
+dat <- DHARMa::createData(sampleSize = 200, randomEffectVariance = 1)
 
-## Linear mixed effects model:
-sug = lmer(sugpct ~ block + sow + harvest + (1 | block:harvest), data = beets,
-           REML = FALSE)
-sug.h = update(sug, .~. -harvest)
-sug.s = update(sug, .~. -sow)
+m1 = glmer(observedResponse ~ Environment1 + (1|group), data = dat, family = "poisson")
+deviance(m1)
 
-anova(sug, sug.h)
-PBmodcomp(sug, sug.h, nsim = 50)
-anova(sug, sug.s)
-PBmodcomp(sug, sug.s, nsim = 50)
+m0 = glm(observedResponse ~ Environment1 , data = dat, family = "poisson")
+deviance(m0)
 ```
 
-A similar approach is taken in `RLRsim`{.R}:
+The deviance of RE model is larger (meaning better fit), which is to be expected, but is the difference significant? Standard ANOVA as well as AIC have the problem, that df are not exact. We can circumvent this by using a simulated LRT. The idea is the following:
 
-```{r chunk_chapter7_chunk17, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE}
-library(RLRsim)
-library(lme4)
+1. H0: simple model, without RE
+2. Test statistic: M1/M0 or log(M1/M0) = log(M1) - log(M0)
+3. Distribution of test statistic: we use the parametric bootstrap to new data, and fit M0 to this data to generate a distribution under H0
 
-set.seed(1234)
+```{r}
+resampledParameters = function(){
+  newData = dat
+  newData$observedResponse = unlist(simulate(m0))
+  mNew = glm(observedResponse ~ Environment1, data = newData, family = "poisson")
+  return(mNew$deviance)
+}
 
-g = rep(1:10, e = 10)
-x = rnorm(100)
-y = 0.1 * x + rnorm(100)
-
-m = lmer(y ~ x + (1|g), REML = FALSE)
-m0 = lm(y ~ 1)
-
-obs.LRT = 2*(logLik(m) - logLik(m0))
-X = getME(m, "X")
-Z = t(as.matrix(getME(m, "Zt")))
-sim.LRT = LRTSim(X, Z, 1, diag(10))
-pval = mean(sim.LRT > obs.LRT)
+nullDevianceDistribution = replicate(500, resampledParameters())
+hist(deviance(m1) - nullDevianceDistribution, xlim = c(-100,50), breaks = 50, main = "log(L(M1) / L(M0))")
+abline(v = 0, col = "red")
+mean(deviance(m1) > nullDevianceDistribution)
 ```
 
+This idea is implemented in a number of R packages, including pbkrtest and RLRsim, but neither of these fully generalizes to all models that you want to compare, so I recommend to use the hand-coded version. 
 
 ### Non-parametric R2 - cross-validation
 

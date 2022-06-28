@@ -179,7 +179,39 @@ If you find autocorrelation that cannot be removed with a gam, the problem is th
 ```
 
 ```{r message=FALSE, warning=FALSE}
-library(EcoData)
+?EcoData::plantcounts
+
+plants_sf <- plantcounts
+str(plants_sf)
+plants_sf$agrarea_scaled <- scale(plants_sf$agrarea)
+
+plants_sf$longitude <- plants_sf$lon
+plants_sf$latitude <- plants_sf$lat
+library(sf)
+plants_sf <- sf::st_as_sf(plants_sf, coords = c('longitude', 'latitude'), crs
+                          = st_crs("+proj=longlat +ellps=bessel
+                                   +towgs84=606,23,413,0,0,0,0 +no_defs"))
+
+library(mapview)
+mapview(plants_sf["richness"], map.types = "OpenTopoMap")
+
+fit <-  glmmTMB::glmmTMB(richness ~ agrarea_scaled + offset(log(area)),
+                family = nbinom1, data = plants_sf)
+summary(fit)
+
+library(DHARMa)
+res <- simulateResiduals(fit)
+plot(res)
+testSpatialAutocorrelation(res, x = plants_sf$lon, y =  plants_sf$lat)
+
+fit2<-mgcv::gam(richness ~ agrarea_scaled + te(lon, lat),
+            offset(log(area)), family = nb, data = plants_sf)
+summary(fit2)
+plot(fit2)
+
+res <- simulateResiduals(fit2)
+plot(res)
+testSpatialAutocorrelation(res, x = plants_sf$lon, y =  plants_sf$lat)
 ```
 
 ```{=html}
@@ -325,8 +357,6 @@ For fitting PGLS with various models, you should also consider the `caper`{.R} p
 
 ### Exercise
 
-
-
 ```{=html}
   <hr/>
   <strong><span style="color: #0011AA; font-size:25px;">Task</span></strong><br/>
@@ -338,22 +368,23 @@ Download the following two datasets
 http://www.phytools.org/Cordoba2017/data/BarbetTree.nex
 http://www.phytools.org/Cordoba2017/data/Barbetdata.csv
 
-These data are from a study by Corboda et al., 2017, which examined the influence of environmental factors on the evolution of song in an group of Asian bird species called “barbets.”
+These data are from a study by Corboda et al., 2017, which examined the influence of environmental factors on the evolution of song in an group of Asian bird species called “barbets.” The code reads in and cleans the data:
 
-Check if there is a relationship between altitude at which a species is found and the length of the note in its song, which uses the variables Lnote~Lnalt
+```{r, eval = T}
+library(ape)
+dat<-read.csv(url("http://www.phytools.org/Cordoba2017/data/Barbetdata.csv"),header=TRUE,row.names=1)
+tree<-read.nexus(url("http://www.phytools.org/Cordoba2017/data/BarbetTree.nex"))
 
-Help: you need to clean the data a bit, there are some species in the tree for which we have no observations
-```{r, eval = F}
-dat<-read.csv("Barbetdata.csv",header=TRUE,row.names=1)
-tree<-read.nexus("BarbetTree.nex")
-obj<-name.check(tree,dat)
-obj
+dat$species = row.names(dat)
+plot(tree)
+
+# dropping species in the phylogeny for which we don't have data
+obj<-geiger::name.check(tree,dat)
 reducedTree<-drop.tip(tree, obj$tree_not_data)
-name.check(reducedTree,dat)
-# now you should be able to work with this data as in our example
+geiger::name.check(reducedTree,dat)
 ```
 
-
+Task: Check if there is a relationship between altitude at which a species is found and the length of the note in its song, which uses the variables Lnote~Lnalt
 
 ```{=html}
   <details>
@@ -363,6 +394,67 @@ name.check(reducedTree,dat)
     <p>
 ```
 
+Relationship is nonlinear, to get a good fit, after playing around, I added an interaction with a quadratic effect - you can probably also find other solutions. 
+
+```{r}
+plot(Lnote~Lnalt, data = dat)
+fit <- lm(Lnote~ scale(Lnalt) * I(scale(Lnalt)^2), data = dat)
+summary(fit)
+plot(allEffects(fit,partial.residuals = T))
+
+```
+
+How to we see if there is an overall effect of Lnalt? Easiest option is to do a LRT:
+
+```{r}
+fit0 = lm(Lnote~ 1, data = dat)
+anova(fit0, fit)
+```
+
+Now, check residuals for phylogenetic correlation
+
+```{r}
+w = 1/cophenetic(reducedTree)
+diag(w) = 0
+Moran.I(residuals(fit), w)
+```
+
+Nothing! So we could leave the model as it is. Just for completeness, fit the same comparison with a PGLS, effect remains significant, but p-value a bit larger.
+
+```{r}
+fit <- gls(Lnote~ scale(Lnalt) * I(scale(Lnalt)^2), 
+           correlation = corBrownian(phy = reducedTree, 
+                                     form =~ species), data = dat, 
+           method = "ML")
+
+fit0 <- gls(Lnote~ 1, 
+           correlation = corBrownian(phy = reducedTree, 
+                                     form =~ species), data = dat, 
+           method = "ML")
+
+anova(fit0, fit)
+```
+
+Addition: what would happen if we do the same with a misspecified model? Have a look at the p-values of the fitted models. Can you explain what's going on here?
+
+```{r}
+fit <- lm(Lnote~ scale(Lnalt), data = dat)
+summary(fit)
+
+plot(allEffects(fit, partial.residuals = T))
+
+w = 1/cophenetic(reducedTree)
+diag(w) = 0
+Moran.I(residuals(fit), w)
+
+fit <- gls(Lnote~ scale(Lnalt), 
+           correlation = corBrownian(phy = reducedTree, 
+                                     form =~ species), data = dat, 
+           method = "ML")
+summary(fit)
+```
+
+The observation is that the PGLS effect estimate is significant while normal lm is not. The reason is probably that the PGLS is re-weighting residuals, and it seems that in this case, the re-weighting is changing the slope. What we learn by this example is that a PGLS can increase significance, and in this case I would argue wrongly so, as we have no indication that there is a phylogenetic signal. I would therefore NOT recommend to blindly fit PGLS, but rather test first if a PGLS is needed, and only then apply.  
 
 
 ```{=html}

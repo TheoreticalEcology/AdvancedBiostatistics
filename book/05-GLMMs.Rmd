@@ -406,8 +406,73 @@ Tasks:
     <p>
 ```
 
-```{r chunk_chapter5_task_8, message=FALSE, warning=FALSE}
+```{r}
 
+library(DHARMa)
+?hurricanes
+
+# this is the model fit by Jung et al., fith with glmmTMB
+library(glmmTMB)
+originalModelGAM = glmmTMB(alldeaths ~ MasFem*
+                             (Minpressure_Updated_2014 + scale(NDAM)),
+                           data = hurricanes, family = nbinom2)
+summary(originalModelGAM)
+
+# note that in the code that I gave you not all predictors were scaled,
+# but for looking at the main effect we should scale 
+
+originalModelGAM = glmmTMB(alldeaths ~ scale(MasFem) *
+                             (scale(Minpressure_Updated_2014) + scale(NDAM)),
+                           data = hurricanes, family = nbinom2)
+summary(originalModelGAM)
+
+# now main effect is n.s.; it's a bit dodgy, but if you read in the main paper
+# they actually argue mainly via ANOVA and significance at high values of NDAM
+
+car::Anova(originalModelGAM)
+
+# in the ANOVA we see that MasFem still n.s. but interactions, and if you 
+# would calculate effect of MasFem at high NDAM, it is significnat. Something
+# like that is argued in the paper. We can emulate this by changing 
+# NDAM centering to high NDAM
+
+hurricanes$highcenteredNDAM = hurricanes$NDAM - max(hurricanes$NDAM)
+
+originalModelGAM = glmmTMB(alldeaths ~ scale(MasFem) *
+                             (scale(Minpressure_Updated_2014) + highcenteredNDAM),
+                           data = hurricanes, family = nbinom2)
+summary(originalModelGAM)
+
+# OK, let's look at the residuals
+
+# no significant deviation in the general DHARMa plot
+res <- simulateResiduals(originalModelGAM)
+plot(res)
+
+# but residuals ~ NDAM looks funny, which was pointed 
+# out by Bob O'Hara in a blog post after publication of the paper
+plotResiduals(res, hurricanes$NDAM)
+
+# correcting with a sqrt effect
+correctedModel = glmmTMB(alldeaths ~ scale(MasFem) *
+                             (scale(Minpressure_Updated_2014) + scale(NDAM) + sqrt(NDAM)),
+                          data = hurricanes, family = nbinom2)
+
+res <- simulateResiduals(correctedModel, plot = T)
+plotResiduals(res, hurricanes$NDAM)
+summary(correctedModel)
+car::Anova(correctedModel)
+
+# all gone, only Damage is doing the effect. This wouldn't change with re-scaling probably, as interactions are n.s.
+
+# Moreover, question why they fitted this weird interactions in the first place. A initial model based on a causa analysis could be:
+
+newModel = glmmTMB(alldeaths ~ scale(MasFem) + Minpressure_Updated_2014 
+                           + NDAM + sqrt(NDAM) + Year,
+                           data = hurricanes, family = nbinom2)
+summary(newModel)
+
+car::Anova(newModel) # nothing regarding MasFem
 ```
 
 ```{=html}
