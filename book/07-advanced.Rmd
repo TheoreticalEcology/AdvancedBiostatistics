@@ -344,33 +344,60 @@ set.seed(123)
 dat <- DHARMa::createData(sampleSize = 200, randomEffectVariance = 1)
 
 m1 = glmer(observedResponse ~ Environment1 + (1|group), data = dat, family = "poisson")
-deviance(m1)
+
 
 m0 = glm(observedResponse ~ Environment1 , data = dat, family = "poisson")
-deviance(m0)
+
+observedLR = logLik(m1) - logLik(m0)
 ```
 
-The deviance of RE model is larger (meaning better fit), which is to be expected, but is the difference significant? Standard ANOVA as well as AIC have the problem, that df are not exact. We can circumvent this by using a simulated LRT. The idea is the following:
+The log LR of m1 (the RE model) over m0 is 225, meaning that seing the observed data under m1 is exp(225) times more likely than under m0.
+
+This is expected, given that we simulated the data under an RE model, but is the difference significant? 
+
+Well, the LR is so large that we actually wouldn't need to test. A rough rule of thumb is that you need a log LR of 2 for each df that you add, and here we have an RE with 10 groups, so even if we could 1 df for each RE group, this should be easily significant. 
+
+Nevertheless, if we want to be sure, a standard ANOVA as well as AIC have the problem, that df are not exact. We can circumvent this by using a simulated LRT. The idea is the following:
 
 1. H0: simple model, without RE
 2. Test statistic: M1/M0 or log(M1/M0) = log(M1) - log(M0)
 3. Distribution of test statistic: we use the parametric bootstrap to new data, and fit M0 to this data to generate a distribution under H0
 
-```{r}
+Here is the code to do this: 
+
+```{r, warning=F, message=F}
 resampledParameters = function(){
   newData = dat
   newData$observedResponse = unlist(simulate(m0))
-  mNew = glm(observedResponse ~ Environment1, data = newData, family = "poisson")
-  return(mNew$deviance)
+  mNew0 = glm(observedResponse ~ Environment1, data = newData, family = "poisson")
+  mNew1 = glmer(observedResponse ~ Environment1 + (1|group), data = newData, family = "poisson")
+  return(logLik(mNew1) - logLik(mNew0))
 }
 
-nullDevianceDistribution = replicate(500, resampledParameters())
-hist(deviance(m1) - nullDevianceDistribution, xlim = c(-100,50), breaks = 50, main = "log(L(M1) / L(M0))")
-abline(v = 0, col = "red")
-mean(deviance(m1) > nullDevianceDistribution)
+nullDistribution = replicate(500, resampledParameters())
 ```
 
-This idea is implemented in a number of R packages, including pbkrtest and RLRsim, but neither of these fully generalizes to all models that you want to compare, so I recommend to use the hand-coded version. 
+This is the null distribution for the LR - we see that if the data would really not have an RE, we would expect an increase of likelihood for the more complicated model of not more than 4 or so. 
+
+```{r}
+hist(nullDistribution, breaks = 50, main = "Null distribution log(L(M1) / L(M0))")
+```
+
+However, what we actually observe is an increase of 225. I rescaled the x axis to make this visible. 
+
+```{r}
+hist(nullDistribution, breaks = 50, main = "Null distribution log(L(M1) / L(M0))", xlim = c(-5,250))
+
+abline(v = observedLR, col = "red")
+```
+
+The p-value is 0 obviously
+
+```{r}
+mean(nullDistribution > observedLR)
+```
+
+Simulated LRTs are implemented in a number of R packages, including pbkrtest and RLRsim, but neither of these fully generalizes to all models that you want to compare, so I recommend to use the hand-coded version. 
 
 ### Non-parametric R2 - cross-validation
 

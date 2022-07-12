@@ -23,7 +23,7 @@
 <meta name="author" content="Florian Hartig" />
 
 
-<meta name="date" content="2022-06-28" />
+<meta name="date" content="2022-07-07" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -1458,6 +1458,12 @@ code span.wa { color: #bf0303; } /* Warning */
 <p>The difference is due to the collinearity of the variables. Because Temp and Wind are collinear, the variable that is added first to the model will absorb variation from the other, and thus seems to explain more of the response.</p>
 <p>There are other types of ANOVA that avoid this problem. The so-called type II ANOVA shows for each variable only the part that is uniquely attributable to the respective variable</p>
 <div class="sourceCode" id="cb222"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb222-1"><a href="understanding_linear_regression.html#cb222-1" aria-hidden="true" tabindex="-1"></a>car<span class="sc">::</span><span class="fu">Anova</span>(fit, <span class="at">type =</span> <span class="st">&quot;II&quot;</span>)</span></code></pre></div>
+<pre><code>## Warning: replacing previous import &#39;lifecycle::last_warnings&#39; by
+## &#39;rlang::last_warnings&#39; when loading &#39;hms&#39;</code></pre>
+<pre><code>## Warning: replacing previous import &#39;lifecycle::last_warnings&#39; by
+## &#39;rlang::last_warnings&#39; when loading &#39;tibble&#39;</code></pre>
+<pre><code>## Warning: replacing previous import &#39;lifecycle::last_warnings&#39; by
+## &#39;rlang::last_warnings&#39; when loading &#39;pillar&#39;</code></pre>
 <pre><code>## Anova Table (Type II tests)
 ## 
 ## Response: Ozone
@@ -1468,7 +1474,7 @@ code span.wa { color: #bf0303; } /* Warning */
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 <p>There is also type III, which is as type II, but avoids a similar problem for interactions (see next subchapter). This is probably the most conservative setting:</p>
-<div class="sourceCode" id="cb224"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb224-1"><a href="understanding_linear_regression.html#cb224-1" aria-hidden="true" tabindex="-1"></a>car<span class="sc">::</span><span class="fu">Anova</span>(fit, <span class="at">type =</span> <span class="st">&quot;III&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb227"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb227-1"><a href="understanding_linear_regression.html#cb227-1" aria-hidden="true" tabindex="-1"></a>car<span class="sc">::</span><span class="fu">Anova</span>(fit, <span class="at">type =</span> <span class="st">&quot;III&quot;</span>)</span></code></pre></div>
 <pre><code>## Anova Table (Type III tests)
 ## 
 ## Response: Ozone
@@ -1496,18 +1502,18 @@ code span.wa { color: #bf0303; } /* Warning */
 <div id="interactions" class="section level3 hasAnchor" number="3.2.4">
 <h3><span class="header-section-number">3.2.4</span> Interactions<a href="understanding_linear_regression.html#interactions" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>When we have multiple variables, we can have the situation that the value of one variable influences the effect of the other(s). Technically, this is called in <strong>interaction</strong>. In situations where the causal direction is known, this is also called a <strong>moderator</strong>. An example: Imagine we observe that the effect of aspirin differs depending on the weight of the subject. Technically, we have an interaction between aspirin and weight. Physiologically, we know the causal direction is “weight -&gt; effect of aspirin”, so we can say weight is a moderator for the effect of aspirin.</p>
-<div class="sourceCode" id="cb226"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb226-1"><a href="understanding_linear_regression.html#cb226-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">lm</span>(Ozone <span class="sc">~</span> Temp <span class="sc">*</span> Wind, <span class="at">data =</span> airquality)</span>
-<span id="cb226-2"><a href="understanding_linear_regression.html#cb226-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">allEffects</span>(fit))</span></code></pre></div>
+<div class="sourceCode" id="cb229"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb229-1"><a href="understanding_linear_regression.html#cb229-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">lm</span>(Ozone <span class="sc">~</span> Temp <span class="sc">*</span> Wind, <span class="at">data =</span> airquality)</span>
+<span id="cb229-2"><a href="understanding_linear_regression.html#cb229-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">allEffects</span>(fit))</span></code></pre></div>
 <p><img src="_main_files/figure-html/chunk_chapter3_chunk68-1.png" width="672" /></p>
 <p>We will have a look at the summary later, but for the moment, let’s just look at the output visually. In the effect plots, we see the effect of Temperature on Ozone for different values of Wind. We also see that the slope changes. For low Wind, we have a strong effect of Temperature. For high Wind, the effect is basically gone.</p>
 <p>Let’s look at the interaction syntax in more detail. The “*” operator in an <code>lm()</code>.{R} is a shorthand for main effects + interactions. You can write equivalently:</p>
-<div class="sourceCode" id="cb227"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb227-1"><a href="understanding_linear_regression.html#cb227-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">lm</span>(Ozone <span class="sc">~</span> Wind <span class="sc">+</span> Temp <span class="sc">+</span> Wind<span class="sc">:</span>Temp, <span class="at">data =</span> airquality)</span></code></pre></div>
+<div class="sourceCode" id="cb230"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb230-1"><a href="understanding_linear_regression.html#cb230-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">lm</span>(Ozone <span class="sc">~</span> Wind <span class="sc">+</span> Temp <span class="sc">+</span> Wind<span class="sc">:</span>Temp, <span class="at">data =</span> airquality)</span></code></pre></div>
 <p>What is fit here is literally a third predictor that is specified as Wind * Temp (normal multiplication). The above syntax would allow you to also have interactions without main effects, e.g.:</p>
-<div class="sourceCode" id="cb228"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb228-1"><a href="understanding_linear_regression.html#cb228-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">lm</span>(Ozone <span class="sc">~</span> Wind <span class="sc">+</span> Wind<span class="sc">:</span>Temp, <span class="at">data =</span> airquality)</span></code></pre></div>
+<div class="sourceCode" id="cb231"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb231-1"><a href="understanding_linear_regression.html#cb231-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">lm</span>(Ozone <span class="sc">~</span> Wind <span class="sc">+</span> Wind<span class="sc">:</span>Temp, <span class="at">data =</span> airquality)</span></code></pre></div>
 <p>Although this is generally <strong>never</strong> advisable, as the main effect influences the interaction, unless you are sure that the main effect must be zero.</p>
 <p>There is another important syntax in R:</p>
-<div class="sourceCode" id="cb229"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb229-1"><a href="understanding_linear_regression.html#cb229-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">lm</span>(Ozone <span class="sc">~</span> (Wind <span class="sc">+</span> Temp <span class="sc">+</span> Solar.R)<span class="sc">^</span><span class="dv">2</span> , <span class="at">data =</span> airquality)</span>
-<span id="cb229-2"><a href="understanding_linear_regression.html#cb229-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code></pre></div>
+<div class="sourceCode" id="cb232"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb232-1"><a href="understanding_linear_regression.html#cb232-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">lm</span>(Ozone <span class="sc">~</span> (Wind <span class="sc">+</span> Temp <span class="sc">+</span> Solar.R)<span class="sc">^</span><span class="dv">2</span> , <span class="at">data =</span> airquality)</span>
+<span id="cb232-2"><a href="understanding_linear_regression.html#cb232-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code></pre></div>
 <pre><code>## 
 ## Call:
 ## lm(formula = Ozone ~ (Wind + Temp + Solar.R)^2, data = airquality)
@@ -1532,17 +1538,17 @@ code span.wa { color: #bf0303; } /* Warning */
 ##   (42 observations deleted due to missingness)
 ## Multiple R-squared:  0.6863, Adjusted R-squared:  0.6682 
 ## F-statistic: 37.93 on 6 and 104 DF,  p-value: &lt; 2.2e-16</code></pre>
-<div class="sourceCode" id="cb231"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb231-1"><a href="understanding_linear_regression.html#cb231-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">allEffects</span>(fit), <span class="at">selection =</span> <span class="dv">1</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb234"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb234-1"><a href="understanding_linear_regression.html#cb234-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">allEffects</span>(fit), <span class="at">selection =</span> <span class="dv">1</span>)</span></code></pre></div>
 <p><img src="_main_files/figure-html/chunk_chapter3_chunk71-1.png" width="672" /></p>
-<div class="sourceCode" id="cb232"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb232-1"><a href="understanding_linear_regression.html#cb232-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">allEffects</span>(fit), <span class="at">selection =</span> <span class="dv">2</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb235"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb235-1"><a href="understanding_linear_regression.html#cb235-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">allEffects</span>(fit), <span class="at">selection =</span> <span class="dv">2</span>)</span></code></pre></div>
 <p><img src="_main_files/figure-html/chunk_chapter3_chunk71-2.png" width="672" /></p>
-<div class="sourceCode" id="cb233"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb233-1"><a href="understanding_linear_regression.html#cb233-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">allEffects</span>(fit), <span class="at">selection =</span> <span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb236"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb236-1"><a href="understanding_linear_regression.html#cb236-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">allEffects</span>(fit), <span class="at">selection =</span> <span class="dv">3</span>)</span></code></pre></div>
 <p><img src="_main_files/figure-html/chunk_chapter3_chunk71-3.png" width="672" /></p>
 <p>This creates all main effect and second order (aka two-way) interactions between variables. You can also use <code class="sourceCode r"><span class="sc">^</span><span class="dv">3</span></code> to create all possible 2-way and 3-way interactions between the variables in the parentheses. By the way: The <code class="sourceCode r">()<span class="sc">^</span><span class="dv">2</span></code> syntax for interactions is the reason why we have to write <code class="sourceCode r"><span class="fu">I</span>(x<span class="sc">^</span><span class="dv">2</span>)</code> if we want to write a quadratic effect in an lm.</p>
 <p><strong><em>Categorical variables</em></strong></p>
 <p>When you include an interaction with a categorical variable, that means a separate effect will be fit for each level of the categorical variable, as in</p>
-<div class="sourceCode" id="cb234"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb234-1"><a href="understanding_linear_regression.html#cb234-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">lm</span>(Ozone <span class="sc">~</span> Wind <span class="sc">*</span> fMonth, <span class="at">data =</span> airquality)</span>
-<span id="cb234-2"><a href="understanding_linear_regression.html#cb234-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code></pre></div>
+<div class="sourceCode" id="cb237"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb237-1"><a href="understanding_linear_regression.html#cb237-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">lm</span>(Ozone <span class="sc">~</span> Wind <span class="sc">*</span> fMonth, <span class="at">data =</span> airquality)</span>
+<span id="cb237-2"><a href="understanding_linear_regression.html#cb237-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code></pre></div>
 <pre><code>## 
 ## Call:
 ## lm(formula = Ozone ~ Wind * fMonth, data = airquality)
@@ -1583,16 +1589,16 @@ code span.wa { color: #bf0303; } /* Warning */
 <li>Ozone ~ Wind * Temp</li>
 </ul>
 <p>How do you explain the differences in the estimates for the main effects of Wind and Temp? What do you think corresponds most closely to the “true” effect of Wind and Temp? Maybe you know the answer already. If not, consider the following simulation, where we create data with known effect sizes:</p>
-<div class="sourceCode" id="cb236"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb236-1"><a href="understanding_linear_regression.html#cb236-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create predictor variables.</span></span>
-<span id="cb236-2"><a href="understanding_linear_regression.html#cb236-2" aria-hidden="true" tabindex="-1"></a>x1 <span class="ot">=</span> <span class="fu">runif</span>(<span class="dv">100</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
-<span id="cb236-3"><a href="understanding_linear_regression.html#cb236-3" aria-hidden="true" tabindex="-1"></a>x2 <span class="ot">=</span> <span class="fu">runif</span>(<span class="dv">100</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
-<span id="cb236-4"><a href="understanding_linear_regression.html#cb236-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb236-5"><a href="understanding_linear_regression.html#cb236-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Create response for lm, all effects are 1.</span></span>
-<span id="cb236-6"><a href="understanding_linear_regression.html#cb236-6" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> x1 <span class="sc">+</span> x2 <span class="sc">+</span> x1<span class="sc">*</span>x2 <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">100</span>, <span class="at">sd =</span> <span class="fl">0.3</span>)</span>
-<span id="cb236-7"><a href="understanding_linear_regression.html#cb236-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb236-8"><a href="understanding_linear_regression.html#cb236-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit model, but shift the mean of the predictor.</span></span>
-<span id="cb236-9"><a href="understanding_linear_regression.html#cb236-9" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">lm</span>(y <span class="sc">~</span> x1 <span class="sc">*</span> <span class="fu">I</span>(x2 <span class="sc">+</span> <span class="dv">5</span>))</span>
-<span id="cb236-10"><a href="understanding_linear_regression.html#cb236-10" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code></pre></div>
+<div class="sourceCode" id="cb239"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb239-1"><a href="understanding_linear_regression.html#cb239-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create predictor variables.</span></span>
+<span id="cb239-2"><a href="understanding_linear_regression.html#cb239-2" aria-hidden="true" tabindex="-1"></a>x1 <span class="ot">=</span> <span class="fu">runif</span>(<span class="dv">100</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb239-3"><a href="understanding_linear_regression.html#cb239-3" aria-hidden="true" tabindex="-1"></a>x2 <span class="ot">=</span> <span class="fu">runif</span>(<span class="dv">100</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb239-4"><a href="understanding_linear_regression.html#cb239-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb239-5"><a href="understanding_linear_regression.html#cb239-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Create response for lm, all effects are 1.</span></span>
+<span id="cb239-6"><a href="understanding_linear_regression.html#cb239-6" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> x1 <span class="sc">+</span> x2 <span class="sc">+</span> x1<span class="sc">*</span>x2 <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">100</span>, <span class="at">sd =</span> <span class="fl">0.3</span>)</span>
+<span id="cb239-7"><a href="understanding_linear_regression.html#cb239-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb239-8"><a href="understanding_linear_regression.html#cb239-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit model, but shift the mean of the predictor.</span></span>
+<span id="cb239-9"><a href="understanding_linear_regression.html#cb239-9" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">lm</span>(y <span class="sc">~</span> x1 <span class="sc">*</span> <span class="fu">I</span>(x2 <span class="sc">+</span> <span class="dv">5</span>))</span>
+<span id="cb239-10"><a href="understanding_linear_regression.html#cb239-10" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code></pre></div>
 <pre><code>## 
 ## Call:
 ## lm(formula = y ~ x1 * I(x2 + 5))
@@ -1613,7 +1619,7 @@ code span.wa { color: #bf0303; } /* Warning */
 ## Residual standard error: 0.3396 on 96 degrees of freedom
 ## Multiple R-squared:  0.8885, Adjusted R-squared:  0.885 
 ## F-statistic:   255 on 3 and 96 DF,  p-value: &lt; 2.2e-16</code></pre>
-<div class="sourceCode" id="cb238"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb238-1"><a href="understanding_linear_regression.html#cb238-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">allEffects</span>(fit))</span></code></pre></div>
+<div class="sourceCode" id="cb241"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb241-1"><a href="understanding_linear_regression.html#cb241-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">allEffects</span>(fit))</span></code></pre></div>
 <p><img src="_main_files/figure-html/chunk_chapter3_chunk73-1.png" width="672" /></p>
 <p>Play around with the shift in x2, and observe how the effects change. Try how the estimates change when centering the variables via the <code class="sourceCode r"><span class="fu">scale</span>()</code> command. If you understand what’s going on, you will realize that you should <strong>always center</strong> your variables, whenever you use any interactions.<br />
 Excellent explanations of the issues also in the attached paper<br />
@@ -1749,14 +1755,14 @@ Excellent explanations of the issues also in the attached paper<br />
 <p>A likelihood-ratio test (LRT) is a hypothesis test that can be used to compare 2 <strong>nested</strong> models. Nested means that the simpler of the 2 models is included in the more complex model.</p>
 <p>The more complex model will always fit the data better, i.e. have a higher likelihood. This is the reason why you shouldn’t use fit or residual patterns for model selection. The likelihood-ratio test tests whether this improvement in likelihood is significantly larger than one would expect if the simpler model is the correct model.</p>
 <p>Likelihood-ratio tests are used to get the p-values in an R ANOVA, and thus you can also use the <code class="sourceCode r">anova</code> function to perform an likelihood-ratio test between 2 models (Note: For simple models, this will run an F-test, which is technically not exactly a likelihood-ratio test, but the principle is the same):</p>
-<div class="sourceCode" id="cb239"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb239-1"><a href="understanding_linear_regression.html#cb239-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Model 1</span></span>
-<span id="cb239-2"><a href="understanding_linear_regression.html#cb239-2" aria-hidden="true" tabindex="-1"></a>m1 <span class="ot">=</span> <span class="fu">lm</span>(Ozone <span class="sc">~</span> Wind , <span class="at">data =</span> airquality)</span>
-<span id="cb239-3"><a href="understanding_linear_regression.html#cb239-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb239-4"><a href="understanding_linear_regression.html#cb239-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Model 2</span></span>
-<span id="cb239-5"><a href="understanding_linear_regression.html#cb239-5" aria-hidden="true" tabindex="-1"></a>m2 <span class="ot">=</span> <span class="fu">lm</span>(Ozone <span class="sc">~</span> Wind <span class="sc">+</span> Temp, <span class="at">data =</span> airquality)</span>
-<span id="cb239-6"><a href="understanding_linear_regression.html#cb239-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb239-7"><a href="understanding_linear_regression.html#cb239-7" aria-hidden="true" tabindex="-1"></a><span class="co"># LRT</span></span>
-<span id="cb239-8"><a href="understanding_linear_regression.html#cb239-8" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(m1, m2)</span></code></pre></div>
+<div class="sourceCode" id="cb242"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb242-1"><a href="understanding_linear_regression.html#cb242-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Model 1</span></span>
+<span id="cb242-2"><a href="understanding_linear_regression.html#cb242-2" aria-hidden="true" tabindex="-1"></a>m1 <span class="ot">=</span> <span class="fu">lm</span>(Ozone <span class="sc">~</span> Wind , <span class="at">data =</span> airquality)</span>
+<span id="cb242-3"><a href="understanding_linear_regression.html#cb242-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb242-4"><a href="understanding_linear_regression.html#cb242-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Model 2</span></span>
+<span id="cb242-5"><a href="understanding_linear_regression.html#cb242-5" aria-hidden="true" tabindex="-1"></a>m2 <span class="ot">=</span> <span class="fu">lm</span>(Ozone <span class="sc">~</span> Wind <span class="sc">+</span> Temp, <span class="at">data =</span> airquality)</span>
+<span id="cb242-6"><a href="understanding_linear_regression.html#cb242-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb242-7"><a href="understanding_linear_regression.html#cb242-7" aria-hidden="true" tabindex="-1"></a><span class="co"># LRT</span></span>
+<span id="cb242-8"><a href="understanding_linear_regression.html#cb242-8" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(m1, m2)</span></code></pre></div>
 <pre><code>## Analysis of Variance Table
 ## 
 ## Model 1: Ozone ~ Wind
@@ -1771,12 +1777,12 @@ Excellent explanations of the issues also in the attached paper<br />
 <p>The AIC is defined as <span class="math inline">\(2 \ln(\text{likelihood}) + 2k\)</span>, where <span class="math inline">\(k\)</span> = number of parameters.</p>
 <p>Essentially, this means AIC = Fit - Penalty for complexity.</p>
 <p><strong>Lower AIC is better!</strong></p>
-<div class="sourceCode" id="cb241"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb241-1"><a href="understanding_linear_regression.html#cb241-1" aria-hidden="true" tabindex="-1"></a>m1 <span class="ot">=</span> <span class="fu">lm</span>(Ozone <span class="sc">~</span> Temp, <span class="at">data =</span> airquality)</span>
-<span id="cb241-2"><a href="understanding_linear_regression.html#cb241-2" aria-hidden="true" tabindex="-1"></a>m2 <span class="ot">=</span> <span class="fu">lm</span>(Ozone <span class="sc">~</span> Temp <span class="sc">+</span> Wind, <span class="at">data =</span> airquality)</span>
-<span id="cb241-3"><a href="understanding_linear_regression.html#cb241-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb241-4"><a href="understanding_linear_regression.html#cb241-4" aria-hidden="true" tabindex="-1"></a><span class="fu">AIC</span>(m1)</span></code></pre></div>
+<div class="sourceCode" id="cb244"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb244-1"><a href="understanding_linear_regression.html#cb244-1" aria-hidden="true" tabindex="-1"></a>m1 <span class="ot">=</span> <span class="fu">lm</span>(Ozone <span class="sc">~</span> Temp, <span class="at">data =</span> airquality)</span>
+<span id="cb244-2"><a href="understanding_linear_regression.html#cb244-2" aria-hidden="true" tabindex="-1"></a>m2 <span class="ot">=</span> <span class="fu">lm</span>(Ozone <span class="sc">~</span> Temp <span class="sc">+</span> Wind, <span class="at">data =</span> airquality)</span>
+<span id="cb244-3"><a href="understanding_linear_regression.html#cb244-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb244-4"><a href="understanding_linear_regression.html#cb244-4" aria-hidden="true" tabindex="-1"></a><span class="fu">AIC</span>(m1)</span></code></pre></div>
 <pre><code>## [1] 1067.706</code></pre>
-<div class="sourceCode" id="cb243"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb243-1"><a href="understanding_linear_regression.html#cb243-1" aria-hidden="true" tabindex="-1"></a><span class="fu">AIC</span>(m2)</span></code></pre></div>
+<div class="sourceCode" id="cb246"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb246-1"><a href="understanding_linear_regression.html#cb246-1" aria-hidden="true" tabindex="-1"></a><span class="fu">AIC</span>(m2)</span></code></pre></div>
 <pre><code>## [1] 1049.741</code></pre>
 <p><strong>Note 1:</strong> It can be shown that AIC is asymptotically identical to leave-one-out cross-validation, so what AIC is optimizing is essentially the predictive error of the model on new data.</p>
 <p><strong>Note 2:</strong> There are other information criteria, such as BIC, DIC, WAIC etc., as well as sample-size corrected versions of either of them (e.g. AICc). The difference between the methods is beyond the scope of this course. For the most common one (BIC), just the note that this penalizes more strongly for large data sets, and thus corrects a tendency of AIC to overfit for large data sets.</p>
@@ -1795,23 +1801,23 @@ Excellent explanations of the issues also in the attached paper<br />
 <p>A third option option for model selection are shrinkage estimators. These include the LASSO and ridge.</p>
 <p>The basic idea behind these estimators is not to reduce the number of parameters, but to reduce the flexibility of the model by introducing a penalty on the regression coefficients that code a preference for smaller or zero coefficient values. Effectively, this can either amount to model selection (because some coefficients are shrunk directly to zero), or it can mean that we can fit very large models while still being able to do good predictions, or avoid overfitting.</p>
 <p>To put a ridge penalty on the standard <code class="sourceCode r">lm</code>, we can use</p>
-<div class="sourceCode" id="cb245"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb245-1"><a href="understanding_linear_regression.html#cb245-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lm.ridge</span>(Ozone <span class="sc">~</span> Wind <span class="sc">+</span> Temp <span class="sc">+</span> Solar.R, <span class="at">data =</span> airquality, <span class="at">lambda =</span> <span class="dv">2</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb248"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb248-1"><a href="understanding_linear_regression.html#cb248-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lm.ridge</span>(Ozone <span class="sc">~</span> Wind <span class="sc">+</span> Temp <span class="sc">+</span> Solar.R, <span class="at">data =</span> airquality, <span class="at">lambda =</span> <span class="dv">2</span>)</span></code></pre></div>
 <pre><code>##                      Wind         Temp      Solar.R 
 ## -62.73376169  -3.30622990   1.62842247   0.05961015</code></pre>
 <p>We can see how the regression estimates vary for different penalties via</p>
-<div class="sourceCode" id="cb247"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb247-1"><a href="understanding_linear_regression.html#cb247-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>( <span class="fu">lm.ridge</span>( Ozone <span class="sc">~</span> Wind <span class="sc">+</span> Temp <span class="sc">+</span> Solar.R, <span class="at">data =</span> airquality,</span>
-<span id="cb247-2"><a href="understanding_linear_regression.html#cb247-2" aria-hidden="true" tabindex="-1"></a>              <span class="at">lambda =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">200</span>, <span class="fl">0.1</span>) ) )</span></code></pre></div>
+<div class="sourceCode" id="cb250"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb250-1"><a href="understanding_linear_regression.html#cb250-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>( <span class="fu">lm.ridge</span>( Ozone <span class="sc">~</span> Wind <span class="sc">+</span> Temp <span class="sc">+</span> Solar.R, <span class="at">data =</span> airquality,</span>
+<span id="cb250-2"><a href="understanding_linear_regression.html#cb250-2" aria-hidden="true" tabindex="-1"></a>              <span class="at">lambda =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">200</span>, <span class="fl">0.1</span>) ) )</span></code></pre></div>
 <p><img src="_main_files/figure-html/chunk_chapter3_chunk77-1.png" width="672" /></p>
 </div>
 <div id="pHacking" class="section level3 hasAnchor" number="3.3.4">
 <h3><span class="header-section-number">3.3.4</span> P-hacking<a href="understanding_linear_regression.html#pHacking" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>The most dubious model selection strategy, actually considered scientific <strong>misconduct</strong>, is <strong>p-hacking</strong>. The purpose of this exercises is to show you how <strong>not</strong> to do model selection, i.e, that by playing around with the variables, you can make any outcome significant. That is why your hypothesis needs to be fixed <strong>before</strong> looking at the data, ideally through pre-registration, based on an experimental plan or a causal analysis. Here is the example:</p>
 <p>Measurements of plant performance. Target was to find out if Gen1 has an effect on Performance. Various other variables are measured</p>
-<div class="sourceCode" id="cb248"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb248-1"><a href="understanding_linear_regression.html#cb248-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
-<span id="cb248-2"><a href="understanding_linear_regression.html#cb248-2" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">=</span> <span class="fu">data.frame</span>(<span class="fu">matrix</span>(<span class="fu">rnorm</span>(<span class="dv">300</span>), <span class="at">ncol =</span> <span class="dv">10</span>))</span>
-<span id="cb248-3"><a href="understanding_linear_regression.html#cb248-3" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(dat) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&quot;Performance&quot;</span>, <span class="st">&quot;Gen1&quot;</span>, <span class="st">&quot;Gen2&quot;</span>, <span class="st">&quot;soilC&quot;</span>, <span class="st">&quot;soilP&quot;</span>, <span class="st">&quot;Temp&quot;</span>,</span>
-<span id="cb248-4"><a href="understanding_linear_regression.html#cb248-4" aria-hidden="true" tabindex="-1"></a>                  <span class="st">&quot;Humidity&quot;</span>, <span class="st">&quot;xPos&quot;</span>, <span class="st">&quot;yPos&quot;</span>, <span class="st">&quot;Water&quot;</span>)</span>
-<span id="cb248-5"><a href="understanding_linear_regression.html#cb248-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(dat)</span></code></pre></div>
+<div class="sourceCode" id="cb251"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb251-1"><a href="understanding_linear_regression.html#cb251-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb251-2"><a href="understanding_linear_regression.html#cb251-2" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">=</span> <span class="fu">data.frame</span>(<span class="fu">matrix</span>(<span class="fu">rnorm</span>(<span class="dv">300</span>), <span class="at">ncol =</span> <span class="dv">10</span>))</span>
+<span id="cb251-3"><a href="understanding_linear_regression.html#cb251-3" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(dat) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&quot;Performance&quot;</span>, <span class="st">&quot;Gen1&quot;</span>, <span class="st">&quot;Gen2&quot;</span>, <span class="st">&quot;soilC&quot;</span>, <span class="st">&quot;soilP&quot;</span>, <span class="st">&quot;Temp&quot;</span>,</span>
+<span id="cb251-4"><a href="understanding_linear_regression.html#cb251-4" aria-hidden="true" tabindex="-1"></a>                  <span class="st">&quot;Humidity&quot;</span>, <span class="st">&quot;xPos&quot;</span>, <span class="st">&quot;yPos&quot;</span>, <span class="st">&quot;Water&quot;</span>)</span>
+<span id="cb251-5"><a href="understanding_linear_regression.html#cb251-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(dat)</span></code></pre></div>
 <pre><code>##   Performance            Gen1               Gen2             soilC        
 ##  Min.   :-2.21470   Min.   :-1.37706   Min.   :-1.8050   Min.   :-1.2766  
 ##  1st Qu.:-0.43496   1st Qu.:-0.38752   1st Qu.:-0.5373   1st Qu.:-0.5656  
@@ -1833,8 +1839,8 @@ Excellent explanations of the issues also in the attached paper<br />
 ##  Mean   : 0.02441   Mean   : 0.1368  
 ##  3rd Qu.: 0.70437   3rd Qu.: 0.8813  
 ##  Max.   : 1.71963   Max.   : 2.6492</code></pre>
-<div class="sourceCode" id="cb250"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb250-1"><a href="understanding_linear_regression.html#cb250-1" aria-hidden="true" tabindex="-1"></a><span class="co"># As you see, no effect of Gen1.</span></span>
-<span id="cb250-2"><a href="understanding_linear_regression.html#cb250-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">lm</span>(Performance <span class="sc">~</span> ., <span class="at">data =</span> dat))</span></code></pre></div>
+<div class="sourceCode" id="cb253"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb253-1"><a href="understanding_linear_regression.html#cb253-1" aria-hidden="true" tabindex="-1"></a><span class="co"># As you see, no effect of Gen1.</span></span>
+<span id="cb253-2"><a href="understanding_linear_regression.html#cb253-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">lm</span>(Performance <span class="sc">~</span> ., <span class="at">data =</span> dat))</span></code></pre></div>
 <pre><code>## 
 ## Call:
 ## lm(formula = Performance ~ ., data = dat)
@@ -1867,7 +1873,7 @@ Excellent explanations of the issues also in the attached paper<br />
       <strong><span style="color: #0011AA; font-size:25px;">Example</span></strong>
     </summary>
     <p>
-<div class="sourceCode" id="cb252"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb252-1"><a href="understanding_linear_regression.html#cb252-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">lm</span>(Performance <span class="sc">~</span> Gen1 <span class="sc">*</span> Humidity, <span class="at">data =</span> dat[<span class="dv">20</span><span class="sc">:</span><span class="dv">30</span>,]))</span></code></pre></div>
+<div class="sourceCode" id="cb255"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb255-1"><a href="understanding_linear_regression.html#cb255-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">lm</span>(Performance <span class="sc">~</span> Gen1 <span class="sc">*</span> Humidity, <span class="at">data =</span> dat[<span class="dv">20</span><span class="sc">:</span><span class="dv">30</span>,]))</span></code></pre></div>
 <pre><code>## 
 ## Call:
 ## lm(formula = Performance ~ Gen1 * Humidity, data = dat[20:30, 
@@ -1911,11 +1917,11 @@ Excellent explanations of the issues also in the attached paper<br />
 <li><code>MuMIn</code>.{R} package</li>
 </ul>
 <p>Here is an example for either of those:</p>
-<div class="sourceCode" id="cb254"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb254-1"><a href="understanding_linear_regression.html#cb254-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MASS)</span>
-<span id="cb254-2"><a href="understanding_linear_regression.html#cb254-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MuMIn)</span>
-<span id="cb254-3"><a href="understanding_linear_regression.html#cb254-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb254-4"><a href="understanding_linear_regression.html#cb254-4" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">lm</span>(Ozone <span class="sc">~</span> . , <span class="at">data =</span> airquality)</span>
-<span id="cb254-5"><a href="understanding_linear_regression.html#cb254-5" aria-hidden="true" tabindex="-1"></a><span class="fu">stepAIC</span>(fit)</span></code></pre></div>
+<div class="sourceCode" id="cb257"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb257-1"><a href="understanding_linear_regression.html#cb257-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MASS)</span>
+<span id="cb257-2"><a href="understanding_linear_regression.html#cb257-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MuMIn)</span>
+<span id="cb257-3"><a href="understanding_linear_regression.html#cb257-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb257-4"><a href="understanding_linear_regression.html#cb257-4" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">lm</span>(Ozone <span class="sc">~</span> . , <span class="at">data =</span> airquality)</span>
+<span id="cb257-5"><a href="understanding_linear_regression.html#cb257-5" aria-hidden="true" tabindex="-1"></a><span class="fu">stepAIC</span>(fit)</span></code></pre></div>
 <pre><code>## Start:  AIC=681.55
 ## Ozone ~ Solar.R + Wind + Temp + Month + Day + cTemp + sTemp + 
 ##     TempAdd + TempMult + TempMix + fMonth + sWind + sSolar.R
@@ -1983,19 +1989,19 @@ Excellent explanations of the issues also in the attached paper<br />
 ##   -74.23481      0.05222     -3.10872      1.87511    -14.75895     -8.74861  
 ##     fMonth8      fMonth9  
 ##    -4.19654    -15.96728</code></pre>
-<div class="sourceCode" id="cb257"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb257-1"><a href="understanding_linear_regression.html#cb257-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Default na.action for regressions in R is that NA lines are removed.</span></span>
-<span id="cb257-2"><a href="understanding_linear_regression.html#cb257-2" aria-hidden="true" tabindex="-1"></a><span class="co"># MuMIn requires that there are no NA in the data in the first place.</span></span>
-<span id="cb257-3"><a href="understanding_linear_regression.html#cb257-3" aria-hidden="true" tabindex="-1"></a><span class="co"># We have to change the default and remove the NA in the data.</span></span>
-<span id="cb257-4"><a href="understanding_linear_regression.html#cb257-4" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">na.action =</span> <span class="st">&quot;na.fail&quot;</span>)</span>
-<span id="cb257-5"><a href="understanding_linear_regression.html#cb257-5" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">=</span> airquality[<span class="fu">complete.cases</span>(airquality),]</span>
-<span id="cb257-6"><a href="understanding_linear_regression.html#cb257-6" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">lm</span>(Ozone <span class="sc">~</span> . , <span class="at">data =</span> dat)</span>
-<span id="cb257-7"><a href="understanding_linear_regression.html#cb257-7" aria-hidden="true" tabindex="-1"></a>out <span class="ot">=</span> <span class="fu">dredge</span>(fit)</span></code></pre></div>
+<div class="sourceCode" id="cb260"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb260-1"><a href="understanding_linear_regression.html#cb260-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Default na.action for regressions in R is that NA lines are removed.</span></span>
+<span id="cb260-2"><a href="understanding_linear_regression.html#cb260-2" aria-hidden="true" tabindex="-1"></a><span class="co"># MuMIn requires that there are no NA in the data in the first place.</span></span>
+<span id="cb260-3"><a href="understanding_linear_regression.html#cb260-3" aria-hidden="true" tabindex="-1"></a><span class="co"># We have to change the default and remove the NA in the data.</span></span>
+<span id="cb260-4"><a href="understanding_linear_regression.html#cb260-4" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">na.action =</span> <span class="st">&quot;na.fail&quot;</span>)</span>
+<span id="cb260-5"><a href="understanding_linear_regression.html#cb260-5" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">=</span> airquality[<span class="fu">complete.cases</span>(airquality),]</span>
+<span id="cb260-6"><a href="understanding_linear_regression.html#cb260-6" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">lm</span>(Ozone <span class="sc">~</span> . , <span class="at">data =</span> dat)</span>
+<span id="cb260-7"><a href="understanding_linear_regression.html#cb260-7" aria-hidden="true" tabindex="-1"></a>out <span class="ot">=</span> <span class="fu">dredge</span>(fit)</span></code></pre></div>
 <pre><code>## Fixed term is &quot;(Intercept)&quot;</code></pre>
-<div class="sourceCode" id="cb259"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb259-1"><a href="understanding_linear_regression.html#cb259-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Set back to default NA action.</span></span>
-<span id="cb259-2"><a href="understanding_linear_regression.html#cb259-2" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">na.action =</span> <span class="st">&quot;na.omit&quot;</span>)</span>
-<span id="cb259-3"><a href="understanding_linear_regression.html#cb259-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb259-4"><a href="understanding_linear_regression.html#cb259-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot only first 6 and last 6 elements of the (realy) long list:</span></span>
-<span id="cb259-5"><a href="understanding_linear_regression.html#cb259-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(out)</span></code></pre></div>
+<div class="sourceCode" id="cb262"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb262-1"><a href="understanding_linear_regression.html#cb262-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Set back to default NA action.</span></span>
+<span id="cb262-2"><a href="understanding_linear_regression.html#cb262-2" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">na.action =</span> <span class="st">&quot;na.omit&quot;</span>)</span>
+<span id="cb262-3"><a href="understanding_linear_regression.html#cb262-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb262-4"><a href="understanding_linear_regression.html#cb262-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot only first 6 and last 6 elements of the (realy) long list:</span></span>
+<span id="cb262-5"><a href="understanding_linear_regression.html#cb262-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(out)</span></code></pre></div>
 <pre><code>## Global model call: lm(formula = Ozone ~ ., data = dat)
 ## ---
 ## Model selection table 
@@ -2014,7 +2020,7 @@ Excellent explanations of the issues also in the attached paper<br />
 ## 218  0.167
 ## 233  0.167
 ## Models ranked by AICc(x)</code></pre>
-<div class="sourceCode" id="cb261"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb261-1"><a href="understanding_linear_regression.html#cb261-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tail</span>(out)</span></code></pre></div>
+<div class="sourceCode" id="cb264"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb264-1"><a href="understanding_linear_regression.html#cb264-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tail</span>(out)</span></code></pre></div>
 <pre><code>## Global model call: lm(formula = Ozone ~ ., data = dat)
 ## ---
 ## Model selection table 
@@ -2027,22 +2033,22 @@ Excellent explanations of the issues also in the attached paper<br />
 ## 3  42.42 -0.01983                     3 -546.035 1098.3 100.77  0.001
 ## Models ranked by AICc(x)</code></pre>
 <p>Now, let’s have a look at what happens if we perform a model selection on this model</p>
-<div class="sourceCode" id="cb263"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb263-1"><a href="understanding_linear_regression.html#cb263-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MASS)</span>
-<span id="cb263-2"><a href="understanding_linear_regression.html#cb263-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
-<span id="cb263-3"><a href="understanding_linear_regression.html#cb263-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb263-4"><a href="understanding_linear_regression.html#cb263-4" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">=</span> <span class="fu">data.frame</span>(<span class="fu">matrix</span>(<span class="fu">runif</span>(<span class="dv">20000</span>), <span class="at">ncol =</span> <span class="dv">100</span>))</span>
-<span id="cb263-5"><a href="understanding_linear_regression.html#cb263-5" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>y <span class="ot">=</span> <span class="fu">rnorm</span>(<span class="dv">200</span>)</span>
-<span id="cb263-6"><a href="understanding_linear_regression.html#cb263-6" aria-hidden="true" tabindex="-1"></a>fullModel <span class="ot">=</span> <span class="fu">lm</span>(y <span class="sc">~</span> . , <span class="at">data =</span> dat)</span>
-<span id="cb263-7"><a href="understanding_linear_regression.html#cb263-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb263-8"><a href="understanding_linear_regression.html#cb263-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Number of predictors + intercept:</span></span>
-<span id="cb263-9"><a href="understanding_linear_regression.html#cb263-9" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(fullModel<span class="sc">$</span>coefficients)</span></code></pre></div>
+<div class="sourceCode" id="cb266"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb266-1"><a href="understanding_linear_regression.html#cb266-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MASS)</span>
+<span id="cb266-2"><a href="understanding_linear_regression.html#cb266-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb266-3"><a href="understanding_linear_regression.html#cb266-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb266-4"><a href="understanding_linear_regression.html#cb266-4" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">=</span> <span class="fu">data.frame</span>(<span class="fu">matrix</span>(<span class="fu">runif</span>(<span class="dv">20000</span>), <span class="at">ncol =</span> <span class="dv">100</span>))</span>
+<span id="cb266-5"><a href="understanding_linear_regression.html#cb266-5" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>y <span class="ot">=</span> <span class="fu">rnorm</span>(<span class="dv">200</span>)</span>
+<span id="cb266-6"><a href="understanding_linear_regression.html#cb266-6" aria-hidden="true" tabindex="-1"></a>fullModel <span class="ot">=</span> <span class="fu">lm</span>(y <span class="sc">~</span> . , <span class="at">data =</span> dat)</span>
+<span id="cb266-7"><a href="understanding_linear_regression.html#cb266-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb266-8"><a href="understanding_linear_regression.html#cb266-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Number of predictors + intercept:</span></span>
+<span id="cb266-9"><a href="understanding_linear_regression.html#cb266-9" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(fullModel<span class="sc">$</span>coefficients)</span></code></pre></div>
 <pre><code>## [1] 101</code></pre>
-<div class="sourceCode" id="cb265"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb265-1"><a href="understanding_linear_regression.html#cb265-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Number of significant predictors:</span></span>
-<span id="cb265-2"><a href="understanding_linear_regression.html#cb265-2" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(<span class="fu">summary</span>(fullModel)[[<span class="dv">4</span>]][,<span class="dv">4</span>][<span class="fu">summary</span>(fullModel)[[<span class="dv">4</span>]][,<span class="dv">4</span>] <span class="sc">&lt;=</span> <span class="fl">0.05</span>])</span></code></pre></div>
+<div class="sourceCode" id="cb268"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb268-1"><a href="understanding_linear_regression.html#cb268-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Number of significant predictors:</span></span>
+<span id="cb268-2"><a href="understanding_linear_regression.html#cb268-2" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(<span class="fu">summary</span>(fullModel)[[<span class="dv">4</span>]][,<span class="dv">4</span>][<span class="fu">summary</span>(fullModel)[[<span class="dv">4</span>]][,<span class="dv">4</span>] <span class="sc">&lt;=</span> <span class="fl">0.05</span>])</span></code></pre></div>
 <pre><code>## [1] 2</code></pre>
 <p>2 predictors out of 100are significant (on average, we expect 5 of 100 to be significant).</p>
-<div class="sourceCode" id="cb267"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb267-1"><a href="understanding_linear_regression.html#cb267-1" aria-hidden="true" tabindex="-1"></a>selection <span class="ot">=</span> <span class="fu">stepAIC</span>(fullModel)</span></code></pre></div>
-<div class="sourceCode" id="cb268"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb268-1"><a href="understanding_linear_regression.html#cb268-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(selection)</span></code></pre></div>
+<div class="sourceCode" id="cb270"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb270-1"><a href="understanding_linear_regression.html#cb270-1" aria-hidden="true" tabindex="-1"></a>selection <span class="ot">=</span> <span class="fu">stepAIC</span>(fullModel)</span></code></pre></div>
+<div class="sourceCode" id="cb271"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb271-1"><a href="understanding_linear_regression.html#cb271-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(selection)</span></code></pre></div>
 <pre><code>## 
 ## Call:
 ## lm(formula = y ~ X1 + X2 + X3 + X5 + X7 + X13 + X20 + X23 + X30 + 
@@ -2090,11 +2096,11 @@ Excellent explanations of the issues also in the attached paper<br />
 ## Residual standard error: 0.76 on 171 degrees of freedom
 ## Multiple R-squared:  0.3177, Adjusted R-squared:  0.2059 
 ## F-statistic: 2.843 on 28 and 171 DF,  p-value: 1.799e-05</code></pre>
-<div class="sourceCode" id="cb270"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb270-1"><a href="understanding_linear_regression.html#cb270-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Number of predictors + intercept:</span></span>
-<span id="cb270-2"><a href="understanding_linear_regression.html#cb270-2" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(selection<span class="sc">$</span>coefficients)</span></code></pre></div>
+<div class="sourceCode" id="cb273"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb273-1"><a href="understanding_linear_regression.html#cb273-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Number of predictors + intercept:</span></span>
+<span id="cb273-2"><a href="understanding_linear_regression.html#cb273-2" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(selection<span class="sc">$</span>coefficients)</span></code></pre></div>
 <pre><code>## [1] 29</code></pre>
-<div class="sourceCode" id="cb272"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb272-1"><a href="understanding_linear_regression.html#cb272-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Number of significant predictors:</span></span>
-<span id="cb272-2"><a href="understanding_linear_regression.html#cb272-2" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(<span class="fu">summary</span>(selection)[[<span class="dv">4</span>]][,<span class="dv">4</span>][<span class="fu">summary</span>(selection)[[<span class="dv">4</span>]][,<span class="dv">4</span>] <span class="sc">&lt;=</span> <span class="fl">0.05</span>])</span></code></pre></div>
+<div class="sourceCode" id="cb275"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb275-1"><a href="understanding_linear_regression.html#cb275-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Number of significant predictors:</span></span>
+<span id="cb275-2"><a href="understanding_linear_regression.html#cb275-2" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(<span class="fu">summary</span>(selection)[[<span class="dv">4</span>]][,<span class="dv">4</span>][<span class="fu">summary</span>(selection)[[<span class="dv">4</span>]][,<span class="dv">4</span>] <span class="sc">&lt;=</span> <span class="fl">0.05</span>])</span></code></pre></div>
 <pre><code>## [1] 15</code></pre>
 <p>Voila, 15 out of 28 (before 100) predictors significant.
 Looks like we could have good fun to discuss / publish these results!</p>
@@ -2110,7 +2116,7 @@ Looks like we could have good fun to discuss / publish these results!</p>
   <strong><span style="color: #0011AA; font-size:25px;">Task</span></strong><br/>
 <p>Revisit exercises <a href="understanding_linear_regression.html#plantTrait1">3.1.5</a> / <a href="understanding_linear_regression.html#plantTrait2">3.2.5</a> (using the dataset plantHeight), and discuss / analyze:</p>
 <p>Which would be the appropriate model, if we want to get a predictive model for plant height, based on all the variables in the data set? Note: some text-based variables may need to be included, so probably it’s the easiest if you start with a large model that you specify by hand. You can also include interactions. The syntax:</p>
-<div class="sourceCode" id="cb274"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb274-1"><a href="understanding_linear_regression.html#cb274-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>((x1 <span class="sc">+</span> x2 <span class="sc">+</span> x3)<span class="sc">^</span><span class="dv">2</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb277"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb277-1"><a href="understanding_linear_regression.html#cb277-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>((x1 <span class="sc">+</span> x2 <span class="sc">+</span> x3)<span class="sc">^</span><span class="dv">2</span>)</span></code></pre></div>
 <p>includes all possible 2nd-order interactions between the variables in your model. You can extend this to x^3, x^4 but I would not recommend it, your model will get too large.</p>
   <details>
     <summary>
@@ -2118,8 +2124,8 @@ Looks like we could have good fun to discuss / publish these results!</p>
     </summary>
     <p>
 <p>Possible solution:</p>
-<div class="sourceCode" id="cb275"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb275-1"><a href="understanding_linear_regression.html#cb275-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(EcoData)</span>
-<span id="cb275-2"><a href="understanding_linear_regression.html#cb275-2" aria-hidden="true" tabindex="-1"></a>plantHeight</span></code></pre></div>
+<div class="sourceCode" id="cb278"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb278-1"><a href="understanding_linear_regression.html#cb278-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(EcoData)</span>
+<span id="cb278-2"><a href="understanding_linear_regression.html#cb278-2" aria-hidden="true" tabindex="-1"></a>plantHeight</span></code></pre></div>
 <pre><code>##     sort_number site              Genus_species             Family growthform
 ## 1          1402  193         Acer_macryophyllum        Sapindaceae       Tree
 ## 2         25246  103         Quararibea_cordata          Malvaceae       Tree
@@ -3194,8 +3200,8 @@ Looks like we could have good fun to discuss / publish these results!</p>
 ## 176        197         98         197         104 1.76  933         -1
 ## 177        189         99         168         128 2.79  414          1
 ## 178        438        359         385         438 3.26  690          1</code></pre>
-<div class="sourceCode" id="cb277"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb277-1"><a href="understanding_linear_regression.html#cb277-1" aria-hidden="true" tabindex="-1"></a>fullModel <span class="ot">&lt;-</span> <span class="fu">lm</span>(loght <span class="sc">~</span> (growthform <span class="sc">+</span> Family <span class="sc">+</span> lat <span class="sc">+</span> long <span class="sc">+</span> alt <span class="sc">+</span> temp <span class="sc">+</span> NPP )<span class="sc">^</span><span class="dv">2</span>, <span class="at">data =</span> plantHeight)</span>
-<span id="cb277-2"><a href="understanding_linear_regression.html#cb277-2" aria-hidden="true" tabindex="-1"></a>selectedModel <span class="ot">=</span> <span class="fu">stepAIC</span>(fullModel)</span></code></pre></div>
+<div class="sourceCode" id="cb280"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb280-1"><a href="understanding_linear_regression.html#cb280-1" aria-hidden="true" tabindex="-1"></a>fullModel <span class="ot">&lt;-</span> <span class="fu">lm</span>(loght <span class="sc">~</span> (growthform <span class="sc">+</span> Family <span class="sc">+</span> lat <span class="sc">+</span> long <span class="sc">+</span> alt <span class="sc">+</span> temp <span class="sc">+</span> NPP )<span class="sc">^</span><span class="dv">2</span>, <span class="at">data =</span> plantHeight)</span>
+<span id="cb280-2"><a href="understanding_linear_regression.html#cb280-2" aria-hidden="true" tabindex="-1"></a>selectedModel <span class="ot">=</span> <span class="fu">stepAIC</span>(fullModel)</span></code></pre></div>
 <pre><code>## Start:  AIC=-786.71
 ## loght ~ (growthform + Family + lat + long + alt + temp + NPP)^2
 ## 
@@ -3297,7 +3303,7 @@ Looks like we could have good fun to discuss / publish these results!</p>
 ## - Family:alt         3   0.37962 0.57562 -620.31
 ## - Family:long        2   0.48838 0.68438 -590.10
 ## - lat:temp           1   0.53630 0.73230 -577.07</code></pre>
-<div class="sourceCode" id="cb279"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb279-1"><a href="understanding_linear_regression.html#cb279-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(selectedModel)</span></code></pre></div>
+<div class="sourceCode" id="cb282"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb282-1"><a href="understanding_linear_regression.html#cb282-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(selectedModel)</span></code></pre></div>
 <pre><code>## 
 ## Call:
 ## lm(formula = loght ~ growthform + Family + lat + long + alt + 
@@ -4676,8 +4682,8 @@ Looks like we could have good fun to discuss / publish these results!</p>
 <div id="case-study-life-satisfaction" class="section level3 hasAnchor" number="3.4.2">
 <h3><span class="header-section-number">3.4.2</span> Case study: Life satisfaction<a href="understanding_linear_regression.html#case-study-life-satisfaction" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>The following data set contains information about life satisfaction (lebensz_org) in Germany, based on the socio-economic panel.</p>
-<div class="sourceCode" id="cb281"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb281-1"><a href="understanding_linear_regression.html#cb281-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(EcoData)</span>
-<span id="cb281-2"><a href="understanding_linear_regression.html#cb281-2" aria-hidden="true" tabindex="-1"></a>?soep</span></code></pre></div>
+<div class="sourceCode" id="cb284"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb284-1"><a href="understanding_linear_regression.html#cb284-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(EcoData)</span>
+<span id="cb284-2"><a href="understanding_linear_regression.html#cb284-2" aria-hidden="true" tabindex="-1"></a>?soep</span></code></pre></div>
   <hr/>
   <strong><span style="color: #0011AA; font-size:25px;">Task</span></strong><br/>
 <p>Perform a causal analysis of the effect of income on life satisfaction, considering possible confounding / mediation / colliders.</p>
@@ -4691,8 +4697,8 @@ Looks like we could have good fun to discuss / publish these results!</p>
 <li>Might consider splitting data into single households, families, as effects could be very different. Alternatively, could add interactions with single, families and / or time to see if effects of income are different</li>
 </ul>
 <p>A possible simple model is</p>
-<div class="sourceCode" id="cb282"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb282-1"><a href="understanding_linear_regression.html#cb282-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(lebensz_org <span class="sc">~</span> <span class="fu">sqrt</span>(einkommenj1) <span class="sc">+</span> syear <span class="sc">+</span> sex <span class="sc">+</span> alter <span class="sc">+</span> anz_pers <span class="sc">+</span> bildung <span class="sc">+</span> erwerb <span class="sc">+</span> gesund_org, <span class="at">data =</span> soep)</span>
-<span id="cb282-2"><a href="understanding_linear_regression.html#cb282-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code></pre></div>
+<div class="sourceCode" id="cb285"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb285-1"><a href="understanding_linear_regression.html#cb285-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(lebensz_org <span class="sc">~</span> <span class="fu">sqrt</span>(einkommenj1) <span class="sc">+</span> syear <span class="sc">+</span> sex <span class="sc">+</span> alter <span class="sc">+</span> anz_pers <span class="sc">+</span> bildung <span class="sc">+</span> erwerb <span class="sc">+</span> gesund_org, <span class="at">data =</span> soep)</span>
+<span id="cb285-2"><a href="understanding_linear_regression.html#cb285-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code></pre></div>
 <pre><code>## 
 ## Call:
 ## lm(formula = lebensz_org ~ sqrt(einkommenj1) + syear + sex + 
